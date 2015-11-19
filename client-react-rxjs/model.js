@@ -1,6 +1,6 @@
 var Rx = require("rx");
 var todoUrl = require("./todoUrl");
-var validation = require("./validation");
+var validation = require("./todoForm/validation");
 
 module.exports = function(ajax, events) {
   var todoListAfterDelete$ = events.deleteTodo$
