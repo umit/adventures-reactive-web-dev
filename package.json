@@ -1,0 +1,46 @@
+{
+  "name": "adventures-reactive-web-dev",
+  "version": "1.0.0",
+  "description": "Adventures in Reactive Web Development",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "browserify -t babelify --outfile public/generated-app.js client-cyclejs/client/app.js && node --harmony server/main",
+    "watch": "watchify -v -t babelify --outfile public/generated-app.js client-cyclejs/client/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foxdonut/adventures-reactive-web-dev.git"
+  },
+  "keywords": [
+    "cycle.js",
+    "example",
+    "react",
+    "reactive",
+    "rxjs"
+  ],
+  "author": "foxdonut",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/foxdonut/adventures-reactive-web-dev/issues"
+  },
+  "homepage": "https://github.com/foxdonut/adventures-reactive-web-dev#readme",
+  "dependencies": {
+    "@cycle/core": "^3.1.0",
+    "@cycle/dom": "^5.3.1",
+    "@cycle/http": "^4.0.0",
+    "co-body": "^4.0.0",
+    "form-serialize": "^0.6.0",
+    "hyperscript-helpers": "^2.0.1",
+    "koa": "^1.1.0",
+    "koa-route": "^2.4.2",
+    "koa-static": "^1.5.1",
+    "ramda": "^0.18.0",
+    "validate.js": "^0.9.0"
+  },
+  "devDependencies": {
+    "babelify": "^6.3.0",
+    "browserify": "^11.2.0",
+    "watchify": "^3.4.0"
+  }
+}

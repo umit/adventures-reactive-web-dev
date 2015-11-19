@@ -1,0 +1,30 @@
+{
+  "name": "adventures-reactive-web-dev",
+  "version": "1.0.0",
+  "homepage": "https://github.com/foxdonut/adventures-reactive-web-dev",
+  "authors": [
+    "foxdonut <fdaoud@fastmail.com>"
+  ],
+  "description": "Adventures in Reactive Web Development",
+  "main": "index.html",
+  "moduleType": [],
+  "keywords": [
+    "cycle.js",
+    "react",
+    "rxjs",
+    "reactive",
+    "example"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.5"
+  }
+}
