@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "browserify -t babelify --outfile public/generated-app.js client-cyclejs/client/app.js && node --harmony server/main",
-    "watch": "watchify -v -t babelify --outfile public/generated-app.js client-cyclejs/client/app.js"
+    "start": "browserify -t babelify --outfile public/generated-app.js client-cyclejs/app.js && node --harmony server/main",
+    "watch": "watchify -v -t babelify --outfile public/generated-app.js client-cyclejs/app.js"
   },
   "repository": {
     "type": "git",
