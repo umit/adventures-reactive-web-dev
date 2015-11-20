@@ -20,6 +20,8 @@ var createTodoList = function() {
 }
 var todoList = [];
 
+var nextId = 6;
+
 var getTodoList = function() {
   if (todoList.length === 0) {
     todoList = createTodoList();
@@ -51,11 +53,15 @@ var onDeleteTodo = function*(todoId) {
 app.use(routes.del("/deleteTodo/:todoId", onDeleteTodo));
 
 var saveTodo = function(todo) {
+  todo.priority = parseInt(todo.priority, 10);
+
   if (!todo.id) {
-    todo.id = todoList.length + 1;
+    todo.id = nextId;
+    nextId++;
     todoList.push(todo);
   }
   else {
+    todo.id = parseInt(todo.id, 10);
     for (var i = 0, t = todoList.length; i < t; i++) {
       if (todoList[i].id === todo.id) {
         todoList[i] = todo;
