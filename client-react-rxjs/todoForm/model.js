@@ -1,6 +1,13 @@
 var Rx = require("rx");
-var todoUrl = require("./todoUrl");
 var validation = require("./todoForm/validation");
+
+var todoUrl = {
+  get: "/todoList",
+  save: "/saveTodo",
+  delete: function(todoId) {
+    return "deleteTodo/" + String(todoId);
+  }
+};
 
 module.exports = function(ajax, events) {
   var todoListAfterDelete$ = events.deleteTodo$
