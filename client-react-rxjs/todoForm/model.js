@@ -1,19 +1,7 @@
 var Rx = require("rx");
-var validation = require("./todoForm/validation");
+var validation = require("./validation");
 
-var todoUrl = {
-  get: "/todoList",
-  save: "/saveTodo",
-  delete: function(todoId) {
-    return "deleteTodo/" + String(todoId);
-  }
-};
-
-module.exports = function(ajax, events) {
-  var todoListAfterDelete$ = events.deleteTodo$
-    .map(todoUrl.delete)
-    .flatMap(ajax.deleteJSON);
-
+module.exports = function(events) {
   var validation$ = events.saveTodo$.map(function(todo) {
     return {todo: todo, validationErrors: validation(todo)};
   });
@@ -25,16 +13,6 @@ module.exports = function(ajax, events) {
   var invalid$ = validation$.filter(function(model) {
     return !!model.validationErrors;
   });
-
-  var todoListAfterSave$ = valid$
-    .flatMap(function(model) {
-      return ajax.postJSON(todoUrl.save, model.todo);
-    });
-
-  var listModel$ = ajax.getJSON(todoUrl.get)
-    .merge(todoListAfterDelete$)
-    .merge(todoListAfterSave$)
-    .share();
 
   var blankForm = {
     todo: {},
@@ -57,8 +35,8 @@ module.exports = function(ajax, events) {
     .share();
 
   return {
-    listModel$: listModel$,
-    formModel$: formModel$
+    formModel$: formModel$,
+    valid$: valid$
   };
 };
 
