@@ -26,19 +26,28 @@ module.exports = function(model, events$) {
   var validationErrors = model.validationErrors || {};
 
   return (
-    <form>
-      <input type="hidden" name="id" value={todo.id}/>
-      <div>Priority:</div>
-      <div><input type="text" name="priority" size="2" value={todo.priority} onChange={onChangeText(validationErrors)}/></div>
-      <span className="error">{validationErrors.priority}</span>
-      <div>Description:</div>
-      <div><input type="text" name="description" value={todo.description} onChange={onChangeText(validationErrors)}/></div>
-      <span className="error">{validationErrors.description}</span>
-      <div>
-        <button className="btn btn-primary btn-xs" onClick={onSave} data-action="save">Save</button>
-        <button className="btn btn-default btn-xs" onClick={onCancel} data-action="cancel">Cancel</button>
+    <div className="row">
+      <div className="col-md-4">
+        <form>
+          <input type="hidden" name="id" value={todo.id}/>
+          <div className="form-group">
+            <label htmlFor="priority">Priority:</label>
+            <input type="text" id="priority" name="priority" className="form-control" value={todo.priority} onChange={onChangeText(validationErrors)}/>
+            <span className="help-block">{validationErrors.priority}</span>
+          </div>
+          <div className="form-group">
+            <label htmlFor="description">Description:</label>
+            <input type="text" id="description" name="description" className="form-control" value={todo.description} onChange={onChangeText(validationErrors)}/>
+            <span className="help-block">{validationErrors.description}</span>
+          </div>
+          <div>
+            <button className="btn btn-primary btn-xs" onClick={onSave} data-action="save">Save</button>
+            <span> </span>
+            <button className="btn btn-default btn-xs" onClick={onCancel} data-action="cancel">Cancel</button>
+          </div>
+        </form>
       </div>
-    </form>
+    </div>
   );
 };
 
