@@ -26,7 +26,8 @@ module.exports = function(ajax, events) {
 
   var listModel$ = ajax.getJSON(todoUrl.get)
     .merge(todoListAfterDelete$)
-    .merge(todoListAfterSave$);
+    .merge(todoListAfterSave$)
+    .share();
 
   var blankForm = {
     todo: {},
@@ -45,7 +46,8 @@ module.exports = function(ajax, events) {
     .merge(events.inFormEdit$)
     .merge(invalid$)
     .merge(valid$.map(returnBlankForm))
-    .merge(events.cancelTodo$.map(returnBlankForm));
+    .merge(events.cancelTodo$.map(returnBlankForm))
+    .share();
 
   return {
     listModel$: listModel$,

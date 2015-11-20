@@ -6,7 +6,7 @@ module.exports = function(todos, events$) {
       evt.preventDefault();
       events$.editTodo$.onNext(todo);
     }
-  };  
+  };
 
   var onDelete = function(todo) {
     return function(evt) {
@@ -22,6 +22,7 @@ module.exports = function(todos, events$) {
         <td>{todo.description}</td>
         <td>
           <button className="btn btn-primary btn-xs" data-action="edit" onClick={onEdit(todo)}>Edit</button>
+          <span> </span>
           <button className="btn btn-danger btn-xs" data-action="delete" onClick={onDelete(todo)}>Delete</button>
         </td>
       </tr>
