@@ -7,7 +7,9 @@
     "start:cyclejs": "browserify -t babelify --outfile public/generated-app.js client-cyclejs/app.js && node --harmony server/main",
     "watch:cyclejs": "watchify -v -t babelify --outfile public/generated-app.js client-cyclejs/app.js",
     "start:react-rxjs": "browserify -t babelify --outfile public/generated-app.js client-react-rxjs/app.js && node --harmony server/main",
-    "watch:react-rxjs": "watchify -v -t babelify --outfile public/generated-app.js client-react-rxjs/app.js"
+    "watch:react-rxjs": "watchify -v -t babelify --outfile public/generated-app.js client-react-rxjs/app.js",
+    "start:react-kefir": "browserify -t babelify --outfile public/generated-app.js client-react-kefir/app.js && node --harmony server/main",
+    "watch:react-kefir": "watchify -v -t babelify --outfile public/generated-app.js client-react-kefir/app.js"
   },
   "repository": {
     "type": "git",
@@ -16,6 +18,7 @@
   "keywords": [
     "cycle.js",
     "example",
+    "kefir",
     "react",
     "reactive",
     "rxjs"
@@ -30,17 +33,19 @@
     "@cycle/core": "^3.1.0",
     "@cycle/dom": "^5.3.1",
     "@cycle/http": "^4.0.0",
+    "axios": "^0.7.0",
     "co-body": "^4.0.0",
     "form-serialize": "^0.6.0",
     "hyperscript-helpers": "^2.0.1",
+    "kefir": "^3.1.0",
     "koa": "^1.1.0",
     "koa-route": "^2.4.2",
     "koa-static": "^1.5.1",
+    "ramda": "^0.18.0",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",
     "rx": "^4.0.6",
     "rx-dom": "^7.0.3",
-    "ramda": "^0.18.0",
     "validate.js": "^0.9.0"
   },
   "devDependencies": {
