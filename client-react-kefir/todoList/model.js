@@ -9,12 +9,12 @@ var todoUrl = {
   }
 };
 
-module.exports = function(ajax, events, saveTodo$) {
+module.exports = function(ajax, events) {
   var todoListAfterDelete$ = events.deleteTodo$
     .map(todoUrl.delete)
     .flatMap(ajax.deleteJSON);
 
-  var todoListAfterSave$ = saveTodo$
+  var todoListAfterSave$ = events.saveTodo$
     .flatMap(function(model) {
       return ajax.postJSON(todoUrl.save, model.todo);
     });

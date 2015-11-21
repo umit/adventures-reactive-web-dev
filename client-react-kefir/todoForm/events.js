@@ -8,10 +8,15 @@ module.exports = function(element) {
     return serialize(evt.target.form, {hash: true});
   };
 
+  var intoTodoObject = function(todo) {
+    return {todo: todo};
+  };
+
   var clicks$ = Kefir.fromEvents(element, "click").map(preventDefault);
   var changes$ = Kefir.fromEvents(element, "change");
 
   return {
+    inFormEdit$: changes$.map(getTodo).map(intoTodoObject),
     saveTodo$: clicks$.filter(match(".saveBtn")).map(getTodo),
     cancelTodo$: clicks$.filter(match(".cancelBtn"))
   };
