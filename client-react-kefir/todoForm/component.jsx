@@ -16,12 +16,12 @@ module.exports = function(model, events$) {
           <input type="hidden" name="id" value={todo.id}/>
           <div className={(classNames.priority || "form-group")}>
             <label htmlFor="priority">Priority:</label>
-            <input type="text" id="priority" name="priority" className="form-control"/>
+            <input type="text" id="priority" name="priority" className="form-control" value={todo.priority}/>
             <span className="help-block">{validationErrors.priority}</span>
           </div>
           <div className={(classNames.description || "form-group")}>
             <label htmlFor="description">Description:</label>
-            <input type="text" id="description" name="description" className="form-control"/>
+            <input type="text" id="description" name="description" className="form-control" value={todo.description}/>
             <span className="help-block">{validationErrors.description}</span>
           </div>
           <div>

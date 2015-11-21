@@ -16,8 +16,7 @@ module.exports = function(element) {
   var listEvents$ = listEvents(element);
   var events$ = R.merge(formEvents$, listEvents$);
 
-  var saveTodo$ = Kefir.never();
-  var listModel$ = listModel(ajax, events$, saveTodo$);
+  var listModel$ = listModel(ajax, events$, formEvents$.saveTodo$);
   var formModel$ = formModel(events$, listModel$.editTodo$);
 
   var listView$ = listModel$.todos$.map(function(todos) {

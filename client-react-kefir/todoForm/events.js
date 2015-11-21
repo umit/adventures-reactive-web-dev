@@ -9,6 +9,7 @@ module.exports = function(element) {
   };
 
   var clicks$ = Kefir.fromEvents(element, "click").map(preventDefault);
+  var changes$ = Kefir.fromEvents(element, "change");
 
   return {
     saveTodo$: clicks$.filter(match(".saveBtn")).map(getTodo),
