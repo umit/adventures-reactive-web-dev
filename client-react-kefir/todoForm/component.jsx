@@ -2,12 +2,6 @@ var React = require("react");
 var R = require("ramda");
 
 module.exports = function(model, events$) {
-  var onChangeText = function(validationErrors) {
-    return function(evt) {
-      events$.inFormEdit$.onNext({todo: getTodo(evt), validationErrors: validationErrors});
-    };
-  };
-
   var todo = model.todo;
   var validationErrors = model.validationErrors || {};
   var classNames = R.reduce(function(acc, key) {
@@ -22,12 +16,12 @@ module.exports = function(model, events$) {
           <input type="hidden" name="id" value={todo.id}/>
           <div className={(classNames.priority || "form-group")}>
             <label htmlFor="priority">Priority:</label>
-            <input type="text" id="priority" name="priority" className="form-control" value={todo.priority}/>
+            <input type="text" id="priority" name="priority" className="form-control"/>
             <span className="help-block">{validationErrors.priority}</span>
           </div>
           <div className={(classNames.description || "form-group")}>
             <label htmlFor="description">Description:</label>
-            <input type="text" id="description" name="description" className="form-control" value={todo.description}/>
+            <input type="text" id="description" name="description" className="form-control"/>
             <span className="help-block">{validationErrors.description}</span>
           </div>
           <div>

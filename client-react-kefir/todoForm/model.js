@@ -26,7 +26,6 @@ module.exports = function(events, editTodo$) {
   var formModel$ = Kefir
     .sequentially(0, [blankForm])
     .merge(editTodo$)
-    .merge(events.inFormEdit$)
     .merge(invalid$)
     .merge(valid$.map(returnBlankForm))
     .merge(events.cancelTodo$.map(returnBlankForm));
