@@ -4,12 +4,19 @@
   "description": "Adventures in Reactive Web Development",
   "main": "index.js",
   "scripts": {
-    "start:cyclejs": "browserify -t babelify --outfile public/generated-app.js client-cyclejs/app.js && node --harmony server/main",
-    "watch:cyclejs": "watchify -v -t babelify --outfile public/generated-app.js client-cyclejs/app.js",
-    "start:react-rxjs": "browserify -t babelify --outfile public/generated-app.js client-react-rxjs/app.js && node --harmony server/main",
-    "watch:react-rxjs": "watchify -v -t babelify --outfile public/generated-app.js client-react-rxjs/app.js",
-    "start:react-kefir": "browserify -t babelify --outfile public/generated-app.js client-react-kefir/app.js && node --harmony server/main",
-    "watch:react-kefir": "watchify -v -t babelify --outfile public/generated-app.js client-react-kefir/app.js"
+    "start:cyclejs": "browserify -o public/generated-app.js client-cyclejs/app.js && node --harmony server/main",
+    "watch:cyclejs": "watchify -v -o public/generated-app.js client-cyclejs/app.js",
+    "start:react-rxjs": "browserify -o public/generated-app.js client-react-rxjs/app.js && node --harmony server/main",
+    "watch:react-rxjs": "watchify -v -o public/generated-app.js client-react-rxjs/app.js",
+    "start:react-kefir": "browserify -o public/generated-app.js client-react-kefir/app.js && node --harmony server/main",
+    "watch:react-kefir": "watchify -v -o public/generated-app.js client-react-kefir/app.js",
+    "start:react-redux": "browserify -o public/generated-app.js client-react-redux/app.js && node --harmony server/main",
+    "watch:react-redux": "watchify -v -o public/generated-app.js client-react-redux/app.js"
+  },
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
   },
   "repository": {
     "type": "git",
@@ -53,6 +60,7 @@
   "devDependencies": {
     "babelify": "^6.3.0",
     "browserify": "^11.2.0",
+    "browserify-hmr": "^0.3.1",
     "redux-devtools": "^2.1.5",
     "watchify": "^3.4.0",
     "webpack": "^1.12.9"
