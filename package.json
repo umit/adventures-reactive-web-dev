@@ -11,7 +11,9 @@
     "start:react-kefir": "browserify -o public/generated-app.js client-react-kefir/app.js && node --harmony server/main",
     "watch:react-kefir": "watchify -v -o public/generated-app.js client-react-kefir/app.js",
     "start:react-redux": "browserify -o public/generated-app.js client-react-redux/app.js && node --harmony server/main",
-    "watch:react-redux": "watchify -v -o public/generated-app.js client-react-redux/app.js"
+    "watch:react-redux": "watchify -v -o public/generated-app.js client-react-redux/app.js",
+    "start:vdux": "browserify -o public/generated-app.js client-vdux/app.js && node --harmony server/main",
+    "watch:vdux": "watchify -v -o public/generated-app.js client-vdux/app.js"
   },
   "browserify": {
     "transform": [
@@ -58,7 +60,11 @@
     "redux-thunk": "^1.0.0",
     "rx": "^4.0.6",
     "rx-dom": "^7.0.3",
-    "validate.js": "^0.9.0"
+    "validate.js": "^0.9.0",
+    "vdom-element": "^0.2.3",
+    "vdux": "^0.1.8",
+    "virtual-component": "^0.2.5",
+    "virtual-dom": "^2.1.1"
   },
   "devDependencies": {
     "babelify": "^6.3.0",
