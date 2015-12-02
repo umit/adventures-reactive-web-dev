@@ -1,24 +1,19 @@
-var Kefir = require("kefir");
 var axios = require("axios");
 var R = require("ramda");
 
-var ajaxStream = function(options) {
-  return Kefir.stream(function(emitter) {
-    axios(options).then(R.prop("data")).then(emitter.emit).catch(function(response) {
-      emitter.error(response.status === 0 ? "Connection problem" : response.responseText);
-    });
-  }).take(1).takeErrors(1);
+var ajaxPromise = function(options) {
+  return axios(options).then(R.prop("data"));
 };
 
 module.exports = {
   getJSON: function(url) {
-    return ajaxStream({
+    return ajaxPromise({
       url: url
     });
   },
 
   postJSON: function(url, body) {
-    return ajaxStream({
+    return ajaxPromise({
       method: "POST",
       url: url,
       data: JSON.stringify(body)
@@ -26,7 +21,7 @@ module.exports = {
   },
 
   deleteJSON: function(url) {
-    return ajaxStream({
+    return ajaxPromise({
       method: "DELETE",
       url: url
     });
