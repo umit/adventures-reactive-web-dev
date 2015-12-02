@@ -44,6 +44,8 @@
     "ramda": "^0.18.0",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",
+    "react-redux": "^4.0.0",
+    "redux": "^3.0.4",
     "rx": "^4.0.6",
     "rx-dom": "^7.0.3",
     "validate.js": "^0.9.0"
@@ -51,6 +53,8 @@
   "devDependencies": {
     "babelify": "^6.3.0",
     "browserify": "^11.2.0",
-    "watchify": "^3.4.0"
+    "redux-devtools": "^2.1.5",
+    "watchify": "^3.4.0",
+    "webpack": "^1.12.9"
   }
 }
