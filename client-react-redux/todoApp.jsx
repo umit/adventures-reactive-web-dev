@@ -1,18 +1,22 @@
 import React from "react";
 import {render} from "react-dom";
 import ajax from "./util/ajax-axios";
-import {assoc, identity} from "ramda";
-import {applyMiddleware, createStore} from "redux";
+import {identity} from "ramda";
+import {applyMiddleware, combineReducers, createStore} from "redux";
 import {connect, Provider} from "react-redux";
 import promiseMiddleware from "redux-promise";
 import {createAction} from "redux-actions";
 import todoListModel from "./todoList/model";
+import todoFormModel from "./todoForm/model";
 import TodoList from "./todoList/component.jsx";
+import TodoForm from "./todoForm/component.jsx";
 
 export default function(element) {
-  const store = applyMiddleware(promiseMiddleware)(createStore)(todoListModel);
+  const model = combineReducers({todos: todoListModel, todo:todoFormModel});
+  const store = applyMiddleware(promiseMiddleware)(createStore)(model);
 
-  const App = connect(identity)(TodoList);
+  const View = (props) => <div><TodoForm {...props}/><TodoList {...props}/></div>;
+  const App = connect(identity)(View);
 
   render(
     <Provider store={store}>
@@ -30,8 +34,7 @@ export default function(element) {
     }
   };
 
-  const getTodos = createAction("ACTION_LIST",
-    () => ajax.getJSON(todoUrl.get).then(todoList => assoc("todos", todoList, {})));
+  const getTodos = createAction("ACTION_LIST", () => ajax.getJSON(todoUrl.get));
 
   store.dispatch(getTodos());
 };
