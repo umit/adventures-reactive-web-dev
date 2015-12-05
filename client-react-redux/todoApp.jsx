@@ -4,7 +4,7 @@ import ajax from "./util/ajax-axios";
 import {identity} from "ramda";
 import {applyMiddleware, combineReducers, compose, createStore} from "redux";
 import {connect, Provider} from "react-redux";
-import promiseMiddleware from "redux-promise";
+import promiseMiddleware from "redux-promise-middleware";
 import {createAction} from "redux-actions";
 import todoListModel from "./todoList/model";
 import todoFormModel from "./todoForm/model";
@@ -16,9 +16,9 @@ import {DevTools, DebugPanel, LogMonitor} from "redux-devtools/lib/react";
 
 export default function(element) {
   const model = combineReducers({todos: todoListModel, todo:todoFormModel});
-//const store = applyMiddleware(promiseMiddleware)(createStore)(model);
+//const store = applyMiddleware(promiseMiddleware())(createStore)(model);
   const store = compose(
-    applyMiddleware(promiseMiddleware),
+    applyMiddleware(promiseMiddleware()),
     devTools(),
     persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/))
   )(createStore)(model);
@@ -55,7 +55,7 @@ export default function(element) {
     }
   };
 
-  const getTodos = createAction("ACTION_LIST", () => ajax.getJSON(todoUrl.get));
+  const getTodos = createAction("ACTION_LIST", () => { return {promise: ajax.getJSON(todoUrl.get)}; });
 
   store.dispatch(getTodos());
 };

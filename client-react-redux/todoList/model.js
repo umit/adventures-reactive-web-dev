@@ -1,10 +1,12 @@
 export default function(model, action) {
   if (action) {
-    console.log("action:", JSON.stringify(action));
-    if (action.type === "ACTION_LIST") {
-      return action.payload || {inProgress: true};
+    if (action.type === "ACTION_LIST_PENDING") {
+      return {inProgress: true, list: []};
+    }
+    else if (action.type === "ACTION_LIST_FULFILLED") {
+      return {inProgress: false, list: action.payload};
     }
   }
-  return model || [];
+  return {inProgress: false, list: []};
 };
 
