@@ -23,15 +23,19 @@ var todoList = [];
 var nextId = 6;
 
 var getTodoList = function() {
-  if (todoList.length === 0) {
-    todoList = createTodoList();
-  }
-  return todoList;
+  return new Promise(function(resolve) {
+    setTimeout(() => {
+      if (todoList.length === 0) {
+        todoList = createTodoList();
+      }
+      resolve(todoList);
+    }, 2000);
+  });
 };
 
 
 var onTodoList = function*() {
-  this.body = getTodoList();
+  this.body = yield getTodoList();
 };
 
 app.use(routes.get("/todoList", onTodoList));
