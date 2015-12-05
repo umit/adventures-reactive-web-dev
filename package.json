@@ -57,6 +57,7 @@
     "redux": "^3.0.4",
     "redux-actions": "^0.8.0",
     "redux-promise": "^0.5.0",
+    "redux-promise-middleware": "^2.3.0",
     "redux-thunk": "^1.0.0",
     "rx": "^4.0.6",
     "rx-dom": "^7.0.3",

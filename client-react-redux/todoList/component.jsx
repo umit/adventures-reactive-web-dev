@@ -2,6 +2,7 @@ import React from "react";
 import {createAction} from "redux-actions";
 
 export default function(props) {
+console.log("props:", JSON.stringify(props));
   const editTodoAction = createAction("ACTION_EDIT");
 
   const onEdit = function(todo) {
@@ -25,6 +26,10 @@ export default function(props) {
     );
   };
 
+  const inProgressIndicator = function(props) {
+    return props.todos.inProgress ? <tr><td colSpan="3">Loading, please wait...</td></tr> : undefined;
+  };
+
   return (
     <div>
       <div>Todo List:</div>
@@ -37,7 +42,8 @@ export default function(props) {
           </tr>
         </thead>
         <tbody>
-          {props.todos.map(renderTodo)}
+          {inProgressIndicator(props)}
+          {props.todos.map && props.todos.map(renderTodo)}
         </tbody>
       </table>
     </div>
