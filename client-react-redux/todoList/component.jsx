@@ -1,14 +1,18 @@
 import React from "react";
-import {createAction} from "redux-actions";
 
 export default function(props) {
-  const editTodoAction = createAction("ACTION_EDIT");
-
   const onEdit = function(todo) {
     return function(evt) {
       evt.preventDefault();
-      props.dispatch(editTodoAction(todo));
+      props.dispatch(props.actions.editTodoAction(todo));
     }
+  };
+
+  const onDelete = function(todo) {
+    return function(evt) {
+      evt.preventDefault();
+      props.dispatch(props.actions.deleteTodoAction(todo));
+    };
   };
 
   const renderTodo = function(todo) {
@@ -19,7 +23,7 @@ export default function(props) {
         <td>
           <button className="btn btn-primary btn-xs editBtn" onClick={onEdit(todo)}>Edit</button>
           <span> </span>
-          <button className="btn btn-danger btn-xs deleteBtn">Delete</button>
+          <button className="btn btn-danger btn-xs deleteBtn" onClick={onDelete(todo)}>Delete</button>
         </td>
       </tr>
     );

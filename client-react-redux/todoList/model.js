@@ -1,9 +1,9 @@
 export default function(model, action) {
   if (action) {
-    if (action.type === "ACTION_LIST_PENDING") {
+    if (action.type.endsWith("PENDING")) {
       return {inProgress: true, list: []};
     }
-    else if (action.type === "ACTION_LIST_FULFILLED") {
+    else if (action.type.endsWith("FULFILLED")) {
       return {inProgress: false, list: action.payload};
     }
   }

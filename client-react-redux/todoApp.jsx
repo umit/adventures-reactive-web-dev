@@ -10,11 +10,21 @@ import todoListModel from "./todoList/model";
 import todoFormModel from "./todoForm/model";
 import TodoList from "./todoList/component.jsx";
 import TodoForm from "./todoForm/component.jsx";
+import createActions from "./todoList/actions";
 
 import {devTools, persistState} from "redux-devtools";
 import {DevTools, DebugPanel, LogMonitor} from "redux-devtools/lib/react";
 
 export default function(element) {
+  // This will go somewhere else, putting it here for now.
+  const todoUrl = {
+    get: "/todoList",
+    save: "/saveTodo",
+    delete: function(todoId) {
+      return "deleteTodo/" + String(todoId);
+    }
+  };
+
   const model = combineReducers({todos: todoListModel, todo:todoFormModel});
 //const store = applyMiddleware(promiseMiddleware())(createStore)(model);
   const store = compose(
@@ -23,7 +33,13 @@ export default function(element) {
     persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/))
   )(createStore)(model);
 
-  const View = (props) => <div><TodoForm {...props}/><TodoList {...props}/></div>;
+  const actions = createActions(ajax, todoUrl);
+
+  const View = (props) => <div>
+    <TodoForm {...props}/>
+    <TodoList actions={actions} {...props}/>
+  </div>;
+
   const App = connect(identity)(View);
 
 /*
@@ -45,15 +61,6 @@ export default function(element) {
     </div>,
     element
   );
-
-  // This will go somewhere else, putting it here for now.
-  const todoUrl = {
-    get: "/todoList",
-    save: "/saveTodo",
-    delete: function(todoId) {
-      return "deleteTodo/" + String(todoId);
-    }
-  };
 
   const getTodos = createAction("ACTION_LIST", () => { return {promise: ajax.getJSON(todoUrl.get)}; });
 

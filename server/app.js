@@ -51,7 +51,7 @@ var deleteTodo = function(todoId) {
 
 var onDeleteTodo = function*(todoId) {
   deleteTodo(parseInt(todoId, 10));
-  this.body = getTodoList();
+  this.body = yield getTodoList();
 };
 
 app.use(routes.del("/deleteTodo/:todoId", onDeleteTodo));
@@ -77,7 +77,7 @@ var saveTodo = function(todo) {
 
 var onSaveTodo = function*() {
   saveTodo(yield parse.json(this));
-  this.body = getTodoList();
+  this.body = yield getTodoList();
 };
 
 app.use(routes.post("/saveTodo", onSaveTodo));
