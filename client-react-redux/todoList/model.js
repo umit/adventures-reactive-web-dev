@@ -7,6 +7,6 @@ export default function(model, action) {
       return {inProgress: false, list: action.payload};
     }
   }
-  return {inProgress: false, list: []};
+  return model || {inProgress: false, list: []};
 };
 

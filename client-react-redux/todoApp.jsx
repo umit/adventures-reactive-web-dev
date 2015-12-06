@@ -10,7 +10,8 @@ import todoListModel from "./todoList/model";
 import todoFormModel from "./todoForm/model";
 import TodoList from "./todoList/component.jsx";
 import TodoForm from "./todoForm/component.jsx";
-import createActions from "./todoList/actions";
+import createListActions from "./todoList/actions";
+import createFormActions from "./todoForm/actions";
 
 import {devTools, persistState} from "redux-devtools";
 import {DevTools, DebugPanel, LogMonitor} from "redux-devtools/lib/react";
@@ -33,11 +34,12 @@ export default function(element) {
     persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/))
   )(createStore)(model);
 
-  const actions = createActions(ajax, todoUrl);
+  const listActions = createListActions(ajax, todoUrl);
+  const formActions = createFormActions();
 
   const View = (props) => <div>
-    <TodoForm {...props}/>
-    <TodoList actions={actions} {...props}/>
+    <TodoForm actions={formActions} {...props}/>
+    <TodoList actions={listActions} {...props}/>
   </div>;
 
   const App = connect(identity)(View);

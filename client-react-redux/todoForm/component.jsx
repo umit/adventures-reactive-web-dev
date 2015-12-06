@@ -9,6 +9,7 @@ export default function(props) {
 
   const onChangeText = function(validationErrors) {
     return function(evt) {
+      props.dispatch(props.actions.inFormTodoAction(getTodo(evt)));
 //events$.inFormEdit$.onNext({todo: getTodo(evt), validationErrors: validationErrors});
     };
   };
