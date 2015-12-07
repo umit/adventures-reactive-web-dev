@@ -2,10 +2,11 @@ import {createAction} from "redux-actions";
 
 const actions = function(ajax, todoUrl) {
   return {
-    inFormTodoAction: createAction("ACTION_IN_FORM"),
-    saveTodoAction: createAction("ACTION_SAVE", function(todo) {
+    inFormAction: createAction("ACTION_IN_FORM"),
+    saveAction: createAction("ACTION_SAVE", function(todo) {
       return {promise: ajax.postJSON(todoUrl.save, todo)};
-    })
+    }),
+    cancelAction: createAction("ACTION_CANCEL")
   };
 };
 

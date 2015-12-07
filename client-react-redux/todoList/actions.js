@@ -2,9 +2,9 @@ import {createAction} from "redux-actions";
 
 const actions = function(ajax, todoUrl) {
   return {
-    editTodoAction: createAction("ACTION_EDIT"),
+    editAction: createAction("ACTION_EDIT"),
 
-    deleteTodoAction: createAction("ACTION_DELETE", function(todo) {
+    deleteAction: createAction("ACTION_DELETE", function(todo) {
       return {promise: ajax.deleteJSON(todoUrl.delete(todo.id))};
     })
   };

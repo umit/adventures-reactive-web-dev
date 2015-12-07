@@ -9,20 +9,19 @@ export default function(props) {
 
   const onChangeText = function(validationErrors) {
     return function(evt) {
-      props.dispatch(props.actions.inFormTodoAction(getTodo(evt)));
+      props.dispatch(props.actions.inFormAction(getTodo(evt)));
 //events$.inFormEdit$.onNext({todo: getTodo(evt), validationErrors: validationErrors});
     };
   };
 
   const onSave = function(evt) {
     evt.preventDefault();
-    props.dispatch(props.actions.saveTodoAction(getTodo(evt)));
-//events$.saveTodo$.onNext(getTodo(evt));
+    props.dispatch(props.actions.saveAction(getTodo(evt)));
   };
 
   const onCancel = function(evt) {
     evt.preventDefault();
-//events$.cancelTodo$.onNext();
+    props.dispatch(props.actions.cancelAction())
   };
 
   const todo = props.todo;
