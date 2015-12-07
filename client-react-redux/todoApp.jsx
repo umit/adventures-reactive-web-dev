@@ -35,7 +35,7 @@ export default function(element) {
   )(createStore)(model);
 
   const listActions = createListActions(ajax, todoUrl);
-  const formActions = createFormActions();
+  const formActions = createFormActions(ajax, todoUrl);
 
   const View = (props) => <div>
     <TodoForm actions={formActions} {...props}/>

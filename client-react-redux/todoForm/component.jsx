@@ -16,6 +16,7 @@ export default function(props) {
 
   const onSave = function(evt) {
     evt.preventDefault();
+    props.dispatch(props.actions.saveTodoAction(getTodo(evt)));
 //events$.saveTodo$.onNext(getTodo(evt));
   };
 
