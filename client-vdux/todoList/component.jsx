@@ -1,7 +1,7 @@
 /** @jsx element */
-var element = require("vdom-element");
+import element from "vdom-element";
 
-module.exports = function(props) {
+export default function(props) {
   var renderTodo = function(todo) {
     return (
       <tr key={todo.id}>

@@ -1,3 +1,3 @@
-var todoApp = require("./todoApp");
+import todoApp from "./todoApp";
 
 todoApp(document.getElementById("app"));

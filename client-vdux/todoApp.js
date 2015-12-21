@@ -1,13 +1,13 @@
-var vdux = require("vdux");
-var ajax = require("./util/ajax-axios");
-var Redux = require("redux");
-var promiseMiddleware = require("redux-promise");
-var Actions = require("redux-actions");
-var todoListModel = require("./todoList/model");
-var TodoList = require("./todoList/component.jsx");
+import vdux from "vdux";
+import ajax from "./util/ajax-axios";
+import {applyMiddleware, createStore} from "redux";
+import promiseMiddleware from "redux-promise";
+import {createAction} from "redux-actions";
+import todoListModel from "./todoList/model";
+import TodoList from "./todoList/component.jsx";
 
-module.exports = function(element) {
-  var store = Redux.applyMiddleware(promiseMiddleware)(Redux.createStore)(todoListModel);
+export default function(element) {
+  var store = applyMiddleware(promiseMiddleware)(createStore)(todoListModel);
   var app = TodoList;
 
   document.addEventListener("DOMContentLoaded", function() {
@@ -26,5 +26,5 @@ module.exports = function(element) {
   var intoTodosObject = todoList => { return {todos: todoList}; };
   var getTodos = () => ajax.getJSON(todoUrl.get).then(intoTodosObject);
 
-  store.dispatch(Actions.createAction("EVT_LIST", getTodos)());
+  store.dispatch(createAction("EVT_LIST", getTodos)());
 };
