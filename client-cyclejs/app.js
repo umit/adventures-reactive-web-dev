@@ -2,8 +2,7 @@
 import Cycle from "@cycle/core";
 import {makeDOMDriver} from "@cycle/dom";
 import {makeHTTPDriver} from "@cycle/http";
-
-let main = require("./main");
+import main from "./main";
 
 let makePreventDefaultDriver = function() {
   return function(preventDefault$) {
