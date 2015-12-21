@@ -4,12 +4,8 @@
   "description": "Adventures in Reactive Web Development",
   "main": "index.js",
   "scripts": {
-    "start:react-rxjs": "browserify -o public/generated-app.js client-react-rxjs/app.js && node --harmony server/main",
-    "watch:react-rxjs": "watchify -v -o public/generated-app.js client-react-rxjs/app.js",
     "start:react-kefir": "browserify -o public/generated-app.js client-react-kefir/app.js && node --harmony server/main",
     "watch:react-kefir": "watchify -v -o public/generated-app.js client-react-kefir/app.js",
-    "start:react-redux": "browserify -o public/generated-app.js client-react-redux/app.js && node --harmony server/main",
-    "watch:react-redux": "watchify -v -o public/generated-app.js client-react-redux/app.js",
     "start:vdux": "browserify -o public/generated-app.js client-vdux/app.js && node --harmony server/main",
     "watch:vdux": "watchify -v -o public/generated-app.js client-vdux/app.js",
     "start": "node --harmony server/main"
