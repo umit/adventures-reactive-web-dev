@@ -13,8 +13,9 @@ import TodoForm from "./todoForm/component.jsx";
 import createListActions from "./todoList/actions";
 import createFormActions from "./todoForm/actions";
 
-import {devTools, persistState} from "redux-devtools";
-import {DevTools, DebugPanel, LogMonitor} from "redux-devtools/lib/react";
+import {createDevTools} from "redux-devtools";
+import LogMonitor from 'redux-devtools-log-monitor';
+import DockMonitor from 'redux-devtools-dock-monitor';
 
 export default function(element) {
   // This will go somewhere else, putting it here for now.
@@ -28,10 +29,17 @@ export default function(element) {
 
   const model = combineReducers({todos: todoListModel, todo:todoFormModel});
 //const store = applyMiddleware(promiseMiddleware())(createStore)(model);
+
+  const DevTools = createDevTools(
+    <DockMonitor toggleVisibilityKey="ctrl-h"
+                 changePositionKey="ctrl-q">
+      <LogMonitor theme="tomorrow" />
+    </DockMonitor>
+  );
+
   const store = compose(
     applyMiddleware(promiseMiddleware()),
-    devTools(),
-    persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/))
+    DevTools.instrument()
   )(createStore)(model);
 
   const listActions = createListActions(ajax, todoUrl);
@@ -53,14 +61,12 @@ export default function(element) {
   );
 */
   render(
-    <div>
-      <Provider store={store}>
+    <Provider store={store}>
+      <div>
         <App/>
-      </Provider>
-      <DebugPanel top right bottom>
-        <DevTools store={store} monitor={LogMonitor} />
-      </DebugPanel>
-    </div>,
+        <DevTools/>
+      </div>
+    </Provider>,
     element
   );
 

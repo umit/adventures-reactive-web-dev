@@ -29,7 +29,7 @@ var getTodoList = function() {
         todoList = createTodoList();
       }
       resolve(todoList);
-    }, 2000);
+    }, 2); // increase value to simulate slower server response
   });
 };
 
