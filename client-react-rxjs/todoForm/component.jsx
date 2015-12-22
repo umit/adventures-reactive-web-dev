@@ -1,34 +1,34 @@
-var React = require("react");
-var R = require("ramda");
-var serialize = require("form-serialize");
+import React from "react";
+import {keys, reduce} from "ramda";
+import serialize from "form-serialize";
 
-module.exports = function(model, events$) {
-  var getTodo = function(evt) {
+export default function(model, events$) {
+  const getTodo = function(evt) {
     return serialize(evt.target.form, {hash: true});
   };
 
-  var onChangeText = function(validationErrors) {
+  const onChangeText = function(validationErrors) {
     return function(evt) {
       events$.inFormEdit$.onNext({todo: getTodo(evt), validationErrors: validationErrors});
     };
   };
 
-  var onSave = function(evt) {
+  const onSave = function(evt) {
     evt.preventDefault();
     events$.saveTodo$.onNext(getTodo(evt));
   };
 
-  var onCancel = function(evt) {
+  const onCancel = function(evt) {
     evt.preventDefault();
     events$.cancelTodo$.onNext();
   };
 
-  var todo = model.todo;
-  var validationErrors = model.validationErrors || {};
-  var classNames = R.reduce(function(acc, key) {
+  const todo = model.todo;
+  const validationErrors = model.validationErrors || {};
+  const classNames = reduce(function(acc, key) {
       acc[key] = "form-group has-error";
       return acc;
-    }, {}, R.keys(validationErrors));
+    }, {}, keys(validationErrors));
 
   return (
     <div className="row">

@@ -1,6 +1,6 @@
-var Rx = require("rx");
+import Rx from "rx";
 
-module.exports = function() {
+export default function() {
   return {
     saveTodo$: new Rx.Subject(),
     inFormEdit$: new Rx.Subject(),

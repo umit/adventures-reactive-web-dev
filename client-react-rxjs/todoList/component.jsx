@@ -1,21 +1,21 @@
-var React = require("react");
+import React from "react";
 
-module.exports = function(todos, events$) {
-  var onEdit = function(todo) {
+export default function(todos, events$) {
+  const onEdit = function(todo) {
     return function(evt) {
       evt.preventDefault();
       events$.editTodo$.onNext(todo);
     }
   };
 
-  var onDelete = function(todo) {
+  const onDelete = function(todo) {
     return function(evt) {
       evt.preventDefault();
       events$.deleteTodo$.onNext(todo.id);
     }
   };
 
-  var renderTodo = function(todo) {
+  const renderTodo = function(todo) {
     return (
       <tr key={todo.id}>
         <td>{todo.priority}</td>

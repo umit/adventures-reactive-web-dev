@@ -1,4 +1,4 @@
-var todoUrl = {
+const todoUrl = {
   get: "/todoList",
   save: "/saveTodo",
   delete: function(todoId) {
@@ -6,17 +6,17 @@ var todoUrl = {
   }
 };
 
-module.exports = function(ajax, events, formModel) {
-  var todoListAfterDelete$ = events.deleteTodo$
+export default function(ajax, events, formModel) {
+  const todoListAfterDelete$ = events.deleteTodo$
     .map(todoUrl.delete)
     .flatMap(ajax.deleteJSON);
 
-  var todoListAfterSave$ = formModel.valid$
+  const todoListAfterSave$ = formModel.valid$
     .flatMap(function(model) {
       return ajax.postJSON(todoUrl.save, model.todo);
     });
 
-  var listModel$ = ajax.getJSON(todoUrl.get)
+  const listModel$ = ajax.getJSON(todoUrl.get)
     .merge(todoListAfterDelete$)
     .merge(todoListAfterSave$)
     .share();

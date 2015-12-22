@@ -1,6 +1,6 @@
-var Rx = require("rx");
+import Rx from "rx";
 
-module.exports = function() {
+export default function() {
   return {
     deleteTodo$: new Rx.Subject(),
     editTodo$: new Rx.Subject()

@@ -1,6 +1,6 @@
-var Rx = require("rx-dom");
+import Rx from "rx-dom";
 
-module.exports = {
+const ajax = {
   getJSON: Rx.DOM.getJSON,
 
   postJSON: function(url, body) {
@@ -22,3 +22,5 @@ module.exports = {
     .pluck("response");
   }
 };
+
+export default ajax;

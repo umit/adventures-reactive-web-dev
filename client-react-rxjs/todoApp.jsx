@@ -1,37 +1,37 @@
-var React = require("react");
-var ReactDOM = require("react-dom");
-var Rx = require("rx");
-var R = require("ramda");
-var ajax = require("./util/ajax-rx-dom");
-var formModel = require("./todoForm/model");
-var listModel = require("./todoList/model");
-var formEvents = require("./todoForm/events");
-var listEvents = require("./todoList/events");
-var todoList = require("./todoList/component.jsx");
-var todoForm = require("./todoForm/component.jsx");
-var todoSummary = require("./todoSummary/component.jsx");
+import React from "react";
+import ReactDOM from "react-dom";
+import Rx from "rx";
+import {merge} from "ramda";
+import ajax from "./util/ajax-rx-dom";
+import formModel from "./todoForm/model";
+import listModel from "./todoList/model";
+import formEvents from "./todoForm/events";
+import listEvents from "./todoList/events";
+import todoList from "./todoList/component.jsx";
+import todoForm from "./todoForm/component.jsx";
+import todoSummary from "./todoSummary/component.jsx";
 
-module.exports = function(element) {
-  var formEvents$ = formEvents();
-  var listEvents$ = listEvents();
-  var events$ = R.merge(formEvents$, listEvents$);
+export default function(element) {
+  const formEvents$ = formEvents();
+  const listEvents$ = listEvents();
+  const events$ = merge(formEvents$, listEvents$);
 
-  var formModel$ = formModel(events$);
-  var listModel$ = listModel(ajax, events$, formModel$);
+  const formModel$ = formModel(events$);
+  const listModel$ = listModel(ajax, events$, formModel$);
 
-  var listView$ = listModel$.map(function(model) {
+  const listView$ = listModel$.map(function(model) {
     return todoList(model, events$);
   });
 
-  var formView$ = formModel$.formModel$.map(function(model) {
+  const formView$ = formModel$.formModel$.map(function(model) {
     return todoForm(model, events$);
   });
 
-  var summaryView$ = listModel$.map(function(model) {
+  const summaryView$ = listModel$.map(function(model) {
     return todoSummary(model);
   });
 
-  var view$ = Rx.Observable.combineLatest(listView$, formView$, summaryView$, function(listView, formView, summaryView) {
+  const view$ = Rx.Observable.combineLatest(listView$, formView$, summaryView$, function(listView, formView, summaryView) {
     return (
       <div>
         {formView}

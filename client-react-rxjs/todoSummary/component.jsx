@@ -1,10 +1,10 @@
-var React = require("react");
-var R = require("ramda");
+import React from "react";
+import {map, pipe, pluck, sum} from "ramda";
 
 module.exports = function(todos) {
-  var totalTodos = todos.length;
-  var totalPriority = R.pipe(R.pluck("priority"), R.map(parseInt), R.sum);
-  var averagePriority = totalPriority(todos) / totalTodos;
+  const totalTodos = todos.length;
+  const totalPriority = pipe(pluck("priority"), map(parseInt), sum);
+  const averagePriority = totalPriority(todos) / totalTodos;
 
   return (
     <div>

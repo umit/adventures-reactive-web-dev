@@ -1,29 +1,29 @@
-var Rx = require("rx");
-var validation = require("./validation");
+import Rx from "rx";
+import validation from "./validation";
 
-module.exports = function(events) {
-  var validation$ = events.saveTodo$.map(function(todo) {
+export default function(events) {
+  const validation$ = events.saveTodo$.map(function(todo) {
     return {todo: todo, validationErrors: validation(todo)};
   });
 
-  var valid$ = validation$.filter(function(model) {
+  const valid$ = validation$.filter(function(model) {
     return !model.validationErrors;
   });
 
-  var invalid$ = validation$.filter(function(model) {
+  const invalid$ = validation$.filter(function(model) {
     return !!model.validationErrors;
   });
 
-  var blankForm = {
+  const blankForm = {
     todo: {},
     validationErrors: {}
   };
 
-  var returnBlankForm = function() {
+  const returnBlankForm = function() {
     return blankForm;
   };
 
-  var formModel$ = Rx.Observable
+  const formModel$ = Rx.Observable
     .return(blankForm)
     .merge(events.editTodo$.map(function(todo) {
       return {todo: todo, validationErrors: {}};
