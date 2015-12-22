@@ -2,7 +2,6 @@ import React from "react";
 import {render} from "react-dom";
 import {identity} from "ramda";
 import {connect, Provider} from "react-redux";
-import {createAction} from "redux-actions";
 
 import ajax from "./util/ajax-axios";
 import todoUrl from "./util/todoUrl";
@@ -35,14 +34,6 @@ export default function(element) {
 
   const App = connect(identity)(View);
 
-/*
-  render(
-    <Provider store={store}>
-      <App/>
-    </Provider>,
-    element
-  );
-*/
   render(
     <Provider store={store}>
       <div>
@@ -53,7 +44,5 @@ export default function(element) {
     element
   );
 
-  const getTodos = createAction("ACTION_LIST", () => { return {promise: ajax.getJSON(todoUrl.get)}; });
-
-  store.dispatch(getTodos());
+  store.dispatch(listActions.getTodosAction());
 };

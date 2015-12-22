@@ -25,7 +25,7 @@ export default function(props) {
   };
 
   const todo = props.todo;
-  const validationErrors = props.validationErrors || {};
+  const validationErrors = props.todo.validationErrors || {};
   const classNames = reduce(function(acc, key) {
       acc[key] = "form-group has-error";
       return acc;

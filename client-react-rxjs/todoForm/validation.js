@@ -1,6 +1,6 @@
-var validate = require("validate.js");
+import validate from "validate.js";
 
-var validationSpec = {
+let validationSpec = {
   description: {
     presence: true,
     length: {
@@ -17,7 +17,7 @@ var validationSpec = {
   }
 };
 
-module.exports = function(model) {
+export default function(model) {
   return validate(model, validationSpec);
 };
 
