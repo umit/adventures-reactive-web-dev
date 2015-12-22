@@ -1,12 +1,13 @@
 import React from "react";
 import {render} from "react-dom";
-import ajax from "./util/ajax-axios";
 import {identity} from "ramda";
 import {applyMiddleware, combineReducers, compose, createStore} from "redux";
 import {connect, Provider} from "react-redux";
 import promiseMiddleware from "redux-promise-middleware";
 import {createAction} from "redux-actions";
 
+import ajax from "./util/ajax-axios";
+import todoUrl from "./util/todoUrl";
 import TodoList from "./todoList/main";
 import TodoForm from "./todoForm/main";
 
@@ -15,14 +16,6 @@ import LogMonitor from 'redux-devtools-log-monitor';
 import DockMonitor from 'redux-devtools-dock-monitor';
 
 export default function(element) {
-  // This will go somewhere else, putting it here for now.
-  const todoUrl = {
-    get: "/todoList",
-    save: "/saveTodo",
-    delete: function(todoId) {
-      return "deleteTodo/" + String(todoId);
-    }
-  };
 
   const model = combineReducers({todos: TodoList.model, todo:TodoForm.model});
 //const store = applyMiddleware(promiseMiddleware())(createStore)(model);
