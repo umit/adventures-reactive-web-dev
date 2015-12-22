@@ -1,13 +1,12 @@
 import React from "react";
 import {render} from "react-dom";
 import {identity} from "ramda";
-import {applyMiddleware, combineReducers, compose, createStore} from "redux";
 import {connect, Provider} from "react-redux";
-import promiseMiddleware from "redux-promise-middleware";
 import {createAction} from "redux-actions";
 
 import ajax from "./util/ajax-axios";
 import todoUrl from "./util/todoUrl";
+import createStore from "./store";
 import TodoList from "./todoList/main";
 import TodoForm from "./todoForm/main";
 
@@ -17,9 +16,6 @@ import DockMonitor from 'redux-devtools-dock-monitor';
 
 export default function(element) {
 
-  const model = combineReducers({todos: TodoList.model, todo:TodoForm.model});
-//const store = applyMiddleware(promiseMiddleware())(createStore)(model);
-
   const DevTools = createDevTools(
     <DockMonitor toggleVisibilityKey="ctrl-h"
                  changePositionKey="ctrl-q">
@@ -27,10 +23,7 @@ export default function(element) {
     </DockMonitor>
   );
 
-  const store = compose(
-    applyMiddleware(promiseMiddleware()),
-    DevTools.instrument()
-  )(createStore)(model);
+  const store = createStore(TodoList.model, TodoForm.model, DevTools);
 
   const listActions = TodoList.actions(ajax, todoUrl);
   const formActions = TodoForm.actions(ajax, todoUrl);
