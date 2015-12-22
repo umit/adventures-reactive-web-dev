@@ -1,3 +1,10 @@
+var webpack = require("webpack");
+var definePlugin = new webpack.DefinePlugin({
+  "process.env": {
+    "DEV_ENV": JSON.stringify(JSON.parse(process.env.DEV || "false"))
+  }
+});
+
 module.exports = {
   entry: "./app.js",
   output: {
@@ -12,5 +19,6 @@ module.exports = {
         exclude: /node_modules/
       }
     ]
-  }
+  },
+  plugins: [ definePlugin ]
 };

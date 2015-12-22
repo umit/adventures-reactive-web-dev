@@ -5,24 +5,13 @@ import {connect, Provider} from "react-redux";
 
 import ajax from "./util/ajax-axios";
 import todoUrl from "./util/todoUrl";
-import createStore from "./store";
+import createStore from "./store.prod";
 import TodoList from "./todoList/main";
 import TodoForm from "./todoForm/main";
 
-import {createDevTools} from "redux-devtools";
-import LogMonitor from 'redux-devtools-log-monitor';
-import DockMonitor from 'redux-devtools-dock-monitor';
-
 export default function(element) {
 
-  const DevTools = createDevTools(
-    <DockMonitor toggleVisibilityKey="ctrl-h"
-                 changePositionKey="ctrl-q">
-      <LogMonitor theme="tomorrow" />
-    </DockMonitor>
-  );
-
-  const store = createStore(TodoList.model, TodoForm.model, DevTools);
+  const store = createStore(TodoList.model, TodoForm.model);
 
   const listActions = TodoList.actions(ajax, todoUrl);
   const formActions = TodoForm.actions(ajax, todoUrl);
@@ -38,7 +27,6 @@ export default function(element) {
     <Provider store={store}>
       <div>
         <App/>
-        <DevTools/>
       </div>
     </Provider>,
     element

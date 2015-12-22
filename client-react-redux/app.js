@@ -1,3 +1,10 @@
-import todoApp from "./todoApp.jsx";
+var todoApp = null;
 
-todoApp(document.getElementById("app"));
+if (process.env.DEV_ENV) {
+  todoApp = require("./todoApp.dev.jsx");
+}
+else {
+  todoApp = require("./todoApp.prod.jsx");
+}
+
+todoApp["default"](document.getElementById("app"));
