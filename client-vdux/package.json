@@ -4,7 +4,8 @@
   "description": "Adventures in Reactive Web Development",
   "main": "index.js",
   "scripts": {
-    "start": "webpack"
+    "start": "webpack",
+    "watch": "webpack --progress --colors --watch"
   },
   "repository": {
     "type": "git",

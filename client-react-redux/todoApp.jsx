@@ -6,12 +6,9 @@ import {applyMiddleware, combineReducers, compose, createStore} from "redux";
 import {connect, Provider} from "react-redux";
 import promiseMiddleware from "redux-promise-middleware";
 import {createAction} from "redux-actions";
-import todoListModel from "./todoList/model";
-import todoFormModel from "./todoForm/model";
-import TodoList from "./todoList/component.jsx";
-import TodoForm from "./todoForm/component.jsx";
-import createListActions from "./todoList/actions";
-import createFormActions from "./todoForm/actions";
+
+import TodoList from "./todoList/main";
+import TodoForm from "./todoForm/main";
 
 import {createDevTools} from "redux-devtools";
 import LogMonitor from 'redux-devtools-log-monitor';
@@ -27,7 +24,7 @@ export default function(element) {
     }
   };
 
-  const model = combineReducers({todos: todoListModel, todo:todoFormModel});
+  const model = combineReducers({todos: TodoList.model, todo:TodoForm.model});
 //const store = applyMiddleware(promiseMiddleware())(createStore)(model);
 
   const DevTools = createDevTools(
@@ -42,12 +39,12 @@ export default function(element) {
     DevTools.instrument()
   )(createStore)(model);
 
-  const listActions = createListActions(ajax, todoUrl);
-  const formActions = createFormActions(ajax, todoUrl);
+  const listActions = TodoList.actions(ajax, todoUrl);
+  const formActions = TodoForm.actions(ajax, todoUrl);
 
   const View = (props) => <div>
-    <TodoForm actions={formActions} {...props}/>
-    <TodoList actions={listActions} {...props}/>
+    <TodoForm.component actions={formActions} {...props}/>
+    <TodoList.component actions={listActions} {...props}/>
   </div>;
 
   const App = connect(identity)(View);
