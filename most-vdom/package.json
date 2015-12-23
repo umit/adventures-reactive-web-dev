@@ -1,0 +1,36 @@
+{
+  "name": "most-vdom",
+  "version": "1.0.0",
+  "description": "Adventures in Reactive Web Development",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack",
+    "watch": "webpack --progress --colors --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foxdonut/adventures-reactive-web-dev.git"
+  },
+  "keywords": [
+    "example",
+    "most.js",
+    "reactive",
+    "virtual-dom"
+  ],
+  "author": "foxdonut",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/foxdonut/adventures-reactive-web-dev/issues"
+  },
+  "homepage": "https://github.com/foxdonut/adventures-reactive-web-dev#readme",
+  "dependencies": {
+    "most": "^0.16.0",
+    "virtual-dom": "^2.1.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.3.21",
+    "babel-loader": "^6.2.0",
+    "babel-preset-es2015": "^6.3.13",
+    "webpack": "^1.12.9"
+  }
+}
