@@ -1,4 +1,3 @@
-/** @jsx element */
 import element from "vdom-element";
 
 export default function(props) {

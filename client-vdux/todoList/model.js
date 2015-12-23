@@ -1,4 +1,4 @@
-module.exports = function(todoList, action) {
+export default function(todoList, action) {
   if (action && action.type === "EVT_LIST") {
     return action.payload;
   }
