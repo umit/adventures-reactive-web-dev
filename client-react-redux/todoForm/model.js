@@ -1,20 +1,44 @@
 import {assoc} from "ramda";
+import handleAction from "../util/handle-action";
 
-export default function(model, action) {
-  if (action) {
-    if (action.type === "ACTION_EDIT") {
+const initialState = {};
+
+const handlers = [
+  {
+    test: function(model, action) {
+      return action.type === "ACTION_EDIT";
+    },
+    handle: function(model, action) {
       return action.payload;
     }
-    else if (action.type === "ACTION_IN_FORM") {
+  },
+  {
+    test: function(model, action) {
+      return action.type === "ACTION_IN_FORM";
+    },
+    handle: function(model, action) {
       return assoc("validationErrors", model.validationErrors, action.payload);
     }
-    else if (action.type === "ACTION_SAVE" && action.payload.validationErrors) {
+  },
+  {
+    test: function(model, action) {
+      return action.type === "ACTION_SAVE" && action.payload.validationErrors;
+    },
+    handle: function(model, action) {
       return assoc("validationErrors", action.payload.validationErrors, model);
     }
-    else if (action.type === "ACTION_CANCEL" || action.type.endsWith("FULFILLED")) {
+  },
+  {
+    test: function(model, action) {
+      return action.type === "ACTION_CANCEL" || action.type.endsWith("FULFILLED");
+    },
+    handle: function(model, action) {
       return {};
     }
   }
-  return model || {};
+];
+
+export default function(model = initialState, action) {
+  return handleAction(model, action, handlers);
 };
 

@@ -1,12 +1,27 @@
-export default function(model, action) {
-  if (action) {
-    if (action.type.endsWith("PENDING")) {
+import handleAction from "../util/handle-action";
+
+const initialState = {inProgress: false, list: []};
+
+const handlers = [
+  {
+    test: function(model, action) {
+      return action.type.endsWith("PENDING");
+    },
+    handle: function(model, action) {
       return {inProgress: true, list: []};
     }
-    else if (action.type.endsWith("FULFILLED")) {
+  },
+  {
+    test: function(model, action) {
+      return action.type.endsWith("FULFILLED");
+    },
+    handle: function(model, action) {
       return {inProgress: false, list: action.payload};
     }
   }
-  return model || {inProgress: false, list: []};
+];
+
+export default function(model = initialState, action) {
+  return handleAction(model, action, handlers);
 };
 
