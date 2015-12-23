@@ -1,11 +1,11 @@
-var axios = require("axios");
-var R = require("ramda");
+import axios from "axios";
+import {prop} from "ramda";
 
-var ajaxPromise = function(options) {
-  return axios(options).then(R.prop("data"));
+const ajaxPromise = function(options) {
+  return axios(options).then(prop("data"));
 };
 
-module.exports = {
+export default {
   getJSON: function(url) {
     return ajaxPromise({
       url: url

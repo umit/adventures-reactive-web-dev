@@ -7,15 +7,15 @@ import todoListModel from "./todoList/model";
 import TodoList from "./todoList/component.jsx";
 
 export default function(element) {
-  var store = applyMiddleware(promiseMiddleware)(createStore)(todoListModel);
-  var app = TodoList;
+  const store = applyMiddleware(promiseMiddleware)(createStore)(todoListModel);
+  const app = TodoList;
 
   document.addEventListener("DOMContentLoaded", function() {
     vdux(store, app, element);
   });
 
   // This will go somewhere else, putting it here for now.
-  var todoUrl = {
+  const todoUrl = {
     get: "/todoList",
     save: "/saveTodo",
     delete: function(todoId) {
@@ -23,8 +23,8 @@ export default function(element) {
     }
   };
 
-  var intoTodosObject = todoList => { return {todos: todoList}; };
-  var getTodos = () => ajax.getJSON(todoUrl.get).then(intoTodosObject);
+  const intoTodosObject = todoList => { return {todos: todoList}; };
+  const getTodos = () => ajax.getJSON(todoUrl.get).then(intoTodosObject);
 
   store.dispatch(createAction("EVT_LIST", getTodos)());
 };
