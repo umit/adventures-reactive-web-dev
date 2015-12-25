@@ -32,20 +32,20 @@ export default function(props) {
       return acc;
     }, {}, keys(validationErrors));
 
-  return div({className:"row"}, [
-    div({className:"col-md-4"}, [
-      form(null, [
+  return div({className:"row"},
+    div({className:"col-md-4"},
+      form(null,
         input({type:"hidden", name:"id", value:todo.id}),
-        div({className:(classNames.priority || "form-group")}, [
+        div({className:(classNames.priority || "form-group")},
           label({htmlFor:"priority"}, "Priority:"),
           input({type:"text", id:"priority", name:"priority", className:"form-control", value:todo.priority, onChange:onChangeText(validationErrors)}),
-          span({className:"help-block"}, validationErrors.priority)]),
-        div({className:(classNames.description || "form-group")}, [
+          span({className:"help-block"}, validationErrors.priority)),
+        div({className:(classNames.description || "form-group")},
           label({htmlFor:"description"}, "Description:"),
           input({type:"text", id:"description", name:"description", className:"form-control", value:todo.description, onChange:onChangeText(validationErrors)}),
-          span({className:"help-block"}, validationErrors.description)]),
-        div(null, [
+          span({className:"help-block"}, validationErrors.description)),
+        div(null,
           button({className:"btn btn-primary btn-xs", onClick:onSave, "data-action":"save"}, "Save"),
           span(null, " "),
-          button({className:"btn btn-default btn-xs", onClick:onCancel, "data-action":"cancel"}, "Cancel")])])])]);
+          button({className:"btn btn-default btn-xs", onClick:onCancel, "data-action":"cancel"}, "Cancel")))));
 };
