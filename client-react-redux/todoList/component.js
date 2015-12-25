@@ -1,6 +1,6 @@
-import React from "react-dom";
+import React from "react";
 
-const DOM = React.DOM;
+const {button, div, span, table, tbody, td, th, thead, tr} = React.DOM;
 
 export default function(props) {
   const onEdit = function(todo) {
@@ -19,29 +19,29 @@ export default function(props) {
 
   const renderTodo = function(todo) {
     return (
-      DOM.tr({key:todo.id}, [
-        DOM.td(null, todo.priority),
-        DOM.td(null, todo.description),
-        DOM.td([
-          DOM.button({className:"btn btn-primary btn-xs editBtn", onClick:onEdit(todo)}, "Edit"),
-          DOM.span(" "),
-          DOM.button({className:"btn btn-danger btn-xs deleteBtn", onClick:onDelete(todo)}, "Delete")])])
+      tr({key:todo.id}, [
+        td(null, todo.priority),
+        td(null, todo.description),
+        td(null, [
+          button({className:"btn btn-primary btn-xs editBtn", onClick:onEdit(todo)}, "Edit"),
+          span(null, " "),
+          button({className:"btn btn-danger btn-xs deleteBtn", onClick:onDelete(todo)}, "Delete")])])
     );
   };
 
   const inProgressIndicator = function(props) {
-    return props.todos.inProgress ? DOM.tr(DOM.td({colSpan:"3"}, "Loading, please wait...")) : undefined;
+    return props.todos.inProgress ? tr(null, td({colSpan:"3"}, "Loading, please wait...")) : undefined;
   };
 
-  return DOM.div([
-    DOM.div("Todo List:"),
-    DOM.table({className:"table"}, [
-      DOM.thead([
-        DOM.tr([
-          DOM.th("Priority"),
-          DOM.th("Description"),
-          DOM.th("Action")])]),
-      DOM.tbody([
+  return div(null, [
+    div(null, "Todo List:"),
+    table({className:"table"}, [
+      thead(null, [
+        tr(null, [
+          th(null, "Priority"),
+          th(null, "Description"),
+          th(null, "Action")])]),
+      tbody(null, [
         inProgressIndicator(props),
         ...props.todos.list.map(renderTodo)])
     ])]);
