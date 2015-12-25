@@ -1,6 +1,8 @@
-import React from "react";
+import React from "react-dom";
 import {keys, reduce} from "ramda";
 import serialize from "form-serialize";
+
+const DOM = React.DOM;
 
 export default function(props) {
   const getTodo = function(evt) {
@@ -30,29 +32,20 @@ export default function(props) {
       return acc;
     }, {}, keys(validationErrors));
 
-  return (
-    <div className="row">
-      <div className="col-md-4">
-        <form>
-          <input type="hidden" name="id" value={todo.id}/>
-          <div className={(classNames.priority || "form-group")}>
-            <label htmlFor="priority">Priority:</label>
-            <input type="text" id="priority" name="priority" className="form-control" value={todo.priority} onChange={onChangeText(validationErrors)}/>
-            <span className="help-block">{validationErrors.priority}</span>
-          </div>
-          <div className={(classNames.description || "form-group")}>
-            <label htmlFor="description">Description:</label>
-            <input type="text" id="description" name="description" className="form-control" value={todo.description} onChange={onChangeText(validationErrors)}/>
-            <span className="help-block">{validationErrors.description}</span>
-          </div>
-          <div>
-            <button className="btn btn-primary btn-xs" onClick={onSave} data-action="save">Save</button>
-            <span> </span>
-            <button className="btn btn-default btn-xs" onClick={onCancel} data-action="cancel">Cancel</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
+  return DOM.div({className:"row"}, [
+    DOM.div({className:"col-md-4"}, [
+      DOM.form([
+        DOM.input({type:"hidden", name:"id", value:todo.id}),
+        DOM.div({className:(classNames.priority || "form-group")}, [
+          DOM.label({htmlFor:"priority"}, "Priority:"),
+          DOM.input({type:"text", id:"priority", name:"priority", className:"form-control", value:todo.priority, onChange:onChangeText(validationErrors)}),
+          DOM.span({className:"help-block"}, validationErrors.priority)]),
+        DOM.div({className:(classNames.description || "form-group")}, [
+          DOM.label({htmlFor:"description"}, "Description:"),
+          DOM.input({type:"text", id:"description", name:"description", className:"form-control", value:todo.description, onChange:onChangeText(validationErrors)}),
+          DOM.span({className:"help-block"}, validationErrors.description)]),
+        DOM.div([
+          DOM.button({className:"btn btn-primary btn-xs", onClick:onSave, "data-action":"save"}, "Save"),
+          DOM.span(" "),
+          DOM.button({className:"btn btn-default btn-xs", onClick:onCancel, "data-action":"cancel"}, "Cancel")])])])]);
 };
-

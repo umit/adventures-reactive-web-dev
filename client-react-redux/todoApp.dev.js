@@ -1,6 +1,6 @@
-import React from "react";
+import {createElement as ce} from "react";
 import {render} from "react-dom";
-import {identity} from "ramda";
+import {identity, merge} from "ramda";
 import {connect, Provider} from "react-redux";
 
 import ajax from "./util/ajax-axios";
@@ -16,10 +16,8 @@ import DockMonitor from 'redux-devtools-dock-monitor';
 export default function(element) {
 
   const DevTools = createDevTools(
-    <DockMonitor toggleVisibilityKey="ctrl-h"
-                 changePositionKey="ctrl-q">
-      <LogMonitor theme="tomorrow" />
-    </DockMonitor>
+    ce(DockMonitor, {toggleVisibilityKey:"ctrl-h", changePositionKey:"ctrl-q"}, [
+      ce(LogMonitor, {theme:"tomorrow"})])
   );
 
   const store = createStore(TodoList.model, TodoForm.model, DevTools);
@@ -27,22 +25,16 @@ export default function(element) {
   const listActions = TodoList.actions(ajax, todoUrl);
   const formActions = TodoForm.actions(ajax, todoUrl);
 
-  const View = (props) => <div>
-    <TodoForm.component actions={formActions} {...props}/>
-    <TodoList.component actions={listActions} {...props}/>
-  </div>;
+  const View = (props) => ce("div", [
+    ce(TodoForm.component, merge({actions:formActions}, props)),
+    ce(TodoList.component, merge({actions:listActions}, props))]);
 
   const App = connect(identity)(View);
 
   render(
-    <Provider store={store}>
-      <div>
-        <App/>
-        <DevTools/>
-      </div>
-    </Provider>,
-    element
-  );
+    ce(Provider, {store:store},
+      ce("div", null, [ce(App), ce(DevTools)])),
+    element);
 
   store.dispatch(listActions.getTodosAction());
 };
