@@ -3,6 +3,7 @@ var WebpackDevServer = require("webpack-dev-server");
 var config = require("../webpack.config.dev");
 
 new WebpackDevServer(webpack(config), {
+  /* hot: true, */
   historyApiFallback: true,
   proxy: {
     "*": "http://localhost:3000"
