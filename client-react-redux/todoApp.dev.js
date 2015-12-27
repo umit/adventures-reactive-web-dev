@@ -16,8 +16,8 @@ import DockMonitor from 'redux-devtools-dock-monitor';
 export default function(element) {
 
   const DevTools = createDevTools(
-    ce(DockMonitor, {toggleVisibilityKey:"ctrl-h", changePositionKey:"ctrl-q"}, [
-      ce(LogMonitor, {theme:"tomorrow"})])
+    ce(DockMonitor, {toggleVisibilityKey:"ctrl-h", changePositionKey:"ctrl-q"},
+      ce(LogMonitor, {theme:"tomorrow"}))
   );
 
   const store = createStore(TodoList.model, TodoForm.model, DevTools);
@@ -25,15 +25,15 @@ export default function(element) {
   const listActions = TodoList.actions(ajax, todoUrl);
   const formActions = TodoForm.actions(ajax, todoUrl);
 
-  const View = (props) => ce("div", null, [
+  const View = (props) => ce("div", null,
     ce(TodoForm.component, merge({actions:formActions}, props)),
-    ce(TodoList.component, merge({actions:listActions}, props))]);
+    ce(TodoList.component, merge({actions:listActions}, props)));
 
   const App = connect(identity)(View);
 
   render(
     ce(Provider, {store:store},
-      ce("div", null, [ce(App), ce(DevTools)])),
+      ce("div", null, ce(App), ce(DevTools))),
     element);
 
   store.dispatch(listActions.getTodosAction());

@@ -1,6 +1,12 @@
 var path = require("path");
 var webpack = require("webpack");
 
+var definePlugin = new webpack.DefinePlugin({
+  "process.env": {
+    "DEV_ENV": "true"
+  }
+});
+
 module.exports = {
   devtool: "eval",
   entry: [
@@ -12,12 +18,13 @@ module.exports = {
     path: path.join(__dirname, "../public"),
     filename: "generated-app.js"
   },
-  /*
   plugins: [
+  /*
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin()
-  ],
+    new webpack.NoErrorsPlugin(),
   */
+    definePlugin
+  ],
   resolve: {
     extensions: ["", ".js", ".jsx"]
   },
