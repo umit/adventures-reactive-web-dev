@@ -35,7 +35,7 @@ if (module.hot) {
           driver.replayHistory(history);
         }
       }
-    });
+    }, 10);
   };
 
   module.hot.accept("./main", () => {
