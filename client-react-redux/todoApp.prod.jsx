@@ -25,9 +25,7 @@ export default function(element) {
 
   render(
     <Provider store={store}>
-      <div>
-        <App/>
-      </div>
+      <App/>
     </Provider>,
     element
   );
