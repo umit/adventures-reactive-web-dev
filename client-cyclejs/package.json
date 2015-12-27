@@ -38,6 +38,7 @@
     "babel-core": "^6.3.21",
     "babel-loader": "^6.2.0",
     "babel-preset-es2015": "^6.3.13",
+    "cycle-time-travel": "^0.1.2",
     "webpack": "^1.12.9",
     "webpack-dev-server": "^1.14.0"
   }
