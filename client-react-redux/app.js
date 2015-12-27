@@ -1,10 +1,10 @@
 var todoApp = null;
 
 if (process.env.DEV_ENV) {
-  todoApp = require("./todoApp.dev");
+  todoApp = require("./todoApp.dev.jsx");
 }
 else {
-  todoApp = require("./todoApp.prod");
+  todoApp = require("./todoApp.prod.jsx");
 }
 
 todoApp["default"](document.getElementById("app"));
