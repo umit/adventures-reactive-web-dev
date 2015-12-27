@@ -1,5 +1,5 @@
 import Cycle from "@cycle/core";
-import R from "ramda";
+import {find, propEq} from "ramda";
 
 const TODO_LIST_URL = "/todoList";
 
@@ -24,7 +24,7 @@ let model = function(HTTP, intent) {
     .share();
 
   let editTodo$ = intent.editTodo$.withLatestFrom(todos$, function(editTodoId, todos) {
-    return {todo: R.find(R.propEq("id", editTodoId))(todos)};
+    return {todo: find(propEq("id", editTodoId))(todos)};
   });
 
   return {

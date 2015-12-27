@@ -1,6 +1,5 @@
-import {h} from "@cycle/dom";
-const {button, div, span, table, tbody, td, thead, tr} = require("hyperscript-helpers")(h);
-import R from "ramda";
+import {button, div, h, span, table, tbody, td, thead, tr} from "@cycle/dom";
+import {binary, curry} from "ramda";
 
 let view = function(model) {
   let renderTodo = function(todo) {
@@ -16,7 +15,7 @@ let view = function(model) {
   };
 
   let view$ = model.todos$.map(function(todos) {
-    let th = R.binary(R.curry(h))("th");
+    let th = binary(curry(h))("th");
     return div([
       div("Todo List:"),
       table(".table", [

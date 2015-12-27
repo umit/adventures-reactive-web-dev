@@ -1,33 +1,33 @@
-import {h} from "@cycle/dom";
-import R from "ramda";
+import {button, div, form, input, label, span} from "@cycle/dom";
+import {keys, reduce} from "ramda";
 
 let view = function(model) {
   let view$ = model.todoForm$.map(function(todoForm) {
     var todo = todoForm.todo;
     var validationErrors = todoForm.validationErrors || {};
-    var classNames = R.reduce(function(acc, key) {
+    var classNames = reduce(function(acc, key) {
       acc[key] = "form-group.has-error";
       return acc;
-    }, {}, R.keys(validationErrors));
+    }, {}, keys(validationErrors));
 
-    return h("div.row",
-      h("div.col-md-4",
-        h("form", [
-          h("input", {type:"hidden", name:"id", value:todo.id}),
-          h("div." + (classNames.priority || "form-group"), [
-            h("label", {htmlFor:"priority"}, "Priority:"),
-            h("input.form-control", {type:"text", id:"priority", name:"priority", value:todo.priority}),
-            h("span.help-block", validationErrors.priority)
+    return div(".row",
+      div(".col-md-4",
+        form([
+          input({type:"hidden", name:"id", value:todo.id}),
+          div("." + (classNames.priority || "form-group"), [
+            label({htmlFor:"priority"}, "Priority:"),
+            input(".form-control", {type:"text", id:"priority", name:"priority", value:todo.priority}),
+            span(".help-block", validationErrors.priority)
           ]),
-          h("div." + (classNames.description || "form-group"), [
-            h("label", {htmlFor:"description"}, "Description:"),
-            h("input.form-control", {type:"text", id:"description", name:"description", value:todo.description}),
-            h("span.help-block", validationErrors.description)
+          div("." + (classNames.description || "form-group"), [
+            label({htmlFor:"description"}, "Description:"),
+            input(".form-control", {type:"text", id:"description", name:"description", value:todo.description}),
+            span(".help-block", validationErrors.description)
           ]),
-          h("div", [
-            h("button.btn.btn-primary.btn-xs.saveTodo", "Save"),
-            h("span", " "),
-            h("button.btn.btn-danger.btn-xs.cancelTodo", "Cancel")
+          div([
+            button(".btn.btn-primary.btn-xs.saveTodo", "Save"),
+            span(" "),
+            button(".btn.btn-danger.btn-xs.cancelTodo", "Cancel")
           ])
         ])
       )
