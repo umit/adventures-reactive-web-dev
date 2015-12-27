@@ -1,20 +1,29 @@
-import Cycle from "@cycle/core";
+import {run} from "@cycle/core";
 import {makeDOMDriver} from "@cycle/dom";
 import {makeHTTPDriver} from "@cycle/http";
 import main from "./main";
 
-let makePreventDefaultDriver = function() {
+const makePreventDefaultDriver = function() {
   return function(preventDefault$) {
-    preventDefault$.subscribe(function(evt) {
+    return preventDefault$.subscribe(function(evt) {
       evt.preventDefault();
     });
   };
 };
 
-let drivers = {
+const drivers = {
   DOM: makeDOMDriver("#app"),
   HTTP: makeHTTPDriver(),
   preventDefault: makePreventDefaultDriver()
 };
 
-Cycle.run(main, drivers);
+const {sinks, sources} = run(main, drivers);
+
+if (module.hot) {
+  module.hot.accept();
+
+  module.hot.dispose(() => {
+    sinks.dispose();
+    sources.dispose();
+  });
+}
