@@ -1,44 +1,16 @@
 import {assoc} from "ramda";
-import handleAction from "../util/handle-action";
+import {handleActions} from "redux-actions";
 
 const initialState = {};
+const clearForm = () => ({});
 
-const handlers = [
-  {
-    test: function(model, action) {
-      return action.type === "ACTION_EDIT";
-    },
-    handle: function(model, action) {
-      return action.payload;
-    }
-  },
-  {
-    test: function(model, action) {
-      return action.type === "ACTION_IN_FORM";
-    },
-    handle: function(model, action) {
-      return assoc("validationErrors", model.validationErrors, action.payload);
-    }
-  },
-  {
-    test: function(model, action) {
-      return action.type === "ACTION_SAVE" && action.payload.validationErrors;
-    },
-    handle: function(model, action) {
-      return assoc("validationErrors", action.payload.validationErrors, model);
-    }
-  },
-  {
-    test: function(model, action) {
-      return action.type === "ACTION_CANCEL" || action.type.endsWith("FULFILLED");
-    },
-    handle: function(model, action) {
-      return {};
-    }
-  }
-];
+const reducer = handleActions({
+  "ACTION_EDIT": (model, action) => action.payload,
+  "ACTION_IN_FORM": (model, action) => assoc("validationErrors", model.validationErrors, action.payload),
+  "ACTION_SAVE": (model, action) => assoc("validationErrors", action.payload.validationErrors, model),
+  "ACTION_CANCEL": clearForm,
+  "ACTION_SAVE_FULFILLED": clearForm
+}, initialState);
 
-export default function(model = initialState, action) {
-  return handleAction(model, action, handlers);
-};
+export default reducer;
 
