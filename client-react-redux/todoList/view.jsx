@@ -4,14 +4,14 @@ export default function(props) {
   const onEdit = function(todo) {
     return function(evt) {
       evt.preventDefault();
-      props.dispatch(props.actions.editAction(todo));
+      props.dispatch(props.actions.editTodo(todo));
     }
   };
 
   const onDelete = function(todo) {
     return function(evt) {
       evt.preventDefault();
-      props.dispatch(props.actions.deleteAction(todo));
+      props.dispatch(props.actions.deleteTodo(todo));
     };
   };
 

@@ -3,9 +3,9 @@ import validation from "./validation";
 
 const actions = function(ajax, todoUrl) {
   return {
-    inFormAction: createAction("ACTION_IN_FORM"),
+    inFormEdit: createAction("ACTION_IN_FORM"),
 
-    saveAction: createAction("ACTION_SAVE", function(todo) {
+    saveTodo: createAction("ACTION_SAVE", function(todo) {
       const validationErrors = validation(todo);
 
       if (validationErrors) {
@@ -16,7 +16,7 @@ const actions = function(ajax, todoUrl) {
       };
     }),
 
-    cancelAction: createAction("ACTION_CANCEL")
+    cancelForm: createAction("ACTION_CANCEL")
   };
 };
 

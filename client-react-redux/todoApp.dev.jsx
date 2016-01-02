@@ -22,14 +22,14 @@ export default function(element) {
     </DockMonitor>
   );
 
-  const store = createStore(TodoList.model, TodoForm.model, DevTools);
+  const store = createStore(TodoList.reducer, TodoForm.reducer, DevTools);
 
   const listActions = TodoList.actions(ajax, todoUrl);
   const formActions = TodoForm.actions(ajax, todoUrl);
 
   const View = (props) => <div>
-    <TodoForm.component actions={formActions} {...props}/>
-    <TodoList.component actions={listActions} {...props}/>
+    <TodoForm.view actions={formActions} {...props}/>
+    <TodoList.view actions={listActions} {...props}/>
   </div>;
 
   const App = connect(identity)(View);
@@ -44,5 +44,5 @@ export default function(element) {
     element
   );
 
-  store.dispatch(listActions.getTodosAction());
+  store.dispatch(listActions.loadTodos());
 };

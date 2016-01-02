@@ -1,9 +1,9 @@
-import model from "./model";
+import reducer from "./reducer";
 import actions from "./actions";
-import component from "./component.jsx";
+import view from "./view.jsx";
 
 export default {
-  model,
+  reducer,
   actions,
-  component
+  view
 };
