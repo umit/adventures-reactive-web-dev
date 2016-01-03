@@ -21,9 +21,9 @@ export default function(todos, events$) {
         <td>{todo.priority}</td>
         <td>{todo.description}</td>
         <td>
-          <button className="btn btn-primary btn-xs" data-action="edit" onClick={onEdit(todo)}>Edit</button>
+          <button className="btn btn-primary btn-xs" onClick={onEdit(todo)}>Edit</button>
           <span> </span>
-          <button className="btn btn-danger btn-xs" data-action="delete" onClick={onDelete(todo)}>Delete</button>
+          <button className="btn btn-danger btn-xs" onClick={onDelete(todo)}>Delete</button>
         </td>
       </tr>
     );

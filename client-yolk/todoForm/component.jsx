@@ -46,9 +46,9 @@ export default function(model, events$) {
             <span className="help-block">{validationErrors.description}</span>
           </div>
           <div>
-            <button className="btn btn-primary btn-xs" onClick={onSave} data-action="save">Save</button>
+            <button className="btn btn-primary btn-xs" onClick={onSave}>Save</button>
             <span> </span>
-            <button className="btn btn-default btn-xs" onClick={onCancel} data-action="cancel">Cancel</button>
+            <button className="btn btn-default btn-xs" onClick={onCancel}>Cancel</button>
           </div>
         </form>
       </div>
