@@ -26,6 +26,7 @@ export default function(events) {
   const formModel$ = Rx.Observable
     .return(blankForm)
     .merge(events.editTodo$.map(function(todo) {
+      console.log("editTodo:", todo);
       return {todo: todo, validationErrors: {}};
     }))
     .merge(events.inFormEdit$)

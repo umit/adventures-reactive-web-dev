@@ -5,8 +5,13 @@ import {prop} from "ramda";
 export default function({props}) {
   const TodoItem = function({props, createEventHandler}) {
     const todo$ = props.todo;
+    const events$ = props.events;
     const onEdit = createEventHandler();
 
+    onEdit.combineLatest(todo$, function(evt, todo) {
+      events$.map(events => events.editTodo$.onNext(todo));
+      return {evt, todo};
+    }).subscribe(obj => console.log(obj));
 /*
     const onEdit$ = function(todo) {
       return function(evt) {
@@ -40,7 +45,7 @@ export default function({props}) {
     );
   };
 
-  const renderTodo = todo => <TodoItem todo={todo}/>;
+  const renderTodo = todo => <TodoItem todo={todo} {...props}/>;
 
   const todos$ = props.todos;
 

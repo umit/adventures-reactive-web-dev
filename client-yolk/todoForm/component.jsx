@@ -1,8 +1,10 @@
 import {h} from "yolk";
-import {keys, reduce} from "ramda";
+import {keys, prop, reduce} from "ramda";
 import serialize from "form-serialize";
 
-export default function(model, events$) {
+export default function({props, createEventHandler}) {
+  const model$ = props.model;
+
   const getTodo = function(evt) {
     return serialize(evt.target.form, {hash: true});
   };
@@ -23,8 +25,8 @@ export default function(model, events$) {
     events$.cancelTodo$.onNext();
   };
 
-  const todo = model.todo;
-  const validationErrors = model.validationErrors || {};
+  const todo$ = model$.map(prop("todo"))
+  const validationErrors = model$.validationErrors || {};
   const classNames = reduce(function(acc, key) {
       acc[key] = "form-group has-error";
       return acc;
@@ -34,15 +36,15 @@ export default function(model, events$) {
     <div className="row">
       <div className="col-md-4">
         <form>
-          <input type="hidden" name="id" value={todo.id}/>
+          <input type="hidden" name="id" value={todo$.map(prop("id"))}/>
           <div className={(classNames.priority || "form-group")}>
             <label htmlFor="priority">Priority:</label>
-            <input type="text" id="priority" name="priority" className="form-control" value={todo.priority} onChange={onChangeText(validationErrors)}/>
+            <input type="text" id="priority" name="priority" className="form-control" value={todo$.map(prop("priority"))} onChange={onChangeText(validationErrors)}/>
             <span className="help-block">{validationErrors.priority}</span>
           </div>
           <div className={(classNames.description || "form-group")}>
             <label htmlFor="description">Description:</label>
-            <input type="text" id="description" name="description" className="form-control" value={todo.description} onChange={onChangeText(validationErrors)}/>
+            <input type="text" id="description" name="description" className="form-control" value={todo$.map(prop("description"))} onChange={onChangeText(validationErrors)}/>
             <span className="help-block">{validationErrors.description}</span>
           </div>
           <div>
