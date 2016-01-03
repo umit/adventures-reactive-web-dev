@@ -6,7 +6,7 @@ import formModel from "./todoForm/model";
 import listModel from "./todoList/model";
 import formEvents from "./todoForm/events";
 import listEvents from "./todoList/events";
-import todoList from "./todoList/component.jsx";
+import ListView from "./todoList/component.jsx";
 import todoForm from "./todoForm/component.jsx";
 import todoSummary from "./todoSummary/component.jsx";
 
@@ -45,4 +45,8 @@ export default function(element) {
     ReactDOM.render(view, element);
   });
   */
+
+  render(<div>
+    <ListView todos={listModel$}/>
+  </div>, element);
 };

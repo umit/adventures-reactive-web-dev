@@ -1,33 +1,48 @@
 import {h} from "yolk";
+import {prop} from "ramda";
 
-export default function(todos, events$) {
-  const onEdit = function(todo) {
-    return function(evt) {
-      evt.preventDefault();
-      events$.editTodo$.onNext(todo);
-    }
-  };
+//export default function(todos, events$) {
+export default function({props}) {
+  const TodoItem = function({props, createEventHandler}) {
+    const todo$ = props.todo;
+    const onEdit = createEventHandler();
 
-  const onDelete = function(todo) {
-    return function(evt) {
-      evt.preventDefault();
-      events$.deleteTodo$.onNext(todo.id);
-    }
-  };
+/*
+    const onEdit$ = function(todo) {
+      return function(evt) {
+        evt.preventDefault();
+        events$.editTodo$.onNext(todo);
+      }
+    };
+*/
 
-  const renderTodo = function(todo) {
+    const onDelete = createEventHandler();
+
+/*
+    const onDelete$ = function(todo) {
+      return function(evt) {
+        evt.preventDefault();
+        events$.deleteTodo$.onNext(todo.id);
+      }
+    };
+*/
+
     return (
-      <tr key={todo.id}>
-        <td>{todo.priority}</td>
-        <td>{todo.description}</td>
+      <tr key={todo$.map(prop("id"))}>
+        <td>{todo$.map(prop("id"))}</td>
+        <td>{todo$.map(prop("description"))}</td>
         <td>
-          <button className="btn btn-primary btn-xs" onClick={onEdit(todo)}>Edit</button>
+          <button className="btn btn-primary btn-xs" onClick={onEdit}>Edit</button>
           <span> </span>
-          <button className="btn btn-danger btn-xs" onClick={onDelete(todo)}>Delete</button>
+          <button className="btn btn-danger btn-xs" onClick={onDelete}>Delete</button>
         </td>
       </tr>
     );
   };
+
+  const renderTodo = todo => <TodoItem todo={todo}/>;
+
+  const todos$ = props.todos;
 
   return (
     <div>
@@ -41,7 +56,7 @@ export default function(todos, events$) {
           </tr>
         </thead>
         <tbody>
-          {todos.map(renderTodo)}
+          {todos$.map(todos => todos.map(renderTodo))}
         </tbody>
       </table>
     </div>
