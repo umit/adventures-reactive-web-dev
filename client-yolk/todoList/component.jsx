@@ -7,11 +7,9 @@ export default function({props}) {
     const todo$ = props.todo;
     const events$ = props.events;
     const onEdit = createEventHandler();
+    const editTodo$ = events$.map(events => events.editTodo$).first();
 
-    onEdit.combineLatest(todo$, function(evt, todo) {
-      events$.map(events => events.editTodo$.onNext(todo));
-      return {evt, todo};
-    }).subscribe(obj => console.log(obj));
+    onEdit.combineLatest(todo$, (evt, todo) => todo).subscribe(editTodo$);
 /*
     const onEdit$ = function(todo) {
       return function(evt) {
