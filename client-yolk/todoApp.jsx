@@ -6,8 +6,8 @@ import formModel from "./todoForm/model";
 import listModel from "./todoList/model";
 import formEvents from "./todoForm/events";
 import listEvents from "./todoList/events";
-import ListView from "./todoList/component.jsx";
-import FormView from "./todoForm/component.jsx";
+import listView from "./todoList/component.jsx";
+import formView from "./todoForm/component.jsx";
 import todoSummary from "./todoSummary/component.jsx";
 
 export default function(element) {
@@ -16,8 +16,11 @@ export default function(element) {
   const formModel$ = formModel(events$);
   const listModel$ = listModel(ajax, events$, formModel$);
 
+  const ListView = listView(events$);
+  const FormView = formView(events$);
+
   render(<div>
-    <FormView model={formModel$} events={events$}/>
-    <ListView todos={listModel$} events={events$}/>
+    <FormView model={formModel$.formModel$}/>
+    <ListView todos={listModel$}/>
   </div>, element);
 };
