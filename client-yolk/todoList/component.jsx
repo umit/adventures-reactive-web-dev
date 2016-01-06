@@ -5,29 +5,12 @@ export default function(events) {
   return function({props}) {
     const TodoItem = function({props, createEventHandler}) {
       const todo$ = props.todo;
-      const onEdit = createEventHandler();
-      const editTodo$ = events.editTodo$;
 
-      onEdit.combineLatest(todo$, (evt, todo) => todo).subscribe(editTodo$);
-  /*
-      const onEdit$ = function(todo) {
-        return function(evt) {
-          evt.preventDefault();
-          events$.editTodo$.onNext(todo);
-        }
-      };
-  */
+      const onEdit = createEventHandler();
+      onEdit.withLatestFrom(todo$, (evt, todo) => todo).subscribe(events.editTodo$);
 
       const onDelete = createEventHandler();
-
-  /*
-      const onDelete$ = function(todo) {
-        return function(evt) {
-          evt.preventDefault();
-          events$.deleteTodo$.onNext(todo.id);
-        }
-      };
-  */
+      onDelete.withLatestFrom(todo$, (evt, todo) => todo.id).subscribe(events.deleteTodo$);
 
       return (
         <tr key={todo$.map(prop("id"))}>

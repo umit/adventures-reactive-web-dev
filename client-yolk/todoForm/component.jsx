@@ -2,7 +2,7 @@ import {h} from "yolk";
 import {keys, prop, reduce} from "ramda";
 import serialize from "form-serialize";
 
-export default function(events$) {
+export default function(events) {
   return function({props, createEventHandler}) {
     const model$ = props.model;
 
@@ -12,18 +12,18 @@ export default function(events$) {
 
     const onChangeText = function(validationErrors) {
       return function(evt) {
-        events$.inFormEdit$.onNext({todo: getTodo(evt), validationErrors: validationErrors});
+        events.inFormEdit$.onNext({todo: getTodo(evt), validationErrors: validationErrors});
       };
     };
 
     const onSave = function(evt) {
       evt.preventDefault();
-      events$.saveTodo$.onNext(getTodo(evt));
+      events.saveTodo$.onNext(getTodo(evt));
     };
 
     const onCancel = function(evt) {
       evt.preventDefault();
-      events$.cancelTodo$.onNext();
+      events.cancelTodo$.onNext();
     };
 
     const todo$ = model$.map(prop("todo"));
@@ -41,12 +41,14 @@ export default function(events$) {
             <input type="hidden" name="id" value={todo$.map(prop("id"))}/>
             <div className={(classNames.priority || "form-group")}>
               <label htmlFor="priority">Priority:</label>
-              <input type="text" id="priority" name="priority" className="form-control" value={todo$.map(prop("priority"))} onChange={onChangeText(validationErrors)}/>
+              <input type="text" id="priority" name="priority" className="form-control" value={todo$.map(prop("priority"))}
+                onChange={onChangeText(validationErrors)}/>
               <span className="help-block">{validationErrors.priority}</span>
             </div>
             <div className={(classNames.description || "form-group")}>
               <label htmlFor="description">Description:</label>
-              <input type="text" id="description" name="description" className="form-control" value={todo$.map(prop("description"))} onChange={onChangeText(validationErrors)}/>
+              <input type="text" id="description" name="description" className="form-control" value={todo$.map(prop("description"))}
+                onChange={onChangeText(validationErrors)}/>
               <span className="help-block">{validationErrors.description}</span>
             </div>
             <div>

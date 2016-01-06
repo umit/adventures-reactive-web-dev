@@ -20,7 +20,7 @@ export default function(props) {
 
   const onCancel = function(evt) {
     evt.preventDefault();
-    props.dispatch(props.actions.cancelForm())
+    props.dispatch(props.actions.cancelForm());
   };
 
   const todo = props.todo;
