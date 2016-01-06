@@ -1,16 +1,14 @@
 import React from "react";
-import {keys, reduce} from "ramda";
 import serialize from "form-serialize";
+import {assoc, keys, reduce} from "ramda";
 
-export default function(props) {
+const View = function(props) {
   const getTodo = function(evt) {
-    return serialize(evt.target.form, {hash: true});
+    return {todo: serialize(evt.target.form, {hash:true})};
   };
 
-  const onChangeText = function(validationErrors) {
-    return function(evt) {
-      props.dispatch(props.actions.inFormEdit(getTodo(evt)));
-    };
+  const onChangeText = function(evt) {
+    props.dispatch(props.actions.inFormEdit(getTodo(evt)));
   };
 
   const onSave = function(evt) {
@@ -23,12 +21,9 @@ export default function(props) {
     props.dispatch(props.actions.cancelForm());
   };
 
-  const todo = props.todo;
-  const validationErrors = props.todo.validationErrors || {};
-  const classNames = reduce(function(acc, key) {
-      acc[key] = "form-group has-error";
-      return acc;
-    }, {}, keys(validationErrors));
+  const todo = props.form.todo;
+  const validationErrors = props.form.validationErrors || {};
+  const classNames = reduce((acc, key) => assoc(key, "form-group has-error", acc), {}, keys(validationErrors));
 
   return (
     <div className="row">
@@ -37,18 +32,20 @@ export default function(props) {
           <input type="hidden" name="id" value={todo.id}/>
           <div className={(classNames.priority || "form-group")}>
             <label htmlFor="priority">Priority:</label>
-            <input type="text" id="priority" name="priority" className="form-control" value={todo.priority} onChange={onChangeText(validationErrors)}/>
+            <input type="text" id="priority" name="priority" className="form-control" value={todo.priority}
+              onChange={onChangeText}/>
             <span className="help-block">{validationErrors.priority}</span>
           </div>
           <div className={(classNames.description || "form-group")}>
             <label htmlFor="description">Description:</label>
-            <input type="text" id="description" name="description" className="form-control" value={todo.description} onChange={onChangeText(validationErrors)}/>
+            <input type="text" id="description" name="description" className="form-control" value={todo.description}
+              onChange={onChangeText}/>
             <span className="help-block">{validationErrors.description}</span>
           </div>
           <div>
-            <button className="btn btn-primary btn-xs" onClick={onSave} data-action="save">Save</button>
+            <button className="btn btn-primary btn-xs" onClick={onSave}>Save</button>
             <span> </span>
-            <button className="btn btn-default btn-xs" onClick={onCancel} data-action="cancel">Cancel</button>
+            <button className="btn btn-default btn-xs" onClick={onCancel}>Cancel</button>
           </div>
         </form>
       </div>
@@ -56,3 +53,4 @@ export default function(props) {
   );
 };
 
+export default View;

@@ -1,16 +1,20 @@
-import {assoc} from "ramda";
 import {handleActions} from "redux-actions";
 
-const initialState = {};
-const clearForm = () => ({});
+const initialState = {todo: {}};
+const returnTodo = (model, action) => ({todo: action.payload});
+const returnBlank = () => ({todo: {}});
 
-const reducer = handleActions({
-  "ACTION_EDIT": (model, action) => action.payload,
-  "ACTION_IN_FORM": (model, action) => assoc("validationErrors", model.validationErrors, action.payload),
-  "ACTION_SAVE": (model, action) => assoc("validationErrors", action.payload.validationErrors, model),
-  "ACTION_CANCEL": clearForm,
-  "ACTION_SAVE_FULFILLED": clearForm
+const returnTodoWithPreviousValidation = (model, action) =>
+  ({todo: action.payload.todo, validationErrors: model.validationErrors});
+
+const returnTodoWithNewValidation = (model, action) =>
+  ({todo: model.todo, validationErrors: action.payload.validationErrors});
+
+export default handleActions({
+  "ACTION_EDIT": returnTodo,
+  "ACTION_IN_FORM_EDIT": returnTodoWithPreviousValidation,
+  "ACTION_SAVE": returnTodoWithNewValidation,
+  "ACTION_SAVE_FULFILLED": returnBlank,
+  "ACTION_CANCEL": returnBlank
 }, initialState);
-
-export default reducer;
 

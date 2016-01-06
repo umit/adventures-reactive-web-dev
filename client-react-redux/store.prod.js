@@ -1,9 +1,10 @@
-import {applyMiddleware, combineReducers, compose, createStore} from "redux";
+import {applyMiddleware, combineReducers, createStore} from "redux";
 import promiseMiddleware from "redux-promise-middleware";
 
-export default function(todoListModel, todoFormModel) {
-  const model = combineReducers({todos: todoListModel, todo:todoFormModel});
-  const store = applyMiddleware(promiseMiddleware())(createStore)(model);
+export default function(todoListReducer, todoFormReducer) {
+  const reducer = combineReducers({list: todoListReducer, form: todoFormReducer});
+  const createStoreWithMiddleware = applyMiddleware(promiseMiddleware())(createStore);
+  const store = createStoreWithMiddleware(reducer);
 
   return store;
 };

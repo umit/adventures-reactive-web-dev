@@ -1,18 +1,18 @@
 import {handleActions} from "redux-actions";
 
-const initialState = {inProgress: false, list: []};
+const initialState = {todos: []};
 
-const pending = () => ({inProgress: true, list: []});
-const fulfilled = (model, action) => ({inProgress: false, list: action.payload});
+const pendingAction = () => ({inProgress: true, todos: []});
+const listAction = (state, action) => ({inProgress: false, todos: action.payload});
 
-const reducer = handleActions({
-  "ACTION_LIST_PENDING": pending,
-  "ACTION_SAVE_PENDING": pending,
-  "ACTION_DELETE_PENDING": pending,
-  "ACTION_LIST_FULFILLED": fulfilled,
-  "ACTION_SAVE_FULFILLED": fulfilled,
-  "ACTION_DELETE_FULFILLED": fulfilled
+export default handleActions({
+  "ACTION_LIST_PENDING": pendingAction,
+  "ACTION_LIST_FULFILLED": listAction,
+
+  "ACTION_SAVE_PENDING": pendingAction,
+  "ACTION_SAVE_FULFILLED": listAction,
+
+  "ACTION_DELETE_PENDING": pendingAction,
+  "ACTION_DELETE_FULFILLED": listAction
 }, initialState);
-
-export default reducer;
 
