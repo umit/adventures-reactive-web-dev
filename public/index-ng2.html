@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Adventures in Reactive Web Development</title>
+    <link rel="stylesheet" type="text/css" href="/lib/bootstrap/dist/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Adventures in Reactive Web Development</h1>
+
+      <app>Loading...</app>
+    </div>
+  </body>
+
+  <!-- ES6-related imports -->
+  <script src="/node_modules/angular2/bundles/angular2-polyfills.js"></script>
+  <script src="/node_modules/es6-shim/es6-shim.min.js"></script>
+  <script src="/node_modules/systemjs/dist/system.js"></script>
+  <script>
+      //configure system loader
+      System.config({defaultJSExtensions: true});
+  </script>
+  <script src="/node_modules/rxjs/bundles/Rx.js"></script>
+  <script src="/node_modules/angular2/bundles/angular2.min.js"></script>
+  <script>
+      //bootstrap the Angular2 application
+      System.import("generated-app").catch(console.log.bind(console));
+  </script>
+</html>
+
