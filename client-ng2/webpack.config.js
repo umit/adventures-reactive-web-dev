@@ -4,6 +4,9 @@ module.exports = {
     path: "../public",
     filename: "generated-app.js"
   },
+  resolve: {
+    extensions: ["", ".js", ".ts"]
+  },
   module: {
     loaders: [
       {
