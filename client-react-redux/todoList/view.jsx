@@ -38,21 +38,23 @@ const View = function(props) {
   };
 
   return (
-    <div>
-      <div>Todo List:</div>
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Priority</th>
-            <th>Description</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {inProgressIndicator(props)}
-          {todos.map(renderTodo)}
-        </tbody>
-      </table>
+    <div className="row">
+      <div className="col-md-8">
+        <div>Todo List:</div>
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Priority</th>
+              <th>Description</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {inProgressIndicator(props)}
+            {todos.map(renderTodo)}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
