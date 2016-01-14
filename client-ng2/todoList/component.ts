@@ -1,4 +1,6 @@
-import {Component, EventEmitter, Input, Output} from "angular2/core";
+import {Component, Inject, OnDestroy} from "angular2/core";
+import {Store} from "redux";
+
 import {Todo} from "../model/todo";
 import {TodoItem} from "./item";
 
@@ -16,25 +18,28 @@ import {TodoItem} from "./item";
           </tr>
         </thead>
         <tbody>
-          <tr todo-item *ngFor="#todo of todos" [todo]="todo"
-              (editTodo)="onEditTodo($event)"
-              (deleteTodo)="onDeleteTodo($event)"></tr>
+          <tr todo-item *ngFor="#todo of todos" [todo]="todo"></tr>
         </tbody>
       </table>
     </div>
   `,
   directives: [TodoItem]
 })
-export class TodoList {
-  @Input() todos: Todo[];
-  @Output() editTodo = new EventEmitter<Todo>();
-  @Output() deleteTodo = new EventEmitter<number>();
+export class TodoList implements OnDestroy {
+  todos: Todo[];
+  unsubscribe: Function;
 
-  onEditTodo(todo: Todo) {
-    this.editTodo.next(todo);
+  constructor(
+    @Inject("ReduxStore") private store: Store,
+    @Inject("listActions") private actions
+  ) {
+    this.unsubscribe = this.store.subscribe(() => {
+      let state = this.store.getState();
+      this.todos = state.list.todos;
+    });
   }
 
-  onDeleteTodo(todoId: number) {
-    this.deleteTodo.next(todoId);
+  ngOnDestroy() {
+    this.unsubscribe();
   }
 }

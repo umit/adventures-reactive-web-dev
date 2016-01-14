@@ -15,7 +15,7 @@
   "keywords": [
     "angular2",
     "example",
-    "reactive",
+    "redux",
     "typescript"
   ],
   "author": "foxdonut",
@@ -26,10 +26,16 @@
   "homepage": "https://github.com/foxdonut/adventures-reactive-web-dev#readme",
   "dependencies": {
     "angular2": "^2.0.0-beta.1",
+    "axios": "^0.8.1",
     "es6-promise": "^3.0.2",
     "es6-shim": "^0.33.13",
+    "ramda": "^0.19.1",
+    "redux": "^3.0.5",
+    "redux-actions": "^0.9.0",
+    "redux-promise-middleware": "^2.3.3",
     "reflect-metadata": "0.1.2",
     "rxjs": "^5.0.0-beta.0",
+    "validate.js": "^0.9.0",
     "zone.js": "^0.5.10"
   },
   "devDependencies": {

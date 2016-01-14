@@ -1,4 +1,6 @@
-import {Component, EventEmitter, Input, Output} from 'angular2/core';
+import {Component, Inject, Input} from 'angular2/core';
+import {Store} from "redux";
+
 import {Todo} from '../model/todo';
 
 @Component({
@@ -15,15 +17,19 @@ import {Todo} from '../model/todo';
 })
 export class TodoItem {
   @Input() todo: Todo;
-  @Output() editTodo = new EventEmitter<Todo>();
-  @Output() deleteTodo = new EventEmitter<number>();
+
+  constructor(
+    @Inject("ReduxStore") private store: Store,
+    @Inject("listActions") private actions
+  ) {
+  }
 
   onEdit(todo: Todo) {
-    this.editTodo.next(todo);
+    this.store.dispatch(this.actions.editTodo(Object.assign({}, todo)));
   }
 
   onDelete(todo: Todo) {
-    this.deleteTodo.next(todo.id);
+    this.store.dispatch(this.actions.deleteTodo(todo));
   }
 }
 

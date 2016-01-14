@@ -1,5 +1,6 @@
-import {Component, EventEmitter, Input, Output} from "angular2/core";
+import {Component, Inject, OnDestroy} from "angular2/core";
 import {FORM_DIRECTIVES, ControlGroup, FormBuilder, NgClass, NgForm, Validators} from "angular2/common";
+import {Store} from "redux";
 
 import {Todo} from "../model/todo";
 import {rangeValidator} from "./rangeValidator";
@@ -17,13 +18,16 @@ import {rangeValidator} from "./rangeValidator";
               [(ngModel)]="todo.priority" ngControl="priority" #priority="ngForm"/>
             <div [hidden]="!submitted || priority.valid">
               <span *ngIf="priority.control.hasError('required')" class="help-block">
-                Priority is required
+                Priority can't be blank
               </span>
               <span *ngIf="priority.control.hasError('invalidNumber')" class="help-block">
-                Priority must be a number.
+                Priority is not a number
               </span>
-              <span *ngIf="priority.control.hasError('invalidRange')" class="help-block">
-                Priority must be between 1 and 10.
+              <span *ngIf="priority.control.hasError('belowRange')" class="help-block">
+                Priority must be greater than 0
+              </span>
+              <span *ngIf="priority.control.hasError('aboveRange')" class="help-block">
+                Priority must be less than or equal to 10
               </span>
             </div>
           </div>
@@ -32,11 +36,11 @@ import {rangeValidator} from "./rangeValidator";
             <input type="text" id="description" name="description" class="form-control"
               [(ngModel)]="todo.description" ngControl="description" #description="ngForm"/>
             <div [hidden]="!submitted || description.valid">
-              <span class="help-block">Description is required</span>
+              <span class="help-block">Description can't be blank</span>
             </div>
           </div>
           <div>
-            <button class="btn btn-primary btn-xs" (click)="onSave(todo, todoForm, priority, description)">Save</button>
+            <button class="btn btn-primary btn-xs" (click)="onSave(todo)">Save</button>
             <span> </span>
             <button class="btn btn-default btn-xs" (click)="onCancel()">Cancel</button>
           </div>
@@ -46,48 +50,46 @@ import {rangeValidator} from "./rangeValidator";
   `,
   directives: [FORM_DIRECTIVES, NgClass]
 })
-export class TodoForm {
-  @Input() todo: Todo;
-  @Output() saveTodo = new EventEmitter<Todo>();
+export class TodoForm implements OnDestroy {
+  todo: Todo = {};
 
   submitted: boolean = false;
   priorityClasses: {[s: string]: boolean} = {"form-group": true, "has-error": false};
   descriptionClasses: {[s: string]: boolean} = {"form-group": true, "has-error": false};
 
   myForm: ControlGroup;
+  unsubscribe: Function;
 
-  constructor(fb: FormBuilder) {
+  constructor(
+    fb: FormBuilder,
+    @Inject("ReduxStore") private store: Store,
+    @Inject("formActions") private actions
+  ) {
+    this.unsubscribe = this.store.subscribe(() => {
+      let state = this.store.getState();
+      this.todo = state.form.todo;
+    });
+
     this.myForm = fb.group({
       "priority": ["", Validators.compose([Validators.required, rangeValidator])],
       "description": ["", Validators.required]
     });
   }
 
-  clearForm() {
-    this.submitted = false;
-    this.todo = {};
-    this.priorityClasses["has-error"] = false;
-    this.descriptionClasses["has-error"] = false;
-  }
-
   onCancel() {
-    this.clearForm();
+    this.store.dispatch(this.actions.cancelForm());
   }
 
-  onSave(todo: Todo, todoForm: NgForm, priority: NgForm, description: NgForm) {
-    if (todoForm.valid) {
-      this.saveTodo.next(todo);
-      this.clearForm();
-    }
-    else {
-      this.submitted = true;
-      this.priorityClasses["has-error"] = !priority.valid;
-      this.descriptionClasses["has-error"] = !description.valid;
-    }
+  onSave(todo: Todo) {
+    this.store.dispatch(this.actions.saveTodo({todo:todo}));
   }
 
   onSubmit() {
     this.submitted = true;
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe();
   }
 }
 

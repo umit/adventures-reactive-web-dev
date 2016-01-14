@@ -9,8 +9,11 @@ export function rangeValidator(control: Control): {[s: string]: boolean} {
     if (String(value) === "NaN") {
       result = {invalidNumber: true};
     }
-    else if (value < 1 || value > 10) {
-      result = {invalidRange: true};
+    else if (value < 1) {
+      result = {belowRange: true};
+    }
+    else if (value > 10) {
+      result = {aboveRange: true};
     }
   }
   return result;
