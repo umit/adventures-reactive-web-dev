@@ -4,10 +4,9 @@
   "description": "Adventures in Reactive Web Development",
   "main": "index.js",
   "scripts": {
-    "prep": "bash prep.sh",
-    "start": "npm run prep && webpack",
-    "watch": "npm run prep && webpack --progress --colors --watch",
-    "dev": "npm run prep && node server/dev"
+    "start": "webpack",
+    "watch": "webpack --progress --colors --watch",
+    "dev": "node server/dev"
   },
   "repository": {
     "type": "git",
