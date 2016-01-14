@@ -12,7 +12,7 @@ module.exports = {
   entry: [
     "webpack-dev-server/client?http://localhost:3013",
     /* "webpack/hot/only-dev-server", */
-    "./vendor.js",
+    "./vendor.ts",
     "./app.ts"
   ],
   output: {

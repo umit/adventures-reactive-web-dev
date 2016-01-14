@@ -2,13 +2,17 @@
   "compilerOptions": {
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "listFiles": false,
     "module": "commonjs",
     "moduleResolution": "node",
     "removeComments": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "target": "es5"
   },
   "exclude": [
     "node_modules"
+  ],
+  "filesGlob": [
+    "./**/*.ts"
   ]
 }

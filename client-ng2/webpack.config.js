@@ -1,5 +1,8 @@
 module.exports = {
-  entry: "./app.ts",
+  entry: [
+    "./vendor.ts",
+    "./app.ts"
+  ],
   output: {
     path: "../public",
     filename: "generated-app.js"
@@ -9,11 +12,11 @@ module.exports = {
   },
   module: {
     loaders: [
-      {
-        loader: "ts-loader",
-        test: /\.ts$/,
-        exclude: /node_modules/
-      }
+      { test: /\.ts$/,  loader: 'ts', exclude: /node_modules/ },
+      { test: /\.js$/,  loader: 'babel', exclude: /node_modules/ }
     ]
-  }
+  },
+  noParse: [
+    /rtts_assert\/src\/rtts_assert/
+  ]
 };

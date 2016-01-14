@@ -41,7 +41,6 @@
     "babel-loader": "^6.2.1",
     "node-libs-browser": "^0.5.3",
     "ts-loader": "^0.7.2",
-    "tsd": "^0.6.5",
     "typescript": "^1.7.5",
     "webpack": "^1.12.9",
     "webpack-dev-server": "^1.14.0"
