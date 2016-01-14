@@ -31,11 +31,8 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.ts$/,  loader: 'ts', exclude: /node_modules/ },
-      { test: /\.js$/,  loader: 'babel', exclude: /node_modules/ }
+      { test: /\.ts$/, loader: "ts", exclude: /node_modules/ },
+      { test: /\.js$/, loader: "babel", exclude: /node_modules/ }
     ]
-  },
-  noParse: [
-    /rtts_assert\/src\/rtts_assert/
-  ]
+  }
 };
