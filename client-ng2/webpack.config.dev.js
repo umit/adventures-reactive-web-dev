@@ -8,10 +8,11 @@ var definePlugin = new webpack.DefinePlugin({
 });
 
 module.exports = {
-  devtool: "eval",
+  devtool: "source-map",
   entry: [
     "webpack-dev-server/client?http://localhost:3013",
     /* "webpack/hot/only-dev-server", */
+    "./vendor.js",
     "./app.ts"
   ],
   output: {
@@ -21,8 +22,8 @@ module.exports = {
   plugins: [
   /*
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
   */
+    new webpack.NoErrorsPlugin(),
     definePlugin
   ],
   resolve: {
@@ -30,11 +31,11 @@ module.exports = {
   },
   module: {
     loaders: [
-      {
-        loader: "ts-loader",
-        test: /\.ts$/,
-        exclude: /node_modules/
-      }
+      { test: /\.ts$/,  loader: 'ts', exclude: /node_modules/ },
+      { test: /\.js$/,  loader: 'babel', exclude: /node_modules/ }
     ]
-  }
+  },
+  noParse: [
+    /rtts_assert\/src\/rtts_assert/
+  ]
 };
