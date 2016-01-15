@@ -1,8 +1,9 @@
 import {run} from "@cycle/core";
 import {makeDOMDriver} from "@cycle/dom";
 import {makeHTTPDriver} from "@cycle/http";
+import main from "./main";
 
-var main = require("./main").default;
+// var main = require("./main").default;
 
 const makePreventDefaultDriver = function() {
   return function(preventDefault$) {
@@ -18,9 +19,11 @@ const drivers = {
   preventDefault: makePreventDefaultDriver()
 };
 
-const {sinks, sources} = run(main, drivers);
+run(main, drivers);
+// const {sinks, sources} = run(main, drivers);
 
-if (module.hot_TURN_THIS_OFF_FOR_NOW) {
+/*
+if (module.hot) {
   const restart = function(main, sources, drivers) {
     sources.dispose();
 
@@ -43,3 +46,4 @@ if (module.hot_TURN_THIS_OFF_FOR_NOW) {
     restart(main, sources, drivers);
   });
 }
+*/

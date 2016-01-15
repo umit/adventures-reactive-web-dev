@@ -3,7 +3,7 @@ import model from "./model";
 import view from "./view";
 
 // import makeTimeTravel from "cycle-time-travel";
-import {div} from "@cycle/dom";
+// import {div} from "@cycle/dom";
 
 let main = function(sources, editTodo$) {
   let intent$ = intent(sources.DOM);
