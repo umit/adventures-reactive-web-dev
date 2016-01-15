@@ -1,19 +1,13 @@
 var path = require("path");
 var webpack = require("webpack");
 
-var definePlugin = new webpack.DefinePlugin({
-  "process.env": {
-    "DEV_ENV": "true"
-  }
-});
-
 module.exports = {
   devtool: "source-map",
   entry: [
     "webpack-dev-server/client?http://localhost:3013",
     /* "webpack/hot/only-dev-server", */
     "./vendor.ts",
-    "./app.ts"
+    "./app.dev.ts"
   ],
   output: {
     path: path.join(__dirname, "../public"),
@@ -22,9 +16,9 @@ module.exports = {
   plugins: [
   /*
     new webpack.HotModuleReplacementPlugin(),
+    definePlugin,
   */
-    new webpack.NoErrorsPlugin(),
-    definePlugin
+    new webpack.NoErrorsPlugin()
   ],
   resolve: {
     extensions: ["", ".js", ".ts"]

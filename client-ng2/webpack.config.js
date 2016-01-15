@@ -1,7 +1,7 @@
 module.exports = {
   entry: [
     "./vendor.ts",
-    "./app.ts"
+    "./app.prod.ts"
   ],
   output: {
     path: "../public",
