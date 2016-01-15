@@ -1,16 +1,15 @@
 import {Component, Inject, OnDestroy} from "angular2/core";
-import {FORM_DIRECTIVES, ControlGroup, FormBuilder, NgClass, NgForm, Validators} from "angular2/common";
+import {FORM_DIRECTIVES, ControlGroup, FormBuilder, NgClass, NgForm} from "angular2/common";
 import {Store} from "redux";
 
 import {Todo} from "../model/todo";
-import {rangeValidator} from "./rangeValidator";
 
 @Component({
   selector: ".todo-form",
   template: `
     <div class="row">
       <div class="col-md-4">
-        <form #todoForm="ngForm" [ngFormModel]="myForm" novalidate>
+        <form #todoForm="ngForm" [ngFormModel]="myForm">
           <input type="hidden" name="id" value={{todo.id}}/>
           <div [ngClass]="priorityClasses">
             <label for="priority">Priority:</label>
@@ -71,8 +70,8 @@ export class TodoForm implements OnDestroy {
     });
 
     this.myForm = fb.group({
-      "priority": ["", Validators.compose([Validators.required, rangeValidator])],
-      "description": ["", Validators.required]
+      "priority": [""],
+      "description": [""]
     });
   }
 
