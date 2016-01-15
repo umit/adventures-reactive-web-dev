@@ -19,13 +19,13 @@ module.exports = {
   ],
   */
   resolve: {
-    extensions: ["", ".js", ".jsx"]
+    extensions: ["", ".js"]
   },
   module: {
     loaders: [
       {
         loader: "babel-loader",
-        test: /\.jsx?$/,
+        test: /\.js$/,
         exclude: /node_modules/
       }
     ]

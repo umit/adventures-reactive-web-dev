@@ -20,7 +20,7 @@ const drivers = {
 
 const {sinks, sources} = run(main, drivers);
 
-if (module.hot) {
+if (module.hot_TURN_THIS_OFF_FOR_NOW) {
   const restart = function(main, sources, drivers) {
     sources.dispose();
 
