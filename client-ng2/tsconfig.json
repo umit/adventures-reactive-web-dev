@@ -5,6 +5,8 @@
     "listFiles": false,
     "module": "commonjs",
     "moduleResolution": "node",
+    "noImplicitAny": false,
+    "outDir": "./generated-files/",
     "removeComments": true,
     "sourceMap": true,
     "target": "es5"
