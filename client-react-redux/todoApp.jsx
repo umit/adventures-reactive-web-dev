@@ -16,25 +16,22 @@ export default function(element, createStore, Component) {
   const listActions = TodoList.actions(ajax, todoUrl);
   const formActions = TodoForm.actions(ajax, todoUrl);
 
-  const View = function(props) {
-    return (
-      <div>
-        <TodoForm.view actions={formActions} {...props}/>
-        <TodoList.view actions={listActions} {...props}/>
-      </div>
-    );
-  };
+  const TodoListView = props => <TodoList.view actions={listActions} {...props}/>;
+  const TodoFormView = props => <TodoForm.view actions={formActions} {...props}/>;
 
   const mapStateToProps = identity;
-  const App = connect(mapStateToProps)(View);
+
+  const TodoListComponent = connect(mapStateToProps)(TodoListView);
+  const TodoFormComponent = connect(mapStateToProps)(TodoFormView);
+
   const component = Component ? <Component/> : null;
 
-  const Root = function(props) {
+  const App = function(props) {
     return (
       <Provider store={store}>
         <div>
           <div>
-            <Link to="/main">Main</Link> | <Link to="/about">About</Link>
+            <Link to="/list">Todo List</Link> | <Link to="/edit">New Todo</Link>
           </div>
           {props.children}
           {component}
@@ -43,15 +40,13 @@ export default function(element, createStore, Component) {
     );
   };
 
-  const About = props => <div>About goes here</div>;
-
   const routes = {
     path: "/",
-    component: Root,
-    indexRoute: {component: App},
+    component: App,
+    indexRoute: {component: TodoListComponent},
     childRoutes: [
-      {path: "/main",  component: App},
-      {path: "/about", component: About}
+      {path: "/list", component: TodoListComponent},
+      {path: "/edit", component: TodoFormComponent}
     ]
   };
 
