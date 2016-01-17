@@ -48,6 +48,7 @@ export default function(element, createStore, Component) {
   const routes = {
     path: "/",
     component: Root,
+    indexRoute: {component: App},
     childRoutes: [
       {path: "/main",  component: App},
       {path: "/about", component: About}
