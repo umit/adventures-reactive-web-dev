@@ -29,3 +29,4 @@ node_modules
 generated-app.js
 public/lib
 elm-stuff
+client-elm/elm.js
