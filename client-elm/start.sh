@@ -1,2 +1,2 @@
 #!/bin/bash
-elm make hello.elm --output ../public/generated-app.js
+elm make todoList/view.elm --output ../public/generated-app.js
