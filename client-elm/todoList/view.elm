@@ -2,7 +2,7 @@ module TodoList.View where
 
 import Html exposing (Html, button, div, span, table, tbody, text, th, thead, td, tr)
 import Html.Attributes as Attr
-import Html.Events exposing (on)
+import Html.Events exposing (on, onClick, targetValue)
 import Http
 import Json.Decode as Json exposing ((:=))
 import Task exposing (Task, andThen)
@@ -49,11 +49,17 @@ renderTodo todo =
     ]
   ]
 
-view : Model -> Html
-view todos =
+view : Signal.Address Action -> Model -> Html
+view address todos =
   div [ Attr.class "row" ]
   [ div [ Attr.class "col-md-8" ]
-    [ div [] [ button [ Attr.class "btn btn-primary btn-sm" ] [ text "Load Todos" ] ]
+    [ div [] [ button
+               [ Attr.class "btn btn-primary btn-sm"
+--             , on "click" targetValue (Signal.message address NoOp |> always)
+               , onClick address NoOp
+               ]
+               [ text "Load Todos" ]
+             ]
     , div [] [ text "Todo List:"]
     , table [ Attr.class "table" ]
       [ thead []
@@ -70,7 +76,7 @@ view todos =
 
 main : Signal Html
 main =
-  Signal.map view model
+  Signal.map (view actions.address) model
 
 jsonTodoList : Json.Decoder (List Todo)
 jsonTodoList =
@@ -85,7 +91,9 @@ jsonTodoList =
 loadTodos : Task Http.Error (List Todo)
 loadTodos = Http.get jsonTodoList "/todoList"
 
+{--
 port runLoadTodos : Task Http.Error ()
 port runLoadTodos =
   loadTodos `andThen` (LoadList >> Signal.send actions.address)
+--}
 
