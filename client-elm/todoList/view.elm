@@ -5,14 +5,32 @@ import Html exposing (..)
 import Html.Attributes as Attr
 import StartApp.Simple as StartApp
 
-type alias Todo = { id: Int, priority: Int, description: String }
+import Http
+import Json.Decode as Json exposing ((:=))
+import Task exposing (..)
 
-model : List Todo
-model = [
-  {id = 1, priority = 1, description = "Learn Elm"},
-  {id = 2, priority = 1, description = "Implement Todo List"},
-  {id = 3, priority = 2, description = "Compare with JS"},
-  {id = 4, priority = 4, description = "Thrive"} ]
+type alias Todo = { id: Int, priority: Int, description: String }
+type alias Model = List Todo
+
+init : Model
+init = []
+
+type Action = NoOp | LoadList Model
+
+update : Action -> Model -> Model
+update action model =
+  case action of
+    NoOp ->
+      model
+
+    LoadList todos ->
+      todos
+
+actions : Signal.Mailbox Action
+actions = Signal.mailbox NoOp
+
+model : Signal Model
+model = Signal.foldp update init actions.signal
 
 renderTodo : Todo -> Html
 renderTodo todo =
@@ -26,7 +44,8 @@ renderTodo todo =
     ]
   ]
 
-view address todos =
+view : Model -> Html
+view todos =
   div [ Attr.class "row" ]
   [ div [ Attr.class "col-md-8" ]
     [ div [] [ text "Todo List:"]
@@ -43,9 +62,64 @@ view address todos =
     ]
   ]
 
-type Action = Increment | Decrement
-
-update action model = model
-
+{--
 main =
   StartApp.start { model = model, view = view, update = update }
+--}
+main : Signal Html
+main = Signal.map view model
+
+{--
+-- WIRING
+
+main =
+  Signal.map2 view query.signal results.signal
+
+
+query : Signal.Mailbox String
+query =
+  Signal.mailbox ""
+
+
+results : Signal.Mailbox (Result String (List String))
+results =
+  Signal.mailbox (Err "A valid US zip code is 5 numbers.")
+
+
+port requests : Signal (Task x ())
+port requests =
+  Signal.map lookupZipCode query.signal
+    |> Signal.map (\task -> Task.toResult task `andThen` Signal.send results.address)
+
+
+lookupZipCode : String -> Task String (List String)
+lookupZipCode query =
+  let toUrl =
+        if String.length query == 5 && String.all Char.isDigit query
+          then succeed ("http://api.zippopotam.us/us/" ++ query)
+          else fail "Give me a valid US zip code!"
+  in
+      toUrl `andThen` (mapError (always "Not found :(") << Http.get places)
+--}
+
+jsonTodoList : Json.Decoder (List Todo)
+jsonTodoList =
+  let todoItem =
+    Json.object3 Todo
+        ("id" := Json.int)
+        ("priority" := Json.int)
+        ("description" := Json.string)
+  in
+    Json.list todoItem
+
+loadTodos : Task Http.Error (List Todo)
+loadTodos = Http.get jsonTodoList "/todoList"
+
+port runLoadTodos : Task Http.Error ()
+port runLoadTodos =
+  loadTodos `andThen` (LoadList >> Signal.send actions.address)
+
+{--
+model : Task a (Result Http.Error (List Todo))
+model = loadTodos |> Task.toResult
+--}
