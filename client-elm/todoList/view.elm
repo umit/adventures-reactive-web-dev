@@ -3,8 +3,6 @@ module TodoList.View where
 import Html exposing (Html, button, div, span, table, tbody, text, th, thead, td, tr)
 import Html.Attributes as Attr
 import Html.Events exposing (on)
-import StartApp.Simple as StartApp
-
 import Http
 import Json.Decode as Json exposing ((:=))
 import Task exposing (Task, andThen)
@@ -12,10 +10,13 @@ import Task exposing (Task, andThen)
 type alias Todo = { id: Int, priority: Int, description: String }
 type alias Model = List Todo
 
-init : Model
-init = []
+initialModel : Model
+initialModel =
+  []
 
-type Action = NoOp | LoadList Model
+type Action =
+    NoOp
+  | LoadList Model
 
 update : Action -> Model -> Model
 update action model =
@@ -27,10 +28,12 @@ update action model =
       todos
 
 actions : Signal.Mailbox Action
-actions = Signal.mailbox NoOp
+actions =
+  Signal.mailbox NoOp
 
 model : Signal Model
-model = Signal.foldp update init actions.signal
+model =
+  Signal.foldp update initialModel actions.signal
 
 renderTodo : Todo -> Html
 renderTodo todo =
@@ -66,7 +69,8 @@ view todos =
   ]
 
 main : Signal Html
-main = Signal.map view model
+main =
+  Signal.map view model
 
 jsonTodoList : Json.Decoder (List Todo)
 jsonTodoList =
