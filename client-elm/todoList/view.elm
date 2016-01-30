@@ -62,45 +62,8 @@ view todos =
     ]
   ]
 
-{--
-main =
-  StartApp.start { model = model, view = view, update = update }
---}
 main : Signal Html
 main = Signal.map view model
-
-{--
--- WIRING
-
-main =
-  Signal.map2 view query.signal results.signal
-
-
-query : Signal.Mailbox String
-query =
-  Signal.mailbox ""
-
-
-results : Signal.Mailbox (Result String (List String))
-results =
-  Signal.mailbox (Err "A valid US zip code is 5 numbers.")
-
-
-port requests : Signal (Task x ())
-port requests =
-  Signal.map lookupZipCode query.signal
-    |> Signal.map (\task -> Task.toResult task `andThen` Signal.send results.address)
-
-
-lookupZipCode : String -> Task String (List String)
-lookupZipCode query =
-  let toUrl =
-        if String.length query == 5 && String.all Char.isDigit query
-          then succeed ("http://api.zippopotam.us/us/" ++ query)
-          else fail "Give me a valid US zip code!"
-  in
-      toUrl `andThen` (mapError (always "Not found :(") << Http.get places)
---}
 
 jsonTodoList : Json.Decoder (List Todo)
 jsonTodoList =
@@ -119,7 +82,3 @@ port runLoadTodos : Task Http.Error ()
 port runLoadTodos =
   loadTodos `andThen` (LoadList >> Signal.send actions.address)
 
-{--
-model : Task a (Result Http.Error (List Todo))
-model = loadTodos |> Task.toResult
---}
