@@ -1,13 +1,13 @@
 module TodoList.View where
 
--- import Html exposing (button, div, table, tbody, text, th, thead, td, tr)
-import Html exposing (..)
+import Html exposing (Html, button, div, span, table, tbody, text, th, thead, td, tr)
 import Html.Attributes as Attr
+import Html.Events exposing (on)
 import StartApp.Simple as StartApp
 
 import Http
 import Json.Decode as Json exposing ((:=))
-import Task exposing (..)
+import Task exposing (Task, andThen)
 
 type alias Todo = { id: Int, priority: Int, description: String }
 type alias Model = List Todo
@@ -38,7 +38,9 @@ renderTodo todo =
   [ td [] [ todo.priority |> toString |> text ]
   , td [] [ todo.description |> text ]
   , td []
-    [ button [ Attr.class "btn btn-primary btn-xs" ] [ text "Edit" ]
+    [ button
+      [ Attr.class "btn btn-primary btn-xs" ]
+      [ text "Edit" ]
     , span [] [ text " " ]
     , button [ Attr.class "btn btn-danger btn-xs" ] [ text "Delete" ]
     ]
@@ -48,7 +50,8 @@ view : Model -> Html
 view todos =
   div [ Attr.class "row" ]
   [ div [ Attr.class "col-md-8" ]
-    [ div [] [ text "Todo List:"]
+    [ div [] [ button [ Attr.class "btn btn-primary btn-sm" ] [ text "Load Todos" ] ]
+    , div [] [ text "Todo List:"]
     , table [ Attr.class "table" ]
       [ thead []
         [ tr []
