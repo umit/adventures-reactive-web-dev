@@ -1,18 +1,16 @@
 import React from "react";
+import {connect} from "react-redux";
+import {identity} from "ramda";
 
 const View = function(props) {
-  const onEdit = function(todo) {
-    return (evt) => {
-      evt.preventDefault();
-      props.dispatch(props.actions.editTodo(todo));
-    };
+  const onEdit = todo => evt => {
+    evt.preventDefault();
+    props.dispatch(props.actions.editTodo(todo));
   };
 
-  const onDelete = function(todo) {
-    return (evt) => {
-      evt.preventDefault();
-      props.dispatch(props.actions.deleteTodo(todo));
-    };
+  const onDelete = todo => evt => {
+    evt.preventDefault();
+    props.dispatch(props.actions.deleteTodo(todo));
   };
 
   const renderTodo = function(todo) {
@@ -59,4 +57,6 @@ const View = function(props) {
   );
 };
 
-export default View;
+const mapStateToProps = identity;
+
+export default connect(mapStateToProps)(View);

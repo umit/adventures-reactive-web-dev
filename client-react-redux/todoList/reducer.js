@@ -9,10 +9,10 @@ export default handleActions({
   "ACTION_LIST_PENDING": pendingAction,
   "ACTION_LIST_FULFILLED": listAction,
 
-  "ACTION_SAVE_PENDING": pendingAction,
-  "ACTION_SAVE_FULFILLED": listAction,
-
   "ACTION_DELETE_PENDING": pendingAction,
-  "ACTION_DELETE_FULFILLED": listAction
+  "ACTION_DELETE_FULFILLED": listAction,
+
+  "ACTION_SAVE_PENDING": pendingAction,
+  "ACTION_SAVE_FULFILLED": listAction
 }, initialState);
 

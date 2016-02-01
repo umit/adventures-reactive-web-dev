@@ -1,24 +1,7 @@
-var webpack = require("webpack");
-var definePlugin = new webpack.DefinePlugin({
-  "process.env": {
-    "DEV_ENV": JSON.stringify(JSON.parse(process.env.DEV || "false"))
-  }
+var config = require("./webpack.config.common");
+
+Object.assign(config, {
+  entry: "./app.prod.js"
 });
 
-module.exports = {
-  entry: "./app.js",
-  output: {
-    path: "../public",
-    filename: "generated-app.js"
-  },
-  module: {
-    loaders: [
-      {
-        loader: "babel-loader",
-        test: /\.jsx?$/,
-        exclude: /node_modules/
-      }
-    ]
-  },
-  plugins: [ definePlugin ]
-};
+module.exports = config;

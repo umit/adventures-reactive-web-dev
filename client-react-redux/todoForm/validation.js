@@ -1,6 +1,12 @@
 import validate from "validate.js";
 
 let validationSpec = {
+  id: {
+    numericality: {
+      onlyInteger: true,
+      greaterThan: 0
+    }
+  },
   description: {
     presence: true,
     length: {
@@ -18,6 +24,6 @@ let validationSpec = {
 };
 
 export default function(model) {
-  return validate(model, validationSpec);
+  return validate(model, validationSpec) || {};
 };
 
