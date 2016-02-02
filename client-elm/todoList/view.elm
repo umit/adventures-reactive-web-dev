@@ -5,18 +5,20 @@ import Html.Attributes as Attr
 import Html.Events exposing (on, onClick, targetValue)
 import Http
 import Json.Decode as Json exposing ((:=))
-import Task exposing (Task, andThen)
+import Task exposing (Task, andThen, fail, succeed)
 
 type alias Todo = { id: Int, priority: Int, description: String }
 type alias Model = List Todo
 
-initialModel : Model
+initialModel : List Todo
 initialModel =
   []
+
 
 type Action =
     NoOp
   | ShowList Model
+
 
 update : Action -> Model -> Model
 update action model =
@@ -27,17 +29,21 @@ update action model =
     ShowList todos ->
       todos
 
+
 actions : Signal.Mailbox Action
 actions =
   Signal.mailbox NoOp
+
 
 onLoadTodos : Signal.Mailbox Bool
 onLoadTodos =
   Signal.mailbox False
 
+
 model : Signal Model
 model =
   Signal.foldp update initialModel actions.signal
+
 
 renderTodo : Todo -> Html
 renderTodo todo =
@@ -52,6 +58,7 @@ renderTodo todo =
     , button [ Attr.class "btn btn-danger btn-xs" ] [ text "Delete" ]
     ]
   ]
+
 
 view : Signal.Address Bool -> Model -> Html
 view address todos =
@@ -78,11 +85,19 @@ view address todos =
     ]
   ]
 
+
 main : Signal Html
 main =
   Signal.map (view onLoadTodos.address) model
 
-jsonTodoList : Json.Decoder (List Todo)
+
+-- andThen : Task x a -> (a -> Task x b) -> Task x b
+-- toResult : Task x a -> Task never (Result x a)
+-- send : Address a -> a -> Task x ()
+-- message : Address a -> a -> Message
+
+
+jsonTodoList : Json.Decoder Model
 jsonTodoList =
   let todoItem =
     Json.object3 Todo
@@ -92,16 +107,31 @@ jsonTodoList =
   in
     Json.list todoItem
 
-loadTodos : Task Http.Error (List Todo)
-loadTodos = Http.get jsonTodoList "/todoList"
 
-{--
-port runLoadTodos : Task Http.Error ()
-port runLoadTodos =
-  loadTodos `andThen` (ShowList >> Signal.send actions.address)
---}
+loadTodos : Bool -> Task Http.Error Model
+loadTodos _ =
+  Http.get jsonTodoList "/todoList"
 
-runLoadTodos : Task Http.Error ()
-runLoadTodos =
-  loadTodos `andThen` (ShowList >> Signal.send actions.address)
+
+toLoadTask : Bool -> Task Bool Bool
+toLoadTask value =
+  if value then
+    succeed True
+  else
+    fail False
+
+
+sendList : Model -> Task x ()
+sendList =
+  ShowList >> Signal.send actions.address
+
+
+runLoadTodos : Bool -> Task Bool ()
+runLoadTodos value =
+  (toLoadTask value `andThen` loadTodos) `andThen` sendList
+
+
+port portRunLoadTodos : Signal (Task Http.Error ())
+port portRunLoadTodos =
+  Signal.map runLoadTodos onLoadTodos.signal
 
