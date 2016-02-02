@@ -16,7 +16,6 @@ initialModel =
 
 type Action =
     NoOp
-  | LoadList
   | ShowList Model
 
 update : Action -> Model -> Model
@@ -25,15 +24,16 @@ update action model =
     NoOp ->
       model
 
-    LoadList ->
-      model
-
     ShowList todos ->
       todos
 
 actions : Signal.Mailbox Action
 actions =
   Signal.mailbox NoOp
+
+onLoadTodos : Signal.Mailbox Bool
+onLoadTodos =
+  Signal.mailbox False
 
 model : Signal Model
 model =
@@ -53,14 +53,14 @@ renderTodo todo =
     ]
   ]
 
-view : Signal.Address Action -> Model -> Html
+view : Signal.Address Bool -> Model -> Html
 view address todos =
   div [ Attr.class "row" ]
   [ div [ Attr.class "col-md-8" ]
     [ div [] [ button
                [ Attr.class "btn btn-primary btn-sm"
 --             , on "click" targetValue (Signal.message address NoOp |> always)
-               , onClick address LoadList
+               , onClick address True
                ]
                [ text "Load Todos" ]
              ]
@@ -80,7 +80,7 @@ view address todos =
 
 main : Signal Html
 main =
-  Signal.map (view actions.address) model
+  Signal.map (view onLoadTodos.address) model
 
 jsonTodoList : Json.Decoder (List Todo)
 jsonTodoList =
@@ -100,4 +100,8 @@ port runLoadTodos : Task Http.Error ()
 port runLoadTodos =
   loadTodos `andThen` (ShowList >> Signal.send actions.address)
 --}
+
+runLoadTodos : Task Http.Error ()
+runLoadTodos =
+  loadTodos `andThen` (ShowList >> Signal.send actions.address)
 
