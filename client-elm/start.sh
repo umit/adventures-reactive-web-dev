@@ -1,2 +1,2 @@
 #!/bin/bash
-elm make TodoList/View.elm --output ../public/generated-app.js
+elm make Main.elm --output ../public/generated-app.js

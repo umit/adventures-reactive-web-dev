@@ -1,4 +1,6 @@
-module TodoList.View where
+module TodoList.View
+  ( view
+  ) where
 
 import Html exposing (Html, button, div, span, table, tbody, text, th, thead, td, tr)
 import Html.Attributes as Attr
