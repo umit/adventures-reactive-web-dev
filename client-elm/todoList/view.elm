@@ -5,7 +5,7 @@ import Html.Attributes as Attr
 import Html.Events exposing (on, onClick, targetValue)
 import Http
 import Json.Decode as Json exposing ((:=))
-import Task exposing (Task, andThen, fail, succeed)
+import Task exposing (Task, andThen, fail, mapError, onError, succeed)
 
 type alias Todo = { id: Int, priority: Int, description: String }
 type alias Model = List Todo
@@ -108,17 +108,22 @@ jsonTodoList =
     Json.list todoItem
 
 
-loadTodos : Bool -> Task Http.Error Model
+loadTodos : Model -> Task Http.Error Model
 loadTodos _ =
   Http.get jsonTodoList "/todoList"
 
 
-toLoadTask : Bool -> Task Bool Bool
-toLoadTask value =
-  if value then
-    succeed True
+handleError : Task Http.Error Model -> Task Model Model
+handleError =
+  mapError (always [])
+
+
+toLoadTask : Bool -> Task Model Model
+toLoadTask needValue =
+  if needValue then
+    fail []
   else
-    fail False
+    succeed []
 
 
 sendList : Model -> Task x ()
@@ -126,12 +131,12 @@ sendList =
   ShowList >> Signal.send actions.address
 
 
-runLoadTodos : Bool -> Task Bool ()
+runLoadTodos : Bool -> Task Model ()
 runLoadTodos value =
-  (toLoadTask value `andThen` loadTodos) `andThen` sendList
+  (toLoadTask value `onError` (loadTodos >> handleError)) `andThen` sendList
 
 
-port portRunLoadTodos : Signal (Task Http.Error ())
+port portRunLoadTodos : Signal (Task Model ())
 port portRunLoadTodos =
   Signal.map runLoadTodos onLoadTodos.signal
 
