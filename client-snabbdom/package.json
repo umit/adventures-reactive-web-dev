@@ -24,7 +24,9 @@
   },
   "homepage": "https://github.com/foxdonut/adventures-reactive-web-dev#readme",
   "dependencies": {
-    "snabbdom": "^0.3.1"
+    "snabbdom": "^0.3.1",
+    "snabbdom-jsx": "^0.3.0",
+    "union-type": "^0.2.0"
   },
   "devDependencies": {
     "babel-core": "^6.4.0",
