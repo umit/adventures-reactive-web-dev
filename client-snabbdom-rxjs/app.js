@@ -1,8 +1,5 @@
 import Type from "union-type";
-
-import most from "most";
-import {subject} from "most-subject";
-
+import Rx from "rxjs";
 import snabbdom from "snabbdom";
 
 // snabbdom setup
@@ -35,7 +32,7 @@ const view = address => counter => {
 };
 
 // mailbox setup
-const {observer, stream} = subject(Action.NoOp());
+const stream = new Rx.BehaviorSubject(Action.NoOp());
 
 // update function
 const update = (counter, action) => Action.case({
@@ -48,7 +45,7 @@ const update = (counter, action) => Action.case({
 const initialModel = 0;
 
 // view stream
-const view$ = stream.scan(update, initialModel).map(view(observer));
+const view$ = stream.scan(update, initialModel).map(view(stream));
 
 // view renderer
-view$.scan((vnode, view) => patch(vnode, view), appNode).drain();
+view$.scan((vnode, view) => patch(vnode, view), appNode).subscribe();
