@@ -5,8 +5,8 @@ import snabbdom from "snabbdom";
 
 // snabbdom setup
 const patch = snabbdom.init([
-  require('snabbdom/modules/props'),
-  require('snabbdom/modules/eventlisteners')
+  require("snabbdom/modules/props"),
+  require("snabbdom/modules/eventlisteners")
 ]);
 
 const h = require("snabbdom/h");
