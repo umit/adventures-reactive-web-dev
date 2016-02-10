@@ -1,30 +1,42 @@
 import {Injectable} from "angular2/core";
-import {Observable} from "rxjs/Observable";
+import {Observable, Subject} from "rxjs/Rx";
 import {Http, Response} from "angular2/http";
-// import "rxjs/Rx";
-import "rxjs/add/operator/map";
 
 import todoUrl from "./todoUrl";
 import {Todo} from "../model/todo";
 
 @Injectable()
 export class TodoService {
-  constructor(public http: Http) {
+  deleteTodo$ : Subject<number> = new Subject<number>();
+  saveTodo$: Subject<Todo> = new Subject<Todo>();
+
+  constructor(private http: Http) {
   }
 
-  receiveTodos(res: Response): Todo[] {
-    return <Todo[]>JSON.parse(res.text());
+  receiveTodos(res: Response): Array<Todo> {
+    return <Array<Todo>>JSON.parse(res.text());
   }
 
-  loadTodos(): Observable<Todo[]> {
-    return this.http.get(todoUrl.get).map(this.receiveTodos);
+  todoList(): Observable<Array<Todo>> {
+    const todoListAfterDelete$ = this.deleteTodo$
+      .map(todoUrl.delete)
+      .mergeMap(this.http.delete.bind(this.http))
+      .map(this.receiveTodos);
+
+    const todoListAfterSave$ = this.saveTodo$
+      .mergeMap(todo => this.http.post(todoUrl.save, JSON.stringify(todo)))
+      .map(this.receiveTodos);
+
+    return this.http.get(todoUrl.get).map(this.receiveTodos)
+      .merge(todoListAfterDelete$)
+      .merge(todoListAfterSave$);
   }
 
-  deleteTodo(todoId: number): Observable<Todo[]> {
-    return this.http.delete(todoUrl.delete(todoId)).map(this.receiveTodos);
+  deleteTodo(todoId: number): void {
+    this.deleteTodo$.next(todoId);
   }
 
-  saveTodo(todo: Todo): Observable<Todo[]> {
-    return this.http.post(todoUrl.save, JSON.stringify(todo)).map(this.receiveTodos);
+  saveTodo(todo: Todo): void {
+    this.saveTodo$.next(todo);
   }
 }

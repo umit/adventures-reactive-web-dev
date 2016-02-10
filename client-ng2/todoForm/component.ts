@@ -17,13 +17,16 @@ import {rangeValidator} from "./rangeValidator";
               [(ngModel)]="todo.priority" ngControl="priority" #priority="ngForm"/>
             <div [hidden]="!submitted || priority.valid">
               <span *ngIf="priority.control.hasError('required')" class="help-block">
-                Priority is required
+                Priority can't be blank
               </span>
               <span *ngIf="priority.control.hasError('invalidNumber')" class="help-block">
-                Priority must be a number.
+                Priority is not a number
               </span>
-              <span *ngIf="priority.control.hasError('invalidRange')" class="help-block">
-                Priority must be between 1 and 10.
+              <span *ngIf="priority.control.hasError('belowRange')" class="help-block">
+                Priority must be greater than 0
+              </span>
+              <span *ngIf="priority.control.hasError('aboveRange')" class="help-block">
+                Priority must be less than or equal to 10
               </span>
             </div>
           </div>
@@ -32,7 +35,7 @@ import {rangeValidator} from "./rangeValidator";
             <input type="text" id="description" name="description" class="form-control"
               [(ngModel)]="todo.description" ngControl="description" #description="ngForm"/>
             <div [hidden]="!submitted || description.valid">
-              <span class="help-block">Description is required</span>
+              <span class="help-block">Description can't be blank</span>
             </div>
           </div>
           <div>

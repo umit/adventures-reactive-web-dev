@@ -1,5 +1,6 @@
 import {Component} from "angular2/core";
 import {bootstrap} from "angular2/platform/browser";
+import {Observable} from "rxjs/Observable";
 import {HTTP_PROVIDERS} from "angular2/http";
 
 import {TodoList} from "./todoList/component";
@@ -11,7 +12,7 @@ import {TodoService} from "./service/todoService";
   selector: "#app",
   template: `
     <div class="todo-form" [todo]="todo" (saveTodo)="onSaveTodo($event)"></div>
-    <div class="todo-list" [todos]="todos"
+    <div class="todo-list" [todos$]="todos$"
       (editTodo)="onEditTodo($event)"
       (deleteTodo)="onDeleteTodo($event)">
     </div>
@@ -20,15 +21,11 @@ import {TodoService} from "./service/todoService";
   providers: [TodoService]
 })
 export class App {
-  todos: Todo[] = [];
+  todos$: Observable<Array<Todo>>;
   todo: Todo = {};
 
   constructor(private _todoService: TodoService) {
-    this._todoService.loadTodos().subscribe(this.receiveTodos.bind(this));
-  }
-
-  receiveTodos(todos: Todo[]) {
-    this.todos = todos;
+    this.todos$ = this._todoService.todoList();
   }
 
   onEditTodo(todo: Todo) {
@@ -36,11 +33,11 @@ export class App {
   }
 
   onDeleteTodo(todoId: number) {
-    this._todoService.deleteTodo(todoId).subscribe(this.receiveTodos.bind(this));
+    this._todoService.deleteTodo(todoId);
   }
 
   onSaveTodo(todo: Todo) {
-    this._todoService.saveTodo(todo).subscribe(this.receiveTodos.bind(this));
+    this._todoService.saveTodo(todo);
   }
 }
 

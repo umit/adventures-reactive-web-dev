@@ -1,4 +1,6 @@
-import {Component, EventEmitter, Input, Output} from "angular2/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "angular2/core";
+import {Observable} from "rxjs/Observable";
+
 import {Todo} from "../model/todo";
 import {TodoItem} from "./item";
 
@@ -25,10 +27,15 @@ import {TodoItem} from "./item";
   `,
   directives: [TodoItem]
 })
-export class TodoList {
-  @Input() todos: Todo[];
+export class TodoList implements OnInit {
+  @Input() todos$: Observable<Array<Todo>>;
+  todos: Array<Todo>;
   @Output() editTodo = new EventEmitter<Todo>();
   @Output() deleteTodo = new EventEmitter<number>();
+
+  ngOnInit() {
+    this.todos$.subscribe(todos => this.todos = todos);
+  }
 
   onEditTodo(todo: Todo) {
     this.editTodo.next(todo);
