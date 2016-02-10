@@ -41,8 +41,11 @@ const update = (counter, action) => Action.case({
   Decrement: value => counter - value
 }, action);
 
+// model : Number
+const initialModel = 0;
+
 // view stream
-const view$ = stream.scan(update, 13).map(view(observer));
+const view$ = stream.scan(update, initialModel).map(view(observer));
 
 // view renderer
 view$.scan((vnode, view) => patch(vnode, view), appNode).drain();
