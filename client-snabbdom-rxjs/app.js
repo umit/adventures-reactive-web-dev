@@ -34,7 +34,7 @@ const view = address => counter => {
 // mailbox setup
 const stream = new Rx.BehaviorSubject(Action.NoOp());
 
-// update function
+// update : Number -> Action -> Number
 const update = (counter, action) => Action.case({
   Increment: value => counter + value,
   Decrement: value => counter - value,
