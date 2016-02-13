@@ -6,8 +6,8 @@ module TodoList.Model
 
 
 type alias Todo = { id: Int, priority: Int, description: String }
-type alias Model = List Todo
+type alias Model = { todos: List Todo, error: String }
 
-initialModel : List Todo
+initialModel : Model
 initialModel =
-  []
+  {todos=[], error=""}

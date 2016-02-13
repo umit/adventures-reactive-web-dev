@@ -24,8 +24,8 @@ update action model =
     NoOp ->
       model
 
-    ShowList todos ->
-      todos
+    ShowList todoModel ->
+      todoModel
 
 
 actions : Signal.Mailbox Action
@@ -67,7 +67,7 @@ jsonTodoList =
         ("priority" := Json.int)
         ("description" := Json.string)
   in
-    Json.list todoItem
+    {todos=Json.list todoItem, error=""}
 
 
 loadTodos : Bool -> Task Http.Error Model
@@ -76,12 +76,12 @@ loadTodos indicator =
     Http.get jsonTodoList "/todoList"
     -- Http.get jsonTodoList "/todoListERROR"
   else
-    succeed [{id=0, priority=0, description="Waiting"}]
+    succeed {todos=[{id=0, priority=0, description="Waiting"}], error=""}
 
 
 sendList : (Maybe Model) -> Task x ()
 sendList =
-  (withDefault [{id=0, priority=0, description="Error"}])
+  (withDefault {todos=[{id=0, priority=0, description="Error"}], error=""})
   >> ShowList
   >> Signal.send actions.address
 
