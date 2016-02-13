@@ -2,7 +2,9 @@ import Rx from "rxjs";
 import Type from "union-type";
 import {always, identity} from "ramda";
 import Task from "data.task";
+import Maybe from "data.maybe";
 import {futurizeP} from "futurize";
+import {pipe} from "ramda";
 
 import ajax from "../util/ajax-axios";
 import todoUrl from "../util/todoUrl";
@@ -20,30 +22,42 @@ const update = action => model => Action.case({
   NoOp: always(model)
 });
 
-const actions = new Rx.BehaviorSubject(Action.NoOp());
+const signalAction = new Rx.BehaviorSubject(Action.NoOp());
 
-const onLoadTodos = new Rx.BehaviorSubject(false);
+const signalLoad = new Rx.BehaviorSubject(false);
 
 // loadTodos : Bool -> Task Http.Error Model
 const loadTodos = indicator => {
   if (indicator) {
-    return toTask(ajax.getJSON(todoUrl.get))
+    return toTask(ajax.getJSON(todoUrl.get)).map(todos =>
+      ({todos:todos, message:""}));
   }
   else {
-    return Task.of([{id:0, priority:0, description:"Waiting"}]);
+    return Task.of({todos:[], message:"Waiting..."});
   }
 };
 
+// toMaybe : Task x a -> Task never (Maybe a)
+const toMaybe = Task => task =>
+  new Task((reject, resolve) =>
+    task.fork(
+      rej => resolve(Maybe.Nothing()),
+      res => resolve(Maybe.Just(res))
+    )
+  );
+
 // sendList : (Maybe Model) -> Task x ()
-const sendList = mm =>
-  mm.getOrElse([{id:0, priority:0, description:"Error"}]);
-  /*
-  >> ShowList
-  >> Signal.send actions.address
+const sendList = mm => pipe(
+  Action.ShowList,
+  signalAction.next)(
+    mm.getOrElse({todos:[], message:"An error occurred."})
+  );
 
+// runLoadTodos : Bool -> Task Http.Error ()
+const runLoadTodos = indicator => pipe(
+  toMaybe,
+  sendList
+  )(loadTodos(indicator));
 
-runLoadTodos : Bool -> Task Http.Error ()
-runLoadTodos indicator =
-  (loadTodos indicator |> toMaybe) `andThen` sendList
-  */
+export {signalAction, signalLoad, update};
 

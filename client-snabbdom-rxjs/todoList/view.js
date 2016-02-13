@@ -15,15 +15,18 @@ const renderTodo = todo =>
   ]);
 
 // view : Signal.Address Bool -> Model -> Html
-const view = address => todos =>
-  div(".row", [
+const view = address => model => {
+  console.log("model:", model);
+  const onClickLoad = address => address.next(true);
+ 
+  return div(".row", [
     div(".col-md-8", [
       div([
         button(".btn.btn-primary.btn-sm",
-          {on: {click: address}},
+          {on: {click: [onClickLoad, address]}},
           "Load Todos")
       ]),
-      div("Todo List:"),
+      div("Todo List: " + model.message),
       table(".table", [
         thead([
           tr([
@@ -32,9 +35,10 @@ const view = address => todos =>
             th("Action")
           ])
         ]),
-        tbody(todos.map(renderTodo))
+        tbody(model.todos.map(renderTodo))
       ])
     ])
   ]);
+};
 
 export default view;
