@@ -4,7 +4,7 @@ import snabbdom from "snabbdom";
 
 import {initialModel} from "./todoList/model";
 import view from "./todoList/view";
-import {signalAction, signalLoad, update} from "./todoList/update";
+import {runLoadTodos, signalAction, signalLoad, update} from "./todoList/update";
 
 // snabbdom setup
 const patch = snabbdom.init([
@@ -20,3 +20,12 @@ const view$ = signalAction.scan(update, initialModel).map(view(signalLoad));
 
 // view renderer
 view$.scan((vnode, view) => patch(vnode, view), appNode).subscribe();
+
+// ports
+/*
+port portRunLoadTodos : Signal (Task Http.Error ())
+port portRunLoadTodos =
+  Signal.map runLoadTodos signalLoad
+*/
+
+signalLoad.map(runLoadTodos).map(t => t.fork()).subscribe();

@@ -13,7 +13,7 @@ const toTask = futurizeP(Task);
 
 const Action = Type({
   NoOp: [],
-  ShowList: [Array]
+  ShowList: [Object]
 });
 
 // update : Model -> Action -> Model
@@ -29,7 +29,7 @@ const signalLoad = new Rx.BehaviorSubject(false);
 // loadTodos : Bool -> Task Http.Error Model
 const loadTodos = indicator => {
   if (indicator) {
-    return toTask(ajax.getJSON(todoUrl.get)).map(todos =>
+    return toTask(() => ajax.getJSON(todoUrl.get))().map(todos =>
       ({todos:todos, message:""}));
   }
   else {
@@ -55,9 +55,9 @@ const sendList = mm => pipe(
 
 // runLoadTodos : Bool -> Task Http.Error ()
 const runLoadTodos = indicator => pipe(
-  toMaybe,
-  sendList
+  toMaybe(Task),
+  task => task.chain(sendList)
   )(loadTodos(indicator));
 
-export {signalAction, signalLoad, update};
+export {runLoadTodos, signalAction, signalLoad, update};
 
