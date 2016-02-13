@@ -16,11 +16,11 @@ const Action = Type({
   ShowList: [Array]
 });
 
-// update : Action -> Model -> Model
-const update = action => model => Action.case({
+// update : Model -> Action -> Model
+const update = (model, action) => Action.case({
   ShowList: identity,
   NoOp: always(model)
-});
+}, action);
 
 const signalAction = new Rx.BehaviorSubject(Action.NoOp());
 

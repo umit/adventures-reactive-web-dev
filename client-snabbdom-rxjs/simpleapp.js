@@ -1,8 +1,6 @@
 import Type from "union-type";
 import Rx from "rxjs";
 import snabbdom from "snabbdom";
-import _view from "./todoList/view";
-import _update from "./todoList/update";
 
 // snabbdom setup
 const patch = snabbdom.init([
