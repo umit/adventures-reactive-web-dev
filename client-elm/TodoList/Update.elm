@@ -9,7 +9,7 @@ module TodoList.Update
 import Http
 import Json.Decode as Json exposing ((:=))
 import Maybe exposing (Maybe, withDefault)
-import Task exposing (Task, andThen, fail, mapError, succeed, toMaybe)
+import Task exposing (Task, andThen, fail, map, succeed, toMaybe)
 
 import TodoList.Model exposing (Model, Todo)
 
@@ -59,7 +59,7 @@ address =
 -- message : Address a -> a -> Message
 
 
-jsonTodoList : Json.Decoder Model
+jsonTodoList : Json.Decoder (List Todo)
 jsonTodoList =
   let todoItem =
     Json.object3 Todo
@@ -67,21 +67,25 @@ jsonTodoList =
         ("priority" := Json.int)
         ("description" := Json.string)
   in
-    {todos=Json.list todoItem, error=""}
+    Json.list todoItem
 
 
 loadTodos : Bool -> Task Http.Error Model
 loadTodos indicator =
-  if indicator then
-    Http.get jsonTodoList "/todoList"
-    -- Http.get jsonTodoList "/todoListERROR"
-  else
-    succeed {todos=[{id=0, priority=0, description="Waiting"}], error=""}
+  map
+    (\todos -> {todos=todos, message=""})
+    (
+      if indicator then
+        Http.get jsonTodoList "/todoList"
+        -- Http.get jsonTodoList "/todoListERROR"
+      else
+        succeed [{id=0, priority=0, description="Waiting"}]
+    )
 
 
 sendList : (Maybe Model) -> Task x ()
 sendList =
-  (withDefault {todos=[{id=0, priority=0, description="Error"}], error=""})
+  (withDefault {todos=[], message="An error occurred."})
   >> ShowList
   >> Signal.send actions.address
 

@@ -25,7 +25,7 @@ renderTodo todo =
 
 
 view : Signal.Address Bool -> Model -> Html
-view address todos =
+view address model =
   div [ Attr.class "row" ]
   [ div [ Attr.class "col-md-8" ]
     [ div [] [ button
@@ -35,7 +35,7 @@ view address todos =
                ]
                [ text "Load Todos" ]
              ]
-    , div [] [ text "Todo List:"]
+    , div [] [ span [] [ text "Todo List:" ], span [] [ text model.message ] ]
     , table [ Attr.class "table" ]
       [ thead []
         [ tr []
@@ -44,7 +44,7 @@ view address todos =
           , th [] [ text "Action" ]
           ]
         ]
-      , tbody [] (List.map renderTodo todos)
+      , tbody [] (List.map renderTodo model.todos)
       ]
     ]
   ]
