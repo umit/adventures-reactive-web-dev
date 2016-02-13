@@ -1,6 +1,7 @@
 module Main where
 
 import Html exposing (Html)
+import Http
 import Task exposing (Task)
 
 import TodoList.View exposing (view)
@@ -18,7 +19,7 @@ main =
   Signal.map (view address) model
 
 
-port portRunLoadTodos : Signal (Task Model ())
+port portRunLoadTodos : Signal (Task Http.Error ())
 port portRunLoadTodos =
   Signal.map runLoadTodos signalLoad
 

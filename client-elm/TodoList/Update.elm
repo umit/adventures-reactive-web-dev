@@ -8,7 +8,8 @@ module TodoList.Update
 
 import Http
 import Json.Decode as Json exposing ((:=))
-import Task exposing (Task, andThen, fail, mapError, succeed)
+import Maybe exposing (Maybe, withDefault)
+import Task exposing (Task, andThen, fail, mapError, succeed, toMaybe)
 
 import TodoList.Model exposing (Model, Todo)
 
@@ -73,22 +74,20 @@ loadTodos : Bool -> Task Http.Error Model
 loadTodos indicator =
   if indicator then
     Http.get jsonTodoList "/todoList"
+    -- Http.get jsonTodoList "/todoListERROR"
   else
-    succeed []
+    succeed [{id=0, priority=0, description="Waiting"}]
 
 
-handleError : Task Http.Error Model -> Task Model Model
-handleError =
-  mapError (always [])
-
-
-sendList : Model -> Task x ()
+sendList : (Maybe Model) -> Task x ()
 sendList =
-  ShowList >> Signal.send actions.address
+  (withDefault [{id=0, priority=0, description="Error"}])
+  >> ShowList
+  >> Signal.send actions.address
 
 
-runLoadTodos : Bool -> Task Model ()
+runLoadTodos : Bool -> Task Http.Error ()
 runLoadTodos indicator =
-  (loadTodos indicator |> handleError) `andThen` sendList
+  (loadTodos indicator |> toMaybe) `andThen` sendList
 
 
