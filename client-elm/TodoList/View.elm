@@ -35,7 +35,7 @@ view address model =
                ]
                [ text "Load Todos" ]
              ]
-    , div [] [ span [] [ text "Todo List:" ], span [] [ text model.message ] ]
+    , div [] [ span [] [ text "Todo List: " ], span [] [ text model.message ] ]
     , table [ Attr.class "table" ]
       [ thead []
         [ tr []

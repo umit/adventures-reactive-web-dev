@@ -72,15 +72,13 @@ jsonTodoList =
 
 loadTodos : Bool -> Task Http.Error Model
 loadTodos indicator =
-  map
-    (\todos -> {todos=todos, message=""})
-    (
-      if indicator then
-        Http.get jsonTodoList "/todoList"
-        -- Http.get jsonTodoList "/todoListERROR"
-      else
-        succeed [{id=0, priority=0, description="Waiting"}]
-    )
+    if indicator then
+      map
+        (\todos -> {todos=todos, message=""})
+        (Http.get jsonTodoList "/todoList")
+        -- (Http.get jsonTodoList "/todoListERROR")
+    else
+      succeed {todos=[], message="Waiting..."}
 
 
 sendList : (Maybe Model) -> Task x ()
