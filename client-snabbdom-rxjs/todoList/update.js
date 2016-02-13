@@ -49,7 +49,7 @@ const toMaybe = Task => task =>
 // sendList : (Maybe Model) -> Task x ()
 const sendList = mm => pipe(
   Action.ShowList,
-  signalAction.next)(
+  signalAction.next.bind(signalAction))(
     mm.getOrElse({todos:[], message:"An error occurred."})
   );
 

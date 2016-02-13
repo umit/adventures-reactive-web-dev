@@ -17,7 +17,7 @@ const renderTodo = todo =>
 // view : Signal.Address Bool -> Model -> Html
 const view = address => model => {
   const onClickLoad = address => address.next(true);
- 
+
   return div(".row", [
     div(".col-md-8", [
       div([
