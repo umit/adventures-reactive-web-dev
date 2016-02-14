@@ -2,7 +2,6 @@ import Rx from "rxjs";
 import Type from "union-type";
 import {always, identity} from "ramda";
 import Task from "data.task";
-import Maybe from "data.maybe";
 import {futurizeP} from "futurize";
 import {pipe} from "ramda";
 
@@ -36,30 +35,6 @@ const loadTodos = indicator => {
     return Task.of({todos:[], message:"Waiting..."});
   }
 };
-
-// toMaybe : Task x a -> Task never (Maybe a)
-/*
-const toMaybe = ITask => task =>
-  new ITask((reject, resolve) => {
-  console.log("inside task:", task);
-  console.log("task.fork:", task.fork);
-    task.fork(
-      rej => resolve(Maybe.Nothing()),
-      res => resolve(Maybe.Just(res))
-    );
-    console.log("done");
-  }
-  );
-*/
-
-// sendList : (Maybe Model) -> Task x ()
-/*
-const sendList = mm => pipe(
-  Action.ShowList,
-  signalAction.next.bind(signalAction))(
-    mm.getOrElse({todos:[], message:"An error occurred."})
-  );
-*/
 
 // sendList : Model -> Task x ()
 const sendList = pipe(
