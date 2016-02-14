@@ -28,4 +28,4 @@ port portRunLoadTodos =
   Signal.map runLoadTodos signalLoad
 */
 
-signalLoad.map(runLoadTodos).map(t => t.fork()).subscribe();
+signalLoad.map(runLoadTodos).subscribe();

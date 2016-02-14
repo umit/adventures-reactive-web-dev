@@ -38,26 +38,41 @@ const loadTodos = indicator => {
 };
 
 // toMaybe : Task x a -> Task never (Maybe a)
-const toMaybe = Task => task =>
-  new Task((reject, resolve) =>
+/*
+const toMaybe = ITask => task =>
+  new ITask((reject, resolve) => {
+  console.log("inside task:", task);
+  console.log("task.fork:", task.fork);
     task.fork(
       rej => resolve(Maybe.Nothing()),
       res => resolve(Maybe.Just(res))
-    )
+    );
+    console.log("done");
+  }
   );
+*/
 
 // sendList : (Maybe Model) -> Task x ()
+/*
 const sendList = mm => pipe(
   Action.ShowList,
   signalAction.next.bind(signalAction))(
     mm.getOrElse({todos:[], message:"An error occurred."})
   );
+*/
+
+// sendList : Model -> Task x ()
+const sendList = pipe(
+  Action.ShowList,
+  signalAction.next.bind(signalAction)
+);
+
+const sendErrorMessage = () =>
+  signalAction.next(Action.ShowList({todos:[], message:"An error occurred."}));
 
 // runLoadTodos : Bool -> Task Http.Error ()
-const runLoadTodos = indicator => pipe(
-  toMaybe(Task),
-  task => task.chain(sendList)
-  )(loadTodos(indicator));
+const runLoadTodos = indicator =>
+  loadTodos(indicator).fork(sendErrorMessage, sendList);
 
 export {runLoadTodos, signalAction, signalLoad, update};
 
