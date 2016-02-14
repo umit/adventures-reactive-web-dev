@@ -42,7 +42,7 @@ const sendList = pipe(
   signalAction.next.bind(signalAction)
 );
 
-// defaultList : Http.Error -> Task x Model
+// defaultList : Http.Error -> Task never Model
 const defaultList = err => Task.of({todos:[], message:"An error occurred."});
 
 // runLoadTodos : Bool -> Task Http.Error ()

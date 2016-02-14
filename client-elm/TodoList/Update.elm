@@ -1,8 +1,7 @@
 module TodoList.Update
-  ( address
+  ( onAction
+  , onLoadTodos
   , runLoadTodos
-  , signalAction
-  , signalLoad
   , update
   ) where
 
@@ -28,29 +27,14 @@ update action model =
       todoModel
 
 
-actions : Signal.Mailbox Action
-actions =
+onAction : Signal.Mailbox Action
+onAction =
   Signal.mailbox NoOp
-
-
-signalAction : Signal Action
-signalAction =
-  actions.signal
 
 
 onLoadTodos : Signal.Mailbox Bool
 onLoadTodos =
   Signal.mailbox False
-
-
-signalLoad : Signal Bool
-signalLoad =
-  onLoadTodos.signal
-
-
-address : Signal.Address Bool
-address =
-  onLoadTodos.address
 
 
 -- andThen : Task x a -> (a -> Task x b) -> Task x b
@@ -86,7 +70,7 @@ sendList : (Maybe Model) -> Task x ()
 sendList =
   (withDefault {todos=[], message="An error occurred."})
   >> ShowList
-  >> Signal.send actions.address
+  >> Signal.send onAction.address
 
 
 runLoadTodos : Bool -> Task Http.Error ()
@@ -97,7 +81,7 @@ runLoadTodos indicator =
 
 sendList : Model -> Task x ()
 sendList = ShowList
-  >> Signal.send actions.address
+  >> Signal.send onAction.address
 
 
 defaultList : Http.Error -> Task x Model
