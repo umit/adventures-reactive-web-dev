@@ -1,6 +1,7 @@
 import Type from "union-type";
 import Rx from "rxjs";
 import snabbdom from "snabbdom";
+import {identity} from "ramda";
 
 import {initialModel} from "./todoList/model";
 import view from "./todoList/view";
@@ -28,4 +29,4 @@ port portRunLoadTodos =
   Signal.map runLoadTodos signalLoad
 */
 
-signalLoad.map(runLoadTodos).subscribe();
+signalLoad.map(runLoadTodos).map(t => t.fork(identity, identity)).subscribe();
