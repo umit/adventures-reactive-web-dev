@@ -5,7 +5,7 @@ import {identity} from "ramda";
 
 import {initialModel} from "./todoList/model";
 import view from "./todoList/view";
-import {runLoadTodos, signalAction, signalLoad, update} from "./todoList/update";
+import {runLoadTodos, onAction, onLoad, update} from "./todoList/update";
 
 // snabbdom setup
 const patch = snabbdom.init([
@@ -17,12 +17,12 @@ const patch = snabbdom.init([
 const appNode = document.getElementById("app");
 
 // view stream
-const view$ = signalAction.scan(update, initialModel).map(view(signalLoad));
+const view$ = onAction.scan(update, initialModel).map(view(onLoad));
 
 // view renderer
 view$.scan((vnode, view) => patch(vnode, view), appNode).subscribe();
 
 // ports
 // runLoadTodos : Bool -> Task Http.Error ()
-signalLoad.map(runLoadTodos).map(t => t.fork(identity, identity)).subscribe();
+onLoad.map(runLoadTodos).map(t => t.fork(identity, identity)).subscribe();
 

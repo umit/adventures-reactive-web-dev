@@ -21,9 +21,9 @@ const update = (model, action) => Action.case({
   NoOp: always(model)
 }, action);
 
-const signalAction = new Rx.BehaviorSubject(Action.NoOp());
+const onAction = new Rx.BehaviorSubject(Action.NoOp());
 
-const signalLoad = new Rx.BehaviorSubject(false);
+const onLoad = new Rx.BehaviorSubject(false);
 
 // loadTodos : Bool -> Task Http.Error Model
 const loadTodos = indicator => {
@@ -39,7 +39,7 @@ const loadTodos = indicator => {
 // sendList : Model -> Task x ()
 const sendList = pipe(
   Action.ShowList,
-  signalAction.next.bind(signalAction)
+  onAction.next.bind(onAction)
 );
 
 // defaultList : Http.Error -> Task never Model
@@ -49,5 +49,5 @@ const defaultList = err => Task.of({todos:[], message:"An error occurred."});
 const runLoadTodos = indicator =>
   loadTodos(indicator).orElse(defaultList).map(sendList);
 
-export {runLoadTodos, signalAction, signalLoad, update};
+export {runLoadTodos, onAction, onLoad, update};
 
