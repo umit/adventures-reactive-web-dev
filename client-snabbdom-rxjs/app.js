@@ -23,10 +23,6 @@ const view$ = signalAction.scan(update, initialModel).map(view(signalLoad));
 view$.scan((vnode, view) => patch(vnode, view), appNode).subscribe();
 
 // ports
-/*
-port portRunLoadTodos : Signal (Task Http.Error ())
-port portRunLoadTodos =
-  Signal.map runLoadTodos signalLoad
-*/
-
+// runLoadTodos : Bool -> Task Http.Error ()
 signalLoad.map(runLoadTodos).map(t => t.fork(identity, identity)).subscribe();
+

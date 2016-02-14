@@ -42,15 +42,6 @@ const sendList = pipe(
   signalAction.next.bind(signalAction)
 );
 
-/*
-const sendErrorMessage = () =>
-  signalAction.next(Action.ShowList({todos:[], message:"An error occurred."}));
-
-// runLoadTodos : Bool -> Task Http.Error ()
-const runLoadTodos = indicator =>
-  loadTodos(indicator).fork(sendErrorMessage, sendList);
-*/
-
 // defaultList : Http.Error -> Task x Model
 const defaultList = err => Task.of({todos:[], message:"An error occurred."});
 
