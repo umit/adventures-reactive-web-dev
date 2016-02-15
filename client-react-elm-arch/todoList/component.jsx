@@ -28,21 +28,23 @@ const view = actions => model => {
   );
 
   return (
-    <div>
-      <div><button className="btn btn-primary btn-sm" onClick={onLoad}>Load Todos</button></div>
-      <div>Todo List: {model.message}</div>
-      <table className="table ng-table">
-        <thead>
-          <tr>
-            <th>Priority</th>
-            <th>Description</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {model.todos.map(renderTodo)}
-        </tbody>
-      </table>
+    <div className="row">
+      <div className="col-md-8">
+        <div><button className="btn btn-primary btn-sm" onClick={onLoad}>Load Todos</button></div>
+        <div>Todo List: {model.message}</div>
+        <table className="table ng-table">
+          <thead>
+            <tr>
+              <th>Priority</th>
+              <th>Description</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {model.todos.map(renderTodo)}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

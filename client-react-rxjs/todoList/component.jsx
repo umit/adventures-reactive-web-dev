@@ -30,20 +30,22 @@ export default function(todos, events$) {
   };
 
   return (
-    <div>
-      <div>Todo List:</div>
-      <table className="table ng-table">
-        <thead>
-          <tr>
-            <th>Priority</th>
-            <th>Description</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {todos.map(renderTodo)}
-        </tbody>
-      </table>
+    <div className="row">
+      <div className="col-md-8">
+        <div>Todo List:</div>
+        <table className="table ng-table">
+          <thead>
+            <tr>
+              <th>Priority</th>
+              <th>Description</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {todos.map(renderTodo)}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

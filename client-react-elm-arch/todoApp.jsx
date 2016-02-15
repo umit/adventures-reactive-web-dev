@@ -5,42 +5,26 @@ import "rxjs/add/operator/filter";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/scan";
 
-//import Rx from "rx";
 import {always, identity as id} from "ramda";
-//import ajax from "./util/ajax-rx-dom";
-//import formModel from "./todoForm/model";
 import {initialModel} from "./todoList/model";
-//import formEvents from "./todoForm/events";
-//import listEvents from "./todoList/events";
 import todoList from "./todoList/component.jsx";
-//import todoForm from "./todoForm/component.jsx";
-//import todoSummary from "./todoSummary/component.jsx";
+import todoForm from "./todoForm/component.jsx";
 import {Action, actions, runLoadTodos, runDeleteTodo, update} from "./todoList/update";
 
 export default function(element) {
-/*
-  const formEvents$ = formEvents();
-  const listEvents$ = listEvents();
-  const events$ = merge(formEvents$, listEvents$);
+  const listView = todoList(actions);
+  const formView = todoForm(actions);
 
-  const formModel$ = formModel(events$);
-  const listModel$ = listModel(ajax, events$, formModel$);
-
-  const listView$ = listModel$.map(function(model) {
-    return todoList(model, events$);
-  });
-
-  const formView$ = formModel$.formModel$.map(function(model) {
-    return todoForm(model, events$);
-  });
-
-  const summaryView$ = listModel$.map(function(model) {
-    return todoSummary(model);
-  });
-*/
+  const appView = model => (
+    <div>
+      {formView(model)}
+      <div className="row"><div className="col-md-12">&nbsp;</div></div>
+      {listView(model)}
+    </div>
+  );
 
   // view stream
-  const view$ = actions.scan(update, initialModel).map(todoList(actions));
+  const view$ = actions.scan(update, initialModel).map(appView);
 
 /*
   const view$ = Rx.Observable.combineLatest(listView$, formView$, summaryView$, function(listView, formView, summaryView) {

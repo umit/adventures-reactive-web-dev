@@ -2,7 +2,7 @@ import React from "react";
 import {keys, reduce} from "ramda";
 import serialize from "form-serialize";
 
-export default function(model, events$) {
+const view = actions => model => {
   const getTodo = function(evt) {
     return serialize(evt.target.form, {hash: true});
   };
@@ -23,7 +23,8 @@ export default function(model, events$) {
     events$.cancelTodo$.onNext();
   };
 
-  const todo = model.todo;
+// FIXME: initial model should already have || {};
+  const todo = model.todo || {};
   const validationErrors = model.validationErrors || {};
   const classNames = reduce(function(acc, key) {
       acc[key] = "form-group has-error";
@@ -55,4 +56,6 @@ export default function(model, events$) {
     </div>
   );
 };
+
+export default view;
 
