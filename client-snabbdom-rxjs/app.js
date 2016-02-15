@@ -1,7 +1,7 @@
 import Type from "union-type";
 import Rx from "rxjs";
 import snabbdom from "snabbdom";
-import {identity} from "ramda";
+import {identity as id} from "ramda";
 
 import {initialModel} from "./todoList/model";
 import view from "./todoList/view";
@@ -24,5 +24,5 @@ view$.scan((vnode, view) => patch(vnode, view), appNode).subscribe();
 
 // ports
 // runLoadTodos : Bool -> Task Http.Error ()
-onLoad.map(runLoadTodos).map(t => t.fork(identity, identity)).subscribe();
+onLoad.map(runLoadTodos).map(t => t.fork(id, id)).subscribe();
 
