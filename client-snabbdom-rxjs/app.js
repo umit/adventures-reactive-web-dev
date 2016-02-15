@@ -1,5 +1,3 @@
-import Type from "union-type";
-import Rx from "rxjs";
 import snabbdom from "snabbdom";
 import {always, identity as id} from "ramda";
 

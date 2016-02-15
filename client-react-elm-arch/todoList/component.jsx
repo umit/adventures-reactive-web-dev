@@ -1,37 +1,36 @@
 import React from "react";
 
-export default function(todos, events$) {
-  const onEdit = function(todo) {
-    return function(evt) {
-      evt.preventDefault();
-      events$.editTodo$.onNext(todo);
-    }
+import {Action} from "./update";
+
+const view = address => model => {
+  const onLoad = evt => address.next(Action.LoadList());
+
+  const onEdit = todo => evt => {
+    evt.preventDefault();
+    events$.editTodo$.onNext(todo);
   };
 
-  const onDelete = function(todo) {
-    return function(evt) {
-      evt.preventDefault();
-      events$.deleteTodo$.onNext(todo.id);
-    }
+  const onDelete = todo => evt => {
+    evt.preventDefault();
+    events$.deleteTodo$.onNext(todo.id);
   };
 
-  const renderTodo = function(todo) {
-    return (
-      <tr key={todo.id}>
-        <td>{todo.priority}</td>
-        <td>{todo.description}</td>
-        <td>
-          <button className="btn btn-primary btn-xs" data-action="edit" onClick={onEdit(todo)}>Edit</button>
-          <span> </span>
-          <button className="btn btn-danger btn-xs" data-action="delete" onClick={onDelete(todo)}>Delete</button>
-        </td>
-      </tr>
-    );
-  };
+  const renderTodo = todo => (
+    <tr key={todo.id}>
+      <td>{todo.priority}</td>
+      <td>{todo.description}</td>
+      <td>
+        <button className="btn btn-primary btn-xs" onClick={onEdit(todo)}>Edit</button>
+        <span> </span>
+        <button className="btn btn-danger btn-xs" onClick={onDelete(todo)}>Delete</button>
+      </td>
+    </tr>
+  );
 
   return (
     <div>
-      <div>Todo List:</div>
+      <div><button className="btn btn-primary btn-sm" onClick={onLoad}>Load Todos</button></div>
+      <div>Todo List: {model.message}</div>
       <table className="table ng-table">
         <thead>
           <tr>
@@ -41,9 +40,11 @@ export default function(todos, events$) {
           </tr>
         </thead>
         <tbody>
-          {todos.map(renderTodo)}
+          {model.todos.map(renderTodo)}
         </tbody>
       </table>
     </div>
   );
 };
+
+export default view;
