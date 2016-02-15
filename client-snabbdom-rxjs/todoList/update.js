@@ -12,42 +12,37 @@ const toTask = futurizeP(Task);
 
 const Action = Type({
   NoOp: [],
+  LoadList: [],
   ShowList: [Object]
 });
 
 // update : Model -> Action -> Model
 const update = (model, action) => Action.case({
   ShowList: identity,
+  LoadList: always({todos:[], message:"Loading, please wait..."}),
   NoOp: always(model)
 }, action);
 
-const onAction = new Rx.BehaviorSubject(Action.NoOp());
-
-const onLoad = new Rx.BehaviorSubject(false);
+const actions = new Rx.BehaviorSubject(Action.NoOp());
 
 // loadTodos : Bool -> Task Http.Error Model
-const loadTodos = indicator => {
-  if (indicator) {
-    return toTask(() => ajax.getJSON(todoUrl.get))().map(todos =>
-      ({todos:todos, message:""}));
-  }
-  else {
-    return Task.of({todos:[], message:"Waiting..."});
-  }
+const loadTodos = () => {
+  return toTask(() => ajax.getJSON(todoUrl.get))().map(todos =>
+    ({todos:todos, message:""}));
 };
 
 // sendList : Model -> Task x ()
 const sendList = pipe(
   Action.ShowList,
-  onAction.next.bind(onAction)
+  actions.next.bind(actions)
 );
 
 // defaultList : Http.Error -> Task never Model
 const defaultList = err => Task.of({todos:[], message:"An error occurred."});
 
-// runLoadTodos : Bool -> Task Http.Error ()
-const runLoadTodos = indicator =>
-  loadTodos(indicator).orElse(defaultList).map(sendList);
+// runLoadTodos : Task Http.Error ()
+const runLoadTodos = () =>
+  loadTodos().orElse(defaultList).map(sendList);
 
-export {runLoadTodos, onAction, onLoad, update};
+export {Action, runLoadTodos, actions, update};
 

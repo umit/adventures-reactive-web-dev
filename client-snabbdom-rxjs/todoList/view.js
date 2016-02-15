@@ -1,3 +1,5 @@
+import {Action} from "./update";
+
 const h = require("snabbdom/h");
 const {button, div, span, table, tbody, text, th, thead, td, tr} =
   require("hyperscript-helpers")(h);
@@ -16,7 +18,7 @@ const renderTodo = todo =>
 
 // view : Signal.Address Bool -> Model -> Html
 const view = address => model => {
-  const onClickLoad = address => address.next(true);
+  const onClickLoad = address => address.next(Action.LoadList());
 
   return div(".row", [
     div(".col-md-8", [
