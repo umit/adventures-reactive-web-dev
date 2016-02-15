@@ -2,8 +2,8 @@ import React from "react";
 
 import {Action} from "./update";
 
-const view = address => model => {
-  const onLoad = evt => address.next(Action.LoadList());
+const view = actions => model => {
+  const onLoad = evt => actions.next(Action.LoadList());
 
   const onEdit = todo => evt => {
     evt.preventDefault();
@@ -12,7 +12,7 @@ const view = address => model => {
 
   const onDelete = todo => evt => {
     evt.preventDefault();
-    events$.deleteTodo$.onNext(todo.id);
+    actions.next(Action.DeleteTodo(todo.id));
   };
 
   const renderTodo = todo => (

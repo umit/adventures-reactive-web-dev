@@ -1,6 +1,10 @@
 import snabbdom from "snabbdom";
 import {always, identity as id} from "ramda";
 
+import "rxjs/add/operator/filter";
+import "rxjs/add/operator/map";
+import "rxjs/add/operator/scan";
+
 import {initialModel} from "./todoList/model";
 import view from "./todoList/view";
 import {Action, actions, runLoadTodos, update} from "./todoList/update";
@@ -21,11 +25,11 @@ const view$ = actions.scan(update, initialModel).map(view(actions));
 view$.scan((vnode, view) => patch(vnode, view), appNode).subscribe();
 
 // ports
-// runLoadTodos : Bool -> Task Http.Error ()
-const isLoadListAction = Action.case({
-  LoadList: always(true),
+const isAction = actionType => Action.case({
+  [actionType]: always(true),
   _: always(false)
 });
 
-actions.filter(isLoadListAction).map(runLoadTodos).map(t => t.fork(id, id)).subscribe();
+// runLoadTodos : Bool -> Task Http.Error ()
+actions.filter(isAction("LoadList")).map(runLoadTodos).map(t => t.fork(id, id)).subscribe();
 

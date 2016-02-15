@@ -1,8 +1,10 @@
 import React from "react";
 import {render} from "react-dom";
+
 import "rxjs/add/operator/filter";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/scan";
+
 //import Rx from "rx";
 import {always, identity as id} from "ramda";
 //import ajax from "./util/ajax-rx-dom";
@@ -13,7 +15,7 @@ import {initialModel} from "./todoList/model";
 import todoList from "./todoList/component.jsx";
 //import todoForm from "./todoForm/component.jsx";
 //import todoSummary from "./todoSummary/component.jsx";
-import {Action, actions, runLoadTodos, update} from "./todoList/update";
+import {Action, actions, runLoadTodos, runDeleteTodo, update} from "./todoList/update";
 
 export default function(element) {
 /*
@@ -55,11 +57,14 @@ export default function(element) {
   view$.subscribe(view => render(view, element));
 
   // ports
-  // runLoadTodos : Bool -> Task Http.Error ()
-  const isLoadListAction = Action.case({
-    LoadList: always(true),
+  const isAction = actionType => Action.case({
+    [actionType]: always(true),
     _: always(false)
   });
 
-  actions.filter(isLoadListAction).map(runLoadTodos).map(t => t.fork(id, id)).subscribe();
+  // runLoadTodos : Bool -> Task Http.Error ()
+  actions.filter(isAction("LoadList")).map(runLoadTodos).map(t => t.fork(id, id)).subscribe();
+
+  // runDeleteTodo : Number -> Task Http.Error ()
+  actions.filter(isAction("DeleteTodo")).map(runDeleteTodo).map(t => t.fork(id, id)).subscribe();
 };

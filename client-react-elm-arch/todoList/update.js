@@ -13,23 +13,28 @@ const toTask = futurizeP(Task);
 const Action = Type({
   NoOp: [],
   LoadList: [],
-  ShowList: [Object]
+  ShowList: [Object],
+  DeleteTodo: [Number]
 });
 
 // update : Model -> Action -> Model
 const update = (model, action) => Action.case({
   ShowList: identity,
   LoadList: always({todos:[], message:"Loading, please wait..."}),
-  NoOp: always(model)
+  _: always(model)
 }, action);
 
 const actions = new BehaviorSubject(Action.NoOp());
 
+const intoModel = todos => ({todos:todos, message:""});
+
 // loadTodos : Bool -> Task Http.Error Model
-const loadTodos = () => {
-  return toTask(() => ajax.getJSON(todoUrl.get))().map(todos =>
-    ({todos:todos, message:""}));
-};
+const loadTodos = () =>
+  toTask(() => ajax.getJSON(todoUrl.get))().map(intoModel);
+
+// deleteTodo : Number -> Task Http.Error Model
+const deleteTodo = (todoId) =>
+  toTask(() => ajax.deleteJSON(todoUrl.delete(todoId)))().map(intoModel);
 
 // sendList : Model -> Task x ()
 const sendList = pipe(
@@ -37,12 +42,16 @@ const sendList = pipe(
   actions.next.bind(actions)
 );
 
-// defaultList : Http.Error -> Task never Model
-const defaultList = err => Task.of({todos:[], message:"An error occurred."});
+// errorMessage : Http.Error -> Task never Model
+const errorMessage = err => Task.of({todos:[], message:"An error occurred."});
 
 // runLoadTodos : Task Http.Error ()
 const runLoadTodos = () =>
-  loadTodos().orElse(defaultList).map(sendList);
+  loadTodos().orElse(errorMessage).map(sendList);
 
-export {Action, runLoadTodos, actions, update};
+// runDeleteTodo : Task Http.Error ()
+const runDeleteTodo = (todoId) =>
+  deleteTodo(todoId).orElse(errorMessage).map(sendList);
+
+export {Action, runLoadTodos, runDeleteTodo, actions, update};
 
