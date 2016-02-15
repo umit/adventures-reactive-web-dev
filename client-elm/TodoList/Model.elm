@@ -10,4 +10,4 @@ type alias Model = { todos: List Todo, message: String }
 
 initialModel : Model
 initialModel =
-  {todos=[], message=""}
+  {todos=[], message="Initializing..."}

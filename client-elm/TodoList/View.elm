@@ -7,6 +7,7 @@ import Html.Attributes as Attr
 import Html.Events exposing (on, onClick, targetValue)
 
 import TodoList.Model exposing (Model, Todo)
+import TodoList.Update exposing (Action(LoadList))
 
 
 renderTodo : Todo -> Html
@@ -24,14 +25,13 @@ renderTodo todo =
   ]
 
 
-view : Signal.Address Bool -> Model -> Html
+view : Signal.Address Action -> Model -> Html
 view address model =
   div [ Attr.class "row" ]
   [ div [ Attr.class "col-md-8" ]
     [ div [] [ button
                [ Attr.class "btn btn-primary btn-sm"
---             , on "click" targetValue (Signal.message address NoOp |> always)
-               , onClick address True
+               , onClick address LoadList
                ]
                [ text "Load Todos" ]
              ]

@@ -1,6 +1,6 @@
 module TodoList.Update
-  ( onAction
-  , onLoadTodos
+  ( Action(LoadList)
+  , actions
   , runLoadTodos
   , update
   ) where
@@ -13,34 +13,27 @@ import Task exposing (Task, andThen, fail, map, onError, succeed, toMaybe)
 import TodoList.Model exposing (Model, Todo)
 
 type Action =
-    NoOp
+    Waiting
+  | LoadList
   | ShowList Model
 
 
 update : Action -> Model -> Model
-update action model =
+update action _ =
   case action of
-    NoOp ->
+    Waiting ->
+      {todos=[], message="Waiting..."}
+
+    LoadList ->
+      {todos=[], message="Loading, please wait..."}
+
+    ShowList model ->
       model
 
-    ShowList todoModel ->
-      todoModel
 
-
-onAction : Signal.Mailbox Action
-onAction =
-  Signal.mailbox NoOp
-
-
-onLoadTodos : Signal.Mailbox Bool
-onLoadTodos =
-  Signal.mailbox False
-
-
--- andThen : Task x a -> (a -> Task x b) -> Task x b
--- toResult : Task x a -> Task never (Result x a)
--- send : Address a -> a -> Task x ()
--- message : Address a -> a -> Message
+actions : Signal.Mailbox Action
+actions =
+  Signal.mailbox Waiting
 
 
 jsonTodoList : Json.Decoder (List Todo)
@@ -54,43 +47,28 @@ jsonTodoList =
     Json.list todoItem
 
 
-loadTodos : Bool -> Task Http.Error Model
-loadTodos indicator =
-    if indicator then
-      map
-        (\todos -> {todos=todos, message=""})
-        (Http.get jsonTodoList "/todoList")
-        -- (Http.get jsonTodoList "/todoListERROR")
-    else
-      succeed {todos=[], message="Waiting..."}
-
-
-{--
-sendList : (Maybe Model) -> Task x ()
-sendList =
-  (withDefault {todos=[], message="An error occurred."})
-  >> ShowList
-  >> Signal.send onAction.address
-
-
-runLoadTodos : Bool -> Task Http.Error ()
-runLoadTodos indicator =
-  (loadTodos indicator |> toMaybe) `andThen` sendList
---}
+loadTodos : Task Http.Error Model
+loadTodos =
+  map
+    (\todos -> {todos=todos, message=""})
+    (Http.get jsonTodoList "/todoList")
+    -- (Http.get jsonTodoList "/todoListERROR")
 
 
 sendList : Model -> Task x ()
 sendList = ShowList
-  >> Signal.send onAction.address
+  >> Signal.send actions.address
 
 
-defaultList : Http.Error -> Task x Model
-defaultList =
+errorMessage : Http.Error -> Task x Model
+errorMessage =
   always (succeed {todos=[], message="An error occurred."})
 
 
-runLoadTodos : Bool -> Task Http.Error ()
-runLoadTodos indicator =
-  (loadTodos indicator) `onError` defaultList `andThen` sendList
-
+runLoadTodos : Action -> Task Http.Error ()
+runLoadTodos action =
+  if action == LoadList then
+    loadTodos `onError` errorMessage `andThen` sendList
+  else
+    succeed ()
 
