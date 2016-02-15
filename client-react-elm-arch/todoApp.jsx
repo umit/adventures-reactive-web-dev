@@ -6,7 +6,8 @@ import "rxjs/add/operator/map";
 import "rxjs/add/operator/scan";
 
 import {always, identity as id} from "ramda";
-import {initialModel} from "./todoList/model";
+import {initialModel as listModel} from "./todoList/model";
+import {initialModel as formModel} from "./todoForm/model";
 import todoList from "./todoList/component.jsx";
 import todoForm from "./todoForm/component.jsx";
 import {Action, actions, runLoadTodos, runDeleteTodo, update} from "./todoList/update";
@@ -23,8 +24,13 @@ export default function(element) {
     </div>
   );
 
+  const model = {
+    list: listModel,
+    form: formModel
+  };
+
   // view stream
-  const view$ = actions.scan(update, initialModel).map(appView);
+  const view$ = actions.scan(update, model).map(appView);
 
 /*
   const view$ = Rx.Observable.combineLatest(listView$, formView$, summaryView$, function(listView, formView, summaryView) {

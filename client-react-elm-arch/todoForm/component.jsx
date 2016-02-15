@@ -23,9 +23,8 @@ const view = actions => model => {
     events$.cancelTodo$.onNext();
   };
 
-// FIXME: initial model should already have || {};
-  const todo = model.todo || {};
-  const validationErrors = model.validationErrors || {};
+  const todo = model.form.todo;
+  const validationErrors = model.form.validationErrors || {};
   const classNames = reduce(function(acc, key) {
       acc[key] = "form-group has-error";
       return acc;
