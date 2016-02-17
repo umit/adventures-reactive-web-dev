@@ -19,7 +19,6 @@ export default function(element) {
   const appView = model => (
     <div>
       {formView(model)}
-      <div className="row"><div className="col-md-12">&nbsp;</div></div>
       {listView(model)}
     </div>
   );

@@ -48,7 +48,7 @@ const view = actions => model => {
           <div>
             <button className="btn btn-primary btn-xs" onClick={onSave} data-action="save">Save</button>
             <span> </span>
-            <button className="btn btn-default btn-xs" onClick={onCancel} data-action="cancel">Cancel</button>
+            <button className="btn btn-danger btn-xs" onClick={onCancel} data-action="cancel">Cancel</button>
           </div>
         </form>
       </div>
