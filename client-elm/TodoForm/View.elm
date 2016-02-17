@@ -21,30 +21,21 @@ view address model =
         , input [ class "form-control" ] []
         , span [ class "help-block" ] [ text "" ]
         ]
+      , div [ class "form-group" ]
+        [ label [ for "description" ] [ text "Description:" ]
+        , input [ class "form-control" ] []
+        , span [ class "help-block" ] [ text "" ]
+        ]
+      , div []
+        [ button [ class "btn btn-primary btn-xs" ] [ text "Save" ]
+        , span [] [ text " " ]
+        , button [ class "btn btn-danger btn-xs" ] [ text "Cancel" ]
+        ]
       ]
     ]
   ]
 
 {--
-    [ div [] [ button
-               [ class "btn btn-primary btn-sm"
-               , onClick address LoadList
-               ]
-               [ text "Load Todos" ]
-             ]
-    , div [] [ span [] [ text "Todo List: " ], span [] [ text model.message ] ]
-    , table [ class "table" ]
-      [ thead []
-        [ tr []
-          [ th [] [ text "Priority" ]
-          , th [] [ text "Description" ]
-          , th [] [ text "Action" ]
-          ]
-        ]
-      , tbody [] (List.map renderTodo model.todos)
-      ]
-    ]
-  ]
     return div(".row",
       div(".col-md-4",
         form([

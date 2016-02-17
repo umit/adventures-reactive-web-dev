@@ -1,16 +1,24 @@
 module Main where
 
-import Html exposing (Html)
+import Html exposing (Html, div)
 import Http
 import Task exposing (Task)
 
 import TodoList.Feature exposing (model, todoListFeature, runLoadTodosTask)
-import TodoForm.Feature
+import TodoForm.Feature exposing (todoFormFeature)
+
+
+mainView : Html -> Html -> Html
+mainView todoListView todoFormView =
+  div []
+  [ todoFormView
+  , todoListView
+  ]
 
 
 main : Signal Html
 main =
-  todoListFeature
+  Signal.map2 mainView todoListFeature todoFormFeature
 
 
 port portRunLoadTodos : Signal (Task Http.Error ())
