@@ -4,12 +4,12 @@ import Html exposing (Html)
 import Http
 import Task exposing (Task)
 
-import TodoList.MainList exposing (model, mainList, runLoadTodosTask)
+import TodoList.Feature exposing (model, todoListFeature, runLoadTodosTask)
 
 
 main : Signal Html
 main =
-  mainList
+  todoListFeature
 
 
 port portRunLoadTodos : Signal (Task Http.Error ())

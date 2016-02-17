@@ -1,6 +1,6 @@
-module TodoList.MainList (
+module TodoList.Feature (
   model,
-  mainList,
+  todoListFeature,
   runLoadTodosTask
   ) where
 
@@ -18,8 +18,8 @@ model =
   Signal.foldp update initialModel actions.signal
 
 
-mainList : Signal Html
-mainList =
+todoListFeature : Signal Html
+todoListFeature =
   Signal.map (view actions.address) model
 
 
