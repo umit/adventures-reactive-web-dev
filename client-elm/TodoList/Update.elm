@@ -1,7 +1,6 @@
 module TodoList.Update
   ( Action(LoadList)
   , actions
-  , runLoadTodos
   , update
   ) where
 
@@ -9,26 +8,28 @@ import Http
 import Json.Decode as Json exposing ((:=))
 import Maybe exposing (Maybe, withDefault)
 import Task exposing (Task, andThen, fail, map, onError, succeed, toMaybe)
+import Effects exposing (Never)
 
 import TodoList.Model exposing (Model, Todo)
 
-type Action =
-    Waiting
+
+type Action
+  = Waiting
   | LoadList
   | ShowList Model
 
 
-update : Action -> Model -> Model
+update : Action -> Model -> (Model, Maybe (Task Never Action))
 update action _ =
   case action of
     Waiting ->
-      {todos=[], message="Waiting..."}
+      ({todos=[], message="Waiting..."}, Nothing)
 
     LoadList ->
-      {todos=[], message="Loading, please wait..."}
+      ({todos=[], message="Loading, please wait..."}, Just runLoadTodos)
 
     ShowList model ->
-      model
+      (model, Nothing)
 
 
 actions : Signal.Mailbox Action
@@ -55,20 +56,11 @@ loadTodos =
     -- (Http.get jsonTodoList "/todoListERROR")
 
 
-sendList : Model -> Task x ()
-sendList = ShowList
-  >> Signal.send actions.address
-
-
-errorMessage : Http.Error -> Task x Model
+errorMessage : Http.Error -> Task Never Model
 errorMessage =
   always (succeed {todos=[], message="An error occurred."})
 
 
-runLoadTodos : Action -> Task Http.Error ()
-runLoadTodos action =
-  if action == LoadList then
-    loadTodos `onError` errorMessage `andThen` sendList
-  else
-    succeed ()
-
+runLoadTodos : Task Never Action
+runLoadTodos =
+  (loadTodos `onError` errorMessage) |> Task.map ShowList

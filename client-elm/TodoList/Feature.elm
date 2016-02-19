@@ -1,7 +1,6 @@
 module TodoList.Feature (
   model,
-  todoListFeature,
-  runLoadTodosTask
+  todoListFeature
   ) where
 
 import Html exposing (Html)
@@ -10,7 +9,7 @@ import Task exposing (Task)
 
 import TodoList.View exposing (view)
 import TodoList.Model exposing (Model, initialModel)
-import TodoList.Update exposing (actions, runLoadTodos, update)
+import TodoList.Update exposing (actions, update)
 
 
 model : Signal Model
@@ -21,9 +20,3 @@ model =
 todoListFeature : Signal Html
 todoListFeature =
   Signal.map (view actions.address) model
-
-
-runLoadTodosTask : Signal (Task Http.Error ())
-runLoadTodosTask =
-  Signal.map runLoadTodos actions.signal
-
