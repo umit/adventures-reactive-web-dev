@@ -20,12 +20,15 @@ initialModel =
 
 
 update : Action -> Model -> (Model, MbTask Action)
-update action _ =
+update action model =
   case action of
     LoadList ->
       ({todos=[], message="Loading, please wait..."}, Just runLoadTodos)
 
-    ShowList model ->
+    ShowList list ->
+      (list, Nothing)
+
+    _ ->
       (model, Nothing)
 
 

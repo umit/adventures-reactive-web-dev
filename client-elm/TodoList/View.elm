@@ -10,17 +10,23 @@ import TodoList.Model exposing (Model, Todo)
 import TodoList.Action exposing (Action(..))
 
 
-renderTodo : Todo -> Html
-renderTodo todo =
+renderTodo : Signal.Address Action -> Todo -> Html
+renderTodo address todo =
   tr []
   [ td [] [ todo.priority |> toString |> text ]
   , td [] [ todo.description |> text ]
   , td []
     [ button
-      [ Attr.class "btn btn-primary btn-xs" ]
+      [ Attr.class "btn btn-primary btn-xs"
+      , onClick address (EditTodo todo)
+      ]
       [ text "Edit" ]
     , span [] [ text " " ]
-    , button [ Attr.class "btn btn-danger btn-xs" ] [ text "Delete" ]
+    , button
+      [ Attr.class "btn btn-danger btn-xs"
+      , onClick address (DeleteTodo (.id todo))
+      ]
+      [ text "Delete" ]
     ]
   ]
 
@@ -45,7 +51,7 @@ view address model =
           , th [] [ text "Action" ]
           ]
         ]
-      , tbody [] (List.map renderTodo model.todos)
+      , tbody [] (List.map (renderTodo address) model.todos)
       ]
     ]
   ]
