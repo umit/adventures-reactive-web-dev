@@ -1,10 +1,11 @@
 module Main where
 
+import Effects exposing (Never)
 import Html exposing (Html, div)
 import Http
 import Task exposing (Task)
 
-import TodoList.Feature exposing (model, todoListFeature)
+import TodoList.Feature exposing (model, runTaskAndNextAction, todoListFeature)
 import TodoForm.Feature exposing (todoFormFeature)
 
 
@@ -21,9 +22,7 @@ main =
   Signal.map2 mainView todoListFeature todoFormFeature
 
 
-{--
-port portRunLoadTodos : Signal (Task Http.Error ())
-port portRunLoadTodos =
-  runLoadTodosTask
---}
+port portRunTask : Signal (Task Never ())
+port portRunTask =
+  runTaskAndNextAction
 
