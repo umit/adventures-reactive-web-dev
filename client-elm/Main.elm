@@ -25,4 +25,3 @@ main =
 port portTaskRunner : Signal (Task Never ())
 port portTaskRunner =
   taskRunner
-

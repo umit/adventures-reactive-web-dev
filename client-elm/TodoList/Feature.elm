@@ -39,7 +39,7 @@ todoListFeature =
 
 runTaskAndSendAction : Task Never Action -> Task Never ()
 runTaskAndSendAction task =
-  task `andThen` (Signal.send actions.address)
+  task `andThen` Signal.send actions.address
 
 
 runTask : (Model, MbTask) -> Task Never ()
@@ -50,4 +50,3 @@ runTask (_, mbTask) =
 taskRunner : Signal (Task Never ())
 taskRunner =
   Signal.map runTask model'
-
