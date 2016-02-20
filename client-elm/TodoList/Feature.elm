@@ -1,6 +1,6 @@
 module TodoList.Feature (
   model,
-  runTaskAndNextAction,
+  taskRunner,
   todoListFeature
   ) where
 
@@ -47,7 +47,7 @@ runTask (_, mbTask) =
   withDefault (Task.succeed ()) (Maybe.map runTaskAndSendAction mbTask)
 
 
-runTaskAndNextAction : Signal (Task Never ())
-runTaskAndNextAction =
+taskRunner : Signal (Task Never ())
+taskRunner =
   Signal.map runTask model'
 
