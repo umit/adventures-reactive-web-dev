@@ -10,19 +10,21 @@ import Http
 import Maybe exposing (withDefault)
 import Task exposing (Task, andThen)
 
-import TodoList.View exposing (view)
+import Library.IO exposing (MbTask)
 import TodoList.Model exposing (Model)
-import TodoList.Update exposing (Action, MbTask, actions, initialModel, update)
+import TodoList.Action exposing (Action)
+import TodoList.View exposing (view)
+import TodoList.Update exposing (actions, initialModel, update)
 
 
-update' : Action -> (Model, MbTask) -> (Model, MbTask)
+update' : Action -> (Model, MbTask Action) -> (Model, MbTask Action)
 update' action pair =
   update action (fst pair)
 
 -- initialModel = ({todos=[], message="Initializing..."}, Nothing)
 -- actions = Signal.mailbox Waiting
 -- update action _ = case action of Waiting -> ({todos=[], message="Waiting..."}, Nothing)
-model' : Signal (Model, MbTask)
+model' : Signal (Model, MbTask Action)
 model' =
   Signal.foldp update' initialModel actions.signal
 
@@ -42,7 +44,7 @@ runTaskAndSendAction task =
   task `andThen` Signal.send actions.address
 
 
-runTask : (Model, MbTask) -> Task Never ()
+runTask : (Model, MbTask Action) -> Task Never ()
 runTask (_, mbTask) =
   withDefault (Task.succeed ()) (Maybe.map runTaskAndSendAction mbTask)
 
