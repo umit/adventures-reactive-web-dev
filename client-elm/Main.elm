@@ -4,7 +4,7 @@ import Html exposing (Html, div)
 import Http
 import Task exposing (Task)
 
-import TodoList.Feature exposing (model, todoListFeature, runLoadTodosTask)
+import TodoList.Feature exposing (model, todoListFeature)
 import TodoForm.Feature exposing (todoFormFeature)
 
 
@@ -21,7 +21,9 @@ main =
   Signal.map2 mainView todoListFeature todoFormFeature
 
 
+{--
 port portRunLoadTodos : Signal (Task Http.Error ())
 port portRunLoadTodos =
   runLoadTodosTask
+--}
 
