@@ -7,7 +7,7 @@ import Html.Attributes as Attr
 import Html.Events exposing (on, onClick, targetValue)
 
 import TodoList.Model exposing (Model, Todo)
-import TodoList.Update exposing (Action(LoadList))
+import TodoList.Update exposing (Action(..))
 
 
 renderTodo : Todo -> Html

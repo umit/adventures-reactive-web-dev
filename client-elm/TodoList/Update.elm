@@ -1,5 +1,5 @@
 module TodoList.Update
-  ( Action(LoadList)
+  ( Action(..)
   , MbTask
   , actions
   , initialModel
@@ -16,8 +16,7 @@ import TodoList.Model exposing (Model, Todo)
 
 
 type Action
-  = Waiting
-  | LoadList
+  = LoadList
   | ShowList Model
 
 type alias MbTask = Maybe (Task Never Action)
@@ -31,9 +30,6 @@ initialModel =
 update : Action -> Model -> (Model, MbTask)
 update action _ =
   case action of
-    Waiting ->
-      ({todos=[], message="Waiting..."}, Nothing)
-
     LoadList ->
       ({todos=[], message="Loading, please wait..."}, Just runLoadTodos)
 
@@ -43,7 +39,7 @@ update action _ =
 
 actions : Signal.Mailbox Action
 actions =
-  Signal.mailbox Waiting
+  Signal.mailbox (ShowList {message="WE NEVER SEE THIS", todos=[]})
 
 
 jsonTodoList : Json.Decoder (List Todo)
