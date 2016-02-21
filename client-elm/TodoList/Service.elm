@@ -1,5 +1,5 @@
 module TodoList.Service
-  ( loadTodosAction
+  ( loadTodos
   ) where
 
 import Effects exposing (Never)
@@ -7,7 +7,6 @@ import Http
 import Json.Decode as Json exposing ((:=))
 import Task exposing (Task, map, onError, succeed)
 
-import TodoList.Action exposing (Action(ShowList))
 import TodoList.Model exposing (Model, Todo)
 
 
@@ -22,8 +21,8 @@ jsonTodoList =
     Json.list todoItem
 
 
-loadTodos : Task Http.Error Model
-loadTodos =
+loadTodosHttp : Task Http.Error Model
+loadTodosHttp =
   map
     (\todos -> {todos=todos, message=""})
     (Http.get jsonTodoList "/todoList")
@@ -35,6 +34,6 @@ errorMessage =
   always (succeed {todos=[], message="An error occurred."})
 
 
-loadTodosAction : Task Never Action
-loadTodosAction =
-  (loadTodos `onError` errorMessage) |> Task.map ShowList
+loadTodos : Task Never Model
+loadTodos =
+  loadTodosHttp `onError` errorMessage

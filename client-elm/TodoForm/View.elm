@@ -1,5 +1,5 @@
-module TodoForm.View (
-  view
+module TodoForm.View
+  ( view
   ) where
 
 import Html exposing (Html, button, div, form, input, label, span, text)

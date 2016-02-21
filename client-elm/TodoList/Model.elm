@@ -4,6 +4,13 @@ module TodoList.Model
   ) where
 
 
-type alias Todo = { id: Int, priority: Int, description: String }
-type alias Model = { todos: List Todo, message: String }
+type alias Todo =
+  { id: Int
+  , priority: Int
+  , description: String
+  }
 
+type alias Model =
+  { todos: List Todo
+  , message: String
+  }
