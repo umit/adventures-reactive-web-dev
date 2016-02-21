@@ -5,7 +5,7 @@ import Html exposing (Html, div)
 import Http
 import Task exposing (Task)
 
-import TodoList.Feature exposing ({-taskRunner,-} todoListFeature)
+import TodoList.Feature exposing (todoListFeature)
 import TodoForm.Feature exposing (todoFormFeature)
 
 
@@ -19,10 +19,8 @@ mainView todoListView todoFormView =
 
 main : Signal Html
 main =
-  Signal.map2 mainView todoListFeature todoFormFeature
+  Signal.map2 mainView todoListFeature.viewSignal todoFormFeature
 
-{--
 port portTaskRunner : Signal (Task Never ())
 port portTaskRunner =
-  taskRunner
---}
+  todoListFeature.taskRunner

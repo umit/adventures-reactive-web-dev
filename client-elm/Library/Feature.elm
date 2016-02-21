@@ -1,10 +1,13 @@
 module Library.Feature
   ( createFeature
   , Config
-  --, Feature
+  , Feature
   ) where
 
+import Effects exposing (Never)
 import Html exposing (Html)
+import Maybe exposing (withDefault)
+import Task exposing (Task, andThen)
 
 import Library.IO exposing (MbTask)
 
@@ -16,27 +19,12 @@ type alias Config a m =
   , view: (Signal.Address a -> m -> Html)
   }
 
---type alias Feature =
-  --{ update
-  --}
+type alias Feature =
+  { viewSignal: Signal Html
+  , taskRunner: Signal (Task Never ())
+  }
 
-
---runTaskAndSendAction : Task Never Action -> Task Never ()
---runTaskAndSendAction task =
-  --task `andThen` Signal.send actions.address
-
-
---runTask : (Model, MbTask Action) -> Task Never ()
---runTask (_, mbTask) =
-  --withDefault (Task.succeed ()) (Maybe.map runTaskAndSendAction mbTask)
-
-
---taskRunner : Signal (Task Never ())
---taskRunner =
-  --Signal.map runTask modelAndMbTask
-
-
-createFeature : Config a m -> (Signal Html)
+createFeature : Config a m -> Feature
 createFeature config =
   let
     -- update : (Action -> (Model, MbTask Action) -> (Model, MbTask Action))
@@ -51,5 +39,19 @@ createFeature config =
     model =
       Signal.map fst modelAndMbTask
 
+    -- runTaskAndSendAction : Task Never Action -> Task Never ()
+    runTaskAndSendAction task =
+      task `andThen` Signal.send config.actions.address
+
+    -- runTask : (Model, MbTask Action) -> Task Never ()
+    runTask (_, mbTask) =
+      withDefault (Task.succeed ()) (Maybe.map runTaskAndSendAction mbTask)
+
+    -- taskRunner : Signal (Task Never ())
+    taskRunner =
+      Signal.map runTask modelAndMbTask
+
   in
-    Signal.map (config.view config.actions.address) model
+    { viewSignal = Signal.map (config.view config.actions.address) model
+    , taskRunner = taskRunner
+    }
