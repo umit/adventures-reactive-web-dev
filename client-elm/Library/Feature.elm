@@ -33,23 +33,23 @@ type alias Config a m =
 
 --taskRunner : Signal (Task Never ())
 --taskRunner =
-  --Signal.map runTask model'
+  --Signal.map runTask modelAndMbTask
 
 
 createFeature : Config a m -> (Signal Html)
 createFeature config =
   let
-    -- update' : (Action -> (Model, MbTask Action) -> (Model, MbTask Action))
-    update' action pair =
+    -- update : (Action -> (Model, MbTask Action) -> (Model, MbTask Action))
+    update action pair =
       config.update action (fst pair)
 
-    -- model' : Signal (Model, MbTask Action)
-    model' =
-      Signal.foldp update' config.initialModel config.actions.signal
+    -- modelAndMbTask : Signal (Model, MbTask Action)
+    modelAndMbTask =
+      Signal.foldp update config.initialModel config.actions.signal
 
     -- model : Signal Model
     model =
-      Signal.map fst model'
+      Signal.map fst modelAndMbTask
 
   in
     Signal.map (config.view config.actions.address) model
