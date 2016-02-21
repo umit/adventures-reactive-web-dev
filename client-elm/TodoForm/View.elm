@@ -6,8 +6,8 @@ import Html exposing (Html, button, div, form, input, label, span, text)
 import Html.Attributes exposing (class, for, name, type', value)
 import Html.Events exposing (on, onClick, targetValue)
 
+import TodoForm.Action exposing (Action)
 import TodoForm.Model exposing (Model)
-import TodoForm.Update exposing (Action)
 
 
 view : Signal.Address Action -> Model -> Html

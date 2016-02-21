@@ -3,8 +3,9 @@ module TodoList.Feature
   ) where
 
 import Library.Feature exposing (Feature, createFeature)
-import TodoList.View exposing (view)
+
 import TodoList.Update exposing (actions, initialModel, update)
+import TodoList.View exposing (view)
 
 
 todoListFeature : Feature

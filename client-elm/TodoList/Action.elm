@@ -6,7 +6,8 @@ import TodoList.Model exposing (Model, Todo)
 
 
 type Action
-  = LoadList
+  = NoOp
+  | LoadList
   | ShowList Model
   | EditTodo Todo
   | DeleteTodo Int

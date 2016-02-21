@@ -1,30 +1,33 @@
 module TodoForm.Update
-  ( Action
-  , actions
+  ( actions
+  , initialModel
   , update
   ) where
 
+import Library.IO exposing (MbTask)
+
+import TodoForm.Action exposing (Action(NoOp, Cancel, Save))
 import TodoForm.Model exposing (Model)
 
 
-type Action =
-    NoOp
-  | Cancel
-  | Save
+initialModel : (Model, MbTask Action)
+initialModel =
+  ({todo={id=0, priority=0, description=""}, validationErrors=[]}, Nothing)
+
 
 actions : Signal.Mailbox Action
 actions =
   Signal.mailbox NoOp
 
-update : Action -> Model -> Model
+
+update : Action -> Model -> (Model, MbTask Action)
 update action model =
   case action of
     NoOp ->
-      model
+      (model, Nothing)
 
     Cancel ->
-      model
+      (model, Nothing)
 
-    Save ->
-      model
-
+    Save todo ->
+      (model, Nothing)

@@ -1,20 +1,18 @@
 module TodoForm.Feature
-  where
+  ( todoFormFeature
+  ) where
 
-import Html exposing (Html)
+import Library.Feature exposing (Feature, createFeature)
 
+import TodoForm.Update exposing (actions, initialModel, update)
 import TodoForm.View exposing (view)
-import TodoForm.Model exposing (Model, initialModel)
-import TodoForm.Update exposing (actions, update)
 
 
-model : Signal Model
-model =
-  Signal.foldp update initialModel actions.signal
-
-
-todoFormFeature : Signal Html
+todoFormFeature : Feature
 todoFormFeature =
-  Signal.map (view actions.address) model
-
-
+  createFeature
+  { actions = actions
+  , initialModel = initialModel
+  , update = update
+  , view = view
+  }

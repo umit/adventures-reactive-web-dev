@@ -19,7 +19,7 @@ mainView todoListView todoFormView =
 
 main : Signal Html
 main =
-  Signal.map2 mainView todoListFeature.viewSignal todoFormFeature
+  Signal.map2 mainView todoListFeature.viewSignal todoFormFeature.viewSignal
 
 port portTaskRunner : Signal (Task Never ())
 port portTaskRunner =
