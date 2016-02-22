@@ -4,9 +4,9 @@ module TodoForm.View
 
 import Html exposing (Html, button, div, form, input, label, span, text)
 import Html.Attributes exposing (class, for, name, type', value)
-import Html.Events exposing (on, onClick, targetValue)
+import Html.Events exposing (onClick)
 
-import TodoForm.Action exposing (Action)
+import TodoForm.Action exposing (Action(Cancel, Save))
 import TodoForm.Model exposing (Model)
 
 
@@ -27,9 +27,17 @@ view address model =
         , span [ class "help-block" ] [ text "" ]
         ]
       , div []
-        [ button [ class "btn btn-primary btn-xs" ] [ text "Save" ]
+        [ button
+          [ class "btn btn-primary btn-xs"
+          , onClick address (Save model.todo)
+          ]
+          [ text "Save" ]
         , span [] [ text " " ]
-        , button [ class "btn btn-danger btn-xs" ] [ text "Cancel" ]
+        , button
+          [ class "btn btn-danger btn-xs"
+          , onClick address Cancel
+          ]
+          [ text "Cancel" ]
         ]
       ]
     ]

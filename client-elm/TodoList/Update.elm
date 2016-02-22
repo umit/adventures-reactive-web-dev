@@ -11,7 +11,6 @@ import Library.IO exposing (MbTask)
 
 import TodoList.Action exposing (Action(NoOp, LoadList, ShowList))
 import TodoList.Model exposing (Model)
-import TodoList.Service exposing (loadTodos)
 
 
 initialModel : (Model, MbTask Action)
@@ -24,19 +23,18 @@ actions =
   Signal.mailbox NoOp
 
 
-loadTodosAction : Task Never Action
-loadTodosAction =
-  loadTodos |> Task.map ShowList
-
-
-update : Action -> Model -> (Model, MbTask Action)
-update action model =
+update : Task Never Model -> Action -> Model -> (Model, MbTask Action)
+update loadTodos action model =
   case action of
     NoOp ->
       (model, Nothing)
 
     LoadList ->
-      ({todos=[], message="Loading, please wait..."}, Just loadTodosAction)
+      ( { todos=[]
+        , message="Loading, please wait..."
+        }
+      , Just (loadTodos |> Task.map ShowList)
+      )
 
     ShowList list ->
       (list, Nothing)
