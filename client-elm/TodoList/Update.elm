@@ -15,7 +15,7 @@ import TodoList.Model exposing (Model)
 
 initialModel : (Model, MbTask Action)
 initialModel =
-  ({todos=[], message="Initializing..."}, Nothing)
+  ({ todos = [], message = "Initializing..." }, Nothing)
 
 
 actions : Signal.Mailbox Action

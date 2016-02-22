@@ -19,12 +19,13 @@ type alias Config a m =
   , view: (Signal.Address a -> m -> Html)
   }
 
-type alias Feature =
+type alias Feature a =
   { viewSignal: Signal Html
+  , actions: Signal.Mailbox a
   , taskRunner: Signal (Task Never ())
   }
 
-createFeature : Config a m -> Feature
+createFeature : Config a m -> Feature a
 createFeature config =
   let
     -- update : (Action -> (Model, MbTask Action) -> (Model, MbTask Action))
@@ -53,5 +54,6 @@ createFeature config =
 
   in
     { viewSignal = Signal.map (config.view config.actions.address) model
+    , actions = config.actions
     , taskRunner = taskRunner
     }

@@ -6,13 +6,21 @@ module TodoForm.Update
 
 import Library.IO exposing (MbTask)
 
-import TodoForm.Action exposing (Action(NoOp, Cancel, Save))
+import TodoForm.Action exposing (Action(NoOp, Edit, Cancel, Save))
 import TodoForm.Model exposing (Model)
 
 
 initialModel : (Model, MbTask Action)
 initialModel =
-  ({todo={id=0, priority=0, description=""}, validationErrors=[]}, Nothing)
+  ( { todo =
+      { id = 0
+      , priority = 0
+      , description = ""
+      }
+    , validationErrors = []
+    }
+  , Nothing
+  )
 
 
 actions : Signal.Mailbox Action
@@ -25,6 +33,9 @@ update action model =
   case action of
     NoOp ->
       (model, Nothing)
+
+    Edit todo ->
+      ({ todo = todo, validationErrors = [] }, Nothing)
 
     Cancel ->
       (model, Nothing)

@@ -18,12 +18,20 @@ view address model =
       [ input [ type' "hidden", name "id", value "0" ] []
       , div [ class "form-group" ]
         [ label [ for "priority" ] [ text "Priority:" ]
-        , input [ class "form-control" ] []
+        , input
+          [ class "form-control"
+          , value (toString model.todo.priority)
+          ]
+          []
         , span [ class "help-block" ] [ text "" ]
         ]
       , div [ class "form-group" ]
         [ label [ for "description" ] [ text "Description:" ]
-        , input [ class "form-control" ] []
+        , input
+          [ class "form-control"
+          , value model.todo.description
+          ]
+          []
         , span [ class "help-block" ] [ text "" ]
         ]
       , div []
