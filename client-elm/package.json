@@ -1,0 +1,32 @@
+{
+  "name": "client-elm",
+  "version": "1.0.0",
+  "description": "Adventures in Reactive Web Development",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack",
+    "watch": "webpack --progress --colors --watch",
+    "dev": "node server/dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foxdonut/adventures-reactive-web-dev.git"
+  },
+  "keywords": [
+    "elm",
+    "example",
+    "reactive"
+  ],
+  "author": "foxdonut",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/foxdonut/adventures-reactive-web-dev/issues"
+  },
+  "homepage": "https://github.com/foxdonut/adventures-reactive-web-dev#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "elm-webpack-loader": "^2.0.0",
+    "webpack": "^1.12.9",
+    "webpack-dev-server": "^1.14.0"
+  }
+}
