@@ -38,7 +38,7 @@ update action model =
       ({ todo = todo, validationErrors = [] }, Nothing)
 
     Cancel ->
-      (model, Nothing)
+      initialModel
 
     Save todo ->
       (model, Nothing)

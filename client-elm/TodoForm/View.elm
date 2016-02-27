@@ -4,7 +4,7 @@ module TodoForm.View
 
 import Html exposing (Html, button, div, form, input, label, span, text)
 import Html.Attributes exposing (class, for, name, type', value)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onWithOptions, targetValue)
 
 import TodoForm.Action exposing (Action(Cancel, Save))
 import TodoForm.Model exposing (Model)
@@ -43,7 +43,11 @@ view address model =
         , span [] [ text " " ]
         , button
           [ class "btn btn-danger btn-xs"
-          , onClick address Cancel
+          , onWithOptions
+            "click"
+            { preventDefault = True, stopPropagation = False }
+            targetValue
+            (\_ -> Signal.message address Cancel)
           ]
           [ text "Cancel" ]
         ]
