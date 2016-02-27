@@ -3,7 +3,7 @@ module TodoList.Service
   ) where
 
 import Effects exposing (Never)
-import Http
+import Http exposing (Request, defaultSettings, empty, fromJson)
 import Json.Decode as Json exposing ((:=))
 import Task exposing (Task, map, onError, succeed)
 
@@ -21,12 +21,34 @@ jsonTodoList =
     Json.list todoItem
 
 
+intoModel : List Todo -> Model
+intoModel todos =
+  { todos = todos
+  , message = ""
+  }
+
+
 loadTodosHttp : Task Http.Error Model
 loadTodosHttp =
-  map
-    (\todos -> {todos=todos, message=""})
-    (Http.get jsonTodoList "/todoList")
+  map intoModel (Http.get jsonTodoList "/todoList")
     -- (Http.get jsonTodoList "/todoListERROR")
+
+
+deleteTodoRequest : Int -> Request
+deleteTodoRequest todoId =
+  { verb = "DELETE"
+  , headers = [ ( "Content-Type", "application/json" ) ]
+  , url = "/deleteTodo/" ++ (toString todoId)
+  , body = empty
+  }
+
+
+deleteTodoHttp : Int -> Task Http.Error Model
+deleteTodoHttp todoId =
+  map intoModel
+  ( Http.send defaultSettings (deleteTodoRequest todoId)
+    |> fromJson jsonTodoList
+  )
 
 
 errorMessage : Http.Error -> Task Never Model
