@@ -5,7 +5,7 @@ module TodoList.Feature
 import Library.Feature exposing (Feature, createFeature)
 
 import TodoList.Action exposing (Action)
-import TodoList.Service exposing (loadTodos)
+import TodoList.Service exposing (loadTodos, deleteTodo)
 import TodoList.Update exposing (actions, initialModel, update)
 import TodoList.View exposing (view)
 
@@ -15,6 +15,6 @@ todoListFeature =
   createFeature
   { actions = actions
   , initialModel = initialModel
-  , update = update loadTodos
+  , update = update loadTodos deleteTodo
   , view = view
   }

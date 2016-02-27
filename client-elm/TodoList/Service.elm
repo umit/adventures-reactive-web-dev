@@ -1,5 +1,6 @@
 module TodoList.Service
   ( loadTodos
+  , deleteTodo
   ) where
 
 import Effects exposing (Never)
@@ -59,3 +60,9 @@ errorMessage =
 loadTodos : Task Never Model
 loadTodos =
   loadTodosHttp `onError` errorMessage
+
+
+deleteTodo : Int -> Task Never Model
+deleteTodo todoId =
+  (deleteTodoHttp todoId) `onError` errorMessage
+
