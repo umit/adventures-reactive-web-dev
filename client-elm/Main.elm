@@ -36,16 +36,14 @@ main =
   Signal.map2 mainView todoListFeature.viewSignal todoFormFeature.viewSignal
 
 
-port portListTaskRunner : Signal (Task Never ())
-port portListTaskRunner =
-  todoListFeature.taskRunner
+port portTaskRunner : Signal (Task Never ())
+port portTaskRunner =
+  Signal.mergeMany
+  [ todoListFeature.taskRunner
+  , todoFormFeature.taskRunner
+  ]
 
 
 port portEditTodo : Signal (Task x ())
 port portEditTodo =
   Signal.map (editTodo todoFormFeature.actions.address) todoListFeature.actions.signal
-
-
-port portFormTaskRunner : Signal (Task Never ())
-port portFormTaskRunner =
-  todoFormFeature.taskRunner
