@@ -4,10 +4,16 @@ module TodoForm.View
 
 import Html exposing (Html, button, div, form, input, label, span, text)
 import Html.Attributes exposing (class, for, name, type', value)
-import Html.Events exposing (onWithOptions, targetValue)
+import Html.Events exposing (on, onWithOptions, targetValue)
 
-import TodoForm.Action exposing (Action(Cancel, Save))
+import TodoForm.Action exposing (Action(Cancel, Edit, Save))
 import TodoForm.Model exposing (Model)
+import TodoList.Model exposing (Todo)
+
+
+intoDesc : Todo -> String -> Todo
+intoDesc todo desc =
+  {todo | description = desc}
 
 
 view : Signal.Address Action -> Model -> Html
@@ -30,6 +36,7 @@ view address model =
         , input
           [ class "form-control"
           , value model.todo.description
+          , on "change" targetValue (\str -> Signal.message address (Edit (intoDesc model.todo str)))
           ]
           []
         , span [ class "help-block" ] [ text "" ]
@@ -58,28 +65,3 @@ view address model =
       ]
     ]
   ]
-
-{--
-    return div(".row",
-      div(".col-md-4",
-        form([
-          input({type:"hidden", name:"id", value:todo.id}),
-          div("." + (classNames.priority || "form-group"), [
-            label({htmlFor:"priority"}, "Priority:"),
-            input(".form-control", {type:"text", id:"priority", name:"priority", value:todo.priority}),
-            span(".help-block", validationErrors.priority)
-          ]),
-          div("." + (classNames.description || "form-group"), [
-            label({htmlFor:"description"}, "Description:"),
-            input(".form-control", {type:"text", id:"description", name:"description", value:todo.description}),
-            span(".help-block", validationErrors.description)
-          ]),
-          div([
-            button(".btn.btn-primary.btn-xs.saveTodo", "Save"),
-            span(" "),
-            button(".btn.btn-danger.btn-xs.cancelTodo", "Cancel")
-          ])
-        ])
-      )
-    );
---}
