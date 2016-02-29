@@ -15,6 +15,6 @@ todoListFeature =
   createFeature
   { actions = actions
   , initialModel = initialModel
-  , update = update loadTodos deleteTodo
+  , update = update {loadTodos = loadTodos, deleteTodo = deleteTodo}
   , view = view
   }

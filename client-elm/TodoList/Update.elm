@@ -10,7 +10,7 @@ import Task exposing (Task)
 import Library.IO exposing (MbTask)
 
 import TodoList.Action exposing (Action(NoOp, LoadList, ShowList, DeleteTodo))
-import TodoList.Model exposing (Model)
+import TodoList.Model exposing (Model, Tasks)
 
 
 initialModel : (Model, MbTask Action)
@@ -23,8 +23,8 @@ actions =
   Signal.mailbox NoOp
 
 
-update : Task Never Model -> (Int -> Task Never Model) -> Action -> Model -> (Model, MbTask Action)
-update loadTodos deleteTodo action model =
+update : Tasks -> Action -> Model -> (Model, MbTask Action)
+update tasks action model =
   case action of
     NoOp ->
       (model, Nothing)
@@ -33,7 +33,7 @@ update loadTodos deleteTodo action model =
       ( { todos = []
         , message = "Loading, please wait..."
         }
-      , Just (loadTodos |> Task.map ShowList)
+      , Just (tasks.loadTodos |> Task.map ShowList)
       )
 
     ShowList list ->
@@ -43,7 +43,7 @@ update loadTodos deleteTodo action model =
       ( { todos = []
         , message = "Deleting, please wait..."
         }
-      , Just (deleteTodo todoId |> Task.map ShowList)
+      , Just (tasks.deleteTodo todoId |> Task.map ShowList)
       )
 
     _ ->
