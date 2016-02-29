@@ -2,7 +2,7 @@ module TodoForm.Action
   ( Action(..)
   ) where
 
-import TodoList.Model exposing (Todo)
+import TodoList.Model exposing (Model, Todo)
 
 
 type Action
@@ -10,3 +10,4 @@ type Action
   | Edit Todo
   | Cancel
   | Save Todo
+  | UpdateList Model

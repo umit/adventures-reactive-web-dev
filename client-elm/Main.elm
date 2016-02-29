@@ -5,9 +5,9 @@ import Html exposing (Html, div)
 import Http
 import Task exposing (Task, succeed)
 
-import TodoForm.Action exposing (Action(Edit))
+import TodoForm.Action exposing (Action(Edit, UpdateList))
 import TodoForm.Feature exposing (todoFormFeature)
-import TodoList.Action exposing (Action(EditTodo))
+import TodoList.Action exposing (Action(EditTodo, ShowList))
 import TodoList.Feature exposing (todoListFeature)
 
 
@@ -31,6 +31,19 @@ editTodo formAddress listAction =
     _ ->
       succeed ()
 
+
+saveTodo : Signal.Address TodoList.Action.Action
+  -> TodoForm.Action.Action
+  -> (Task x ())
+
+saveTodo listAddress formAction =
+  case formAction of
+    UpdateList model ->
+      Signal.send listAddress (ShowList model)
+
+    _ ->
+      succeed ()
+
 main : Signal Html
 main =
   Signal.map2 mainView todoListFeature.viewSignal todoFormFeature.viewSignal
@@ -47,3 +60,8 @@ port portTaskRunner =
 port portEditTodo : Signal (Task x ())
 port portEditTodo =
   Signal.map (editTodo todoFormFeature.actions.address) todoListFeature.actions.signal
+
+
+port portSaveTodo : Signal (Task x ())
+port portSaveTodo =
+  Signal.map (saveTodo todoListFeature.actions.address) todoFormFeature.actions.signal

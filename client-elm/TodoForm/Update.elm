@@ -9,7 +9,7 @@ import Task exposing (Task)
 
 import Library.IO exposing (MbTask)
 
-import TodoForm.Action exposing (Action(NoOp, Edit, Cancel, Save))
+import TodoForm.Action exposing (Action(NoOp, Edit, Cancel, Save, UpdateList))
 import TodoForm.Model exposing (Model)
 import TodoList.Model exposing (Todo)
 
@@ -45,4 +45,7 @@ update saveTodo action model =
       initialModel
 
     Save todo ->
-      (model, Just (saveTodo todo |> Task.map (always Cancel)))
+      (model, Just (saveTodo todo |> Task.map UpdateList))
+
+    UpdateList _ ->
+      initialModel
