@@ -4,24 +4,24 @@ module TodoForm.Update
   , update
   ) where
 
-import Effects exposing (Never)
-import Task exposing (Task)
+import Effects exposing ( Never )
+import Task exposing ( Task )
 
-import Library.IO exposing (MbTask)
+import Library.IO exposing ( MbTask )
 
-import TodoForm.Action exposing (Action(NoOp, Edit, Cancel, Save, UpdateList))
-import TodoForm.Model exposing (Model)
-import TodoList.Model exposing (Todo)
+import TodoForm.Action exposing ( Action( NoOp, Edit, Cancel, Save, UpdateList ) )
+import TodoForm.Model exposing ( Model, Tasks )
+import TodoList.Model exposing ( Todo )
 
 
-initialModel : (Model, MbTask Action)
+initialModel : ( Model, MbTask Action )
 initialModel =
   ( { todo =
       { id = 0
       , priority = 0
       , description = ""
       }
-    , validationErrors = []
+    , validationErrors = [ ]
     }
   , Nothing
   )
@@ -32,20 +32,20 @@ actions =
   Signal.mailbox NoOp
 
 
-update : (Todo -> Task Never TodoList.Model.Model) -> Action -> Model -> (Model, MbTask Action)
-update saveTodo action model =
+update : Tasks -> Action -> Model -> ( Model, MbTask Action )
+update tasks action model =
   case action of
     NoOp ->
-      (model, Nothing)
+      ( model, Nothing )
 
     Edit todo ->
-      ({ todo = todo, validationErrors = [] }, Nothing)
+      ( { todo = todo, validationErrors = [ ] }, Nothing )
 
     Cancel ->
       initialModel
 
     Save todo ->
-      (model, Just (saveTodo todo |> Task.map UpdateList))
+      ( model, Just ( tasks.saveTodo todo |> Task.map UpdateList ) )
 
     UpdateList _ ->
       initialModel
