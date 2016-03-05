@@ -28,7 +28,7 @@ type alias Feature a =
 createFeature : Config a m -> Feature a
 createFeature config =
   let
-    -- update : (Action -> (Model, MbTask Action) -> (Model, MbTask Action))
+    -- update : Action -> (Model, MbTask Action) -> (Model, MbTask Action)
     update action pair =
       config.update action (fst pair)
 

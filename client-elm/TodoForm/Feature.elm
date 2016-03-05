@@ -15,6 +15,6 @@ todoFormFeature =
   createFeature
   { actions = actions
   , initialModel = initialModel
-  , update = update saveTodo
+  , update = update { saveTodo = saveTodo }
   , view = view
   }
