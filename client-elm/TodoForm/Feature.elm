@@ -10,10 +10,11 @@ import TodoForm.Update exposing (actions, initialModel, update)
 import TodoForm.View exposing (view)
 
 
-todoFormFeature : Feature Action
-todoFormFeature =
+todoFormFeature : Signal Action -> Feature
+todoFormFeature externalSignal =
   createFeature
-  { actions = actions
+  { signal = Signal.merge externalSignal actions.signal
+  , address = actions.address
   , initialModel = initialModel
   , update = update { saveTodo = saveTodo }
   , view = view

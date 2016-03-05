@@ -11,10 +11,11 @@ import TodoList.Update exposing ( actions, initialModel, update )
 import TodoList.View exposing ( view )
 
 
-todoListFeature : Signal.Address Todo -> Feature Action
+todoListFeature : Signal.Address Todo -> Feature
 todoListFeature editTodoAddress =
   createFeature
-  { actions = actions
+  { signal = actions.signal
+  , address = actions.address
   , initialModel = initialModel
   , update = update { loadTodos = loadTodos, deleteTodo = deleteTodo }
   , view = view editTodoAddress

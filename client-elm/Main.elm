@@ -28,11 +28,16 @@ editTodoAction =
   Signal.mailbox ( initialModel |> fst |> .todo |> Edit )
 
 
-todoListF : Feature TodoList.Action.Action
+todoListF : Feature
 todoListF =
   todoListFeature ( Signal.forwardTo editTodoAction.address Edit )
 
 
+todoFormF : Feature
+todoFormF =
+  todoFormFeature editTodoAction.signal
+
+{--
 saveTodo : Signal.Address TodoList.Action.Action
   -> TodoForm.Action.Action
   -> (Task x ())
@@ -44,20 +49,23 @@ saveTodo listAddress formAction =
 
     _ ->
       succeed ()
+--}
+
 
 main : Signal Html
 main =
-  Signal.map2 mainView todoListF.viewSignal todoFormFeature.viewSignal
+  Signal.map2 mainView todoListF.viewSignal todoFormF.viewSignal
 
 
 port portTaskRunner : Signal (Task Never ())
 port portTaskRunner =
   Signal.mergeMany
   [ todoListF.taskRunner
-  , todoFormFeature.taskRunner
+  , todoFormF.taskRunner
   ]
 
-
+{--
 port portSaveTodo : Signal (Task x ())
 port portSaveTodo =
   Signal.map (saveTodo todoListF.actions.address) todoFormFeature.actions.signal
+--}
