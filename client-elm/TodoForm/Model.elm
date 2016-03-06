@@ -16,5 +16,5 @@ type alias Model =
 
 type alias Tasks =
   { saveTodo : Todo -> Task Never TodoList.Model.Model
-  , showList : TodoList.Model.Model -> Task Never ()
+  , output : TodoList.Model.Model -> Task Never ()
   }

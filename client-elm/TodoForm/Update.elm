@@ -48,5 +48,5 @@ update tasks action model =
       ( model , Just ( tasks.saveTodo todo |> Task.map UpdateList ) )
 
     UpdateList model ->
-      ( fst initialModel , Just ( tasks.showList model |> Task.map ( always Cancel ) ) )
+      ( fst initialModel , Just ( tasks.output model |> Task.map ( always Cancel ) ) )
 

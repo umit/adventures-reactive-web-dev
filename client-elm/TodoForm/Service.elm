@@ -1,6 +1,5 @@
 module TodoForm.Service
   ( saveTodo
-  , showList
   ) where
 
 import Effects exposing ( Never )
@@ -51,9 +50,4 @@ errorMessage =
 saveTodo : Todo -> Task Never Model
 saveTodo todo =
   ( saveTodoHttp todo ) `onError` errorMessage
-
-
-showList : Signal.Address Model -> Model -> Task Never ()
-showList address model =
-  Signal.send address model
 

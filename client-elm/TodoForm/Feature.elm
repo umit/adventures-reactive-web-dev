@@ -5,7 +5,7 @@ module TodoForm.Feature
 import Library.Feature exposing ( Feature , createFeature )
 
 import TodoForm.Action exposing ( Action )
-import TodoForm.Service exposing ( saveTodo , showList )
+import TodoForm.Service exposing ( saveTodo )
 import TodoForm.Update exposing ( actions , initialModel , update )
 import TodoForm.View exposing ( view )
 import TodoList.Model exposing ( Model )
@@ -20,7 +20,7 @@ createTodoFormFeature inputSignal outputAddress =
   , update =
       update
       { saveTodo = saveTodo
-      , showList = showList outputAddress
+      , output = Signal.send outputAddress
       }
   , view = view
   }
