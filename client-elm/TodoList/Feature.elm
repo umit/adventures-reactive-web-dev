@@ -14,7 +14,7 @@ import TodoList.View exposing ( view )
 createTodoListFeature : Signal.Signal Action -> Signal.Address Todo -> Feature
 createTodoListFeature inputSignal outputAddress =
   createFeature
-  { signal = actions.signal
+  { signal = Signal.merge inputSignal actions.signal
   , address = actions.address
   , initialModel = initialModel
   , update = update { loadTodos = loadTodos, deleteTodo = deleteTodo }
