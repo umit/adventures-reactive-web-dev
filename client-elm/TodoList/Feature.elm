@@ -1,5 +1,5 @@
 module TodoList.Feature
-  ( todoListFeature
+  ( createTodoListFeature
   ) where
 
 import Library.Feature exposing ( Feature, createFeature )
@@ -11,12 +11,12 @@ import TodoList.Update exposing ( actions, initialModel, update )
 import TodoList.View exposing ( view )
 
 
-todoListFeature : Signal.Address Todo -> Feature
-todoListFeature editTodoAddress =
+createTodoListFeature : Signal.Signal Action -> Signal.Address Todo -> Feature
+createTodoListFeature inputSignal outputAddress =
   createFeature
   { signal = actions.signal
   , address = actions.address
   , initialModel = initialModel
   , update = update { loadTodos = loadTodos, deleteTodo = deleteTodo }
-  , view = view editTodoAddress
+  , view = view outputAddress
   }

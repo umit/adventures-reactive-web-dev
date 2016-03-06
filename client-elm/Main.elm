@@ -8,11 +8,12 @@ import Task exposing ( Task, succeed )
 import Library.Feature exposing ( Feature )
 
 import TodoForm.Action exposing ( Action ( Edit, UpdateList ) )
-import TodoForm.Feature exposing ( todoFormFeature )
+import TodoForm.Feature exposing ( createTodoFormFeature )
 import TodoForm.Update exposing ( initialModel )
 import TodoList.Action exposing ( Action ( ShowList ) )
-import TodoList.Feature exposing ( todoListFeature )
+import TodoList.Feature exposing ( createTodoListFeature )
 import TodoList.Model exposing ( Todo )
+import TodoList.Update exposing ( initialModel )
 
 
 mainView : Html -> Html -> Html
@@ -25,47 +26,37 @@ mainView todoListView todoFormView =
 
 editTodoAction : Signal.Mailbox TodoForm.Action.Action
 editTodoAction =
-  Signal.mailbox ( initialModel |> fst |> .todo |> Edit )
+  Signal.mailbox ( TodoForm.Update.initialModel |> fst |> .todo |> Edit )
 
 
-todoListF : Feature
-todoListF =
-  todoListFeature ( Signal.forwardTo editTodoAction.address Edit )
+saveTodoAction : Signal.Mailbox TodoList.Action.Action
+saveTodoAction =
+  Signal.mailbox ( TodoList.Update.initialModel |> fst |> ShowList )
 
 
-todoFormF : Feature
-todoFormF =
-  todoFormFeature editTodoAction.signal
+todoListFeature : Feature
+todoListFeature =
+  createTodoListFeature
+    saveTodoAction.signal
+    ( Signal.forwardTo editTodoAction.address Edit )
 
-{--
-saveTodo : Signal.Address TodoList.Action.Action
-  -> TodoForm.Action.Action
-  -> (Task x ())
 
-saveTodo listAddress formAction =
-  case formAction of
-    UpdateList model ->
-      Signal.send listAddress (ShowList model)
-
-    _ ->
-      succeed ()
---}
+todoFormFeature : Feature
+todoFormFeature =
+  createTodoFormFeature
+    editTodoAction.signal
+    ( Signal.forwardTo saveTodoAction.address ShowList )
 
 
 main : Signal Html
 main =
-  Signal.map2 mainView todoListF.viewSignal todoFormF.viewSignal
+  Signal.map2 mainView todoListFeature.viewSignal todoFormFeature.viewSignal
 
 
 port portTaskRunner : Signal (Task Never ())
 port portTaskRunner =
   Signal.mergeMany
-  [ todoListF.taskRunner
-  , todoFormF.taskRunner
+  [ todoListFeature.taskRunner
+  , todoFormFeature.taskRunner
   ]
 
-{--
-port portSaveTodo : Signal (Task x ())
-port portSaveTodo =
-  Signal.map (saveTodo todoListF.actions.address) todoFormFeature.actions.signal
---}
