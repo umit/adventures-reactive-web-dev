@@ -17,6 +17,10 @@ createTodoListFeature inputSignal outputAddress =
   { signal = Signal.merge inputSignal actions.signal
   , address = actions.address
   , initialModel = initialModel
-  , update = update { loadTodos = loadTodos, deleteTodo = deleteTodo }
+  , update =
+      update
+      { loadTodos = loadTodos
+      , deleteTodo = deleteTodo
+      }
   , view = view outputAddress
   }

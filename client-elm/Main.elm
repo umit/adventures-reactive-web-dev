@@ -24,28 +24,28 @@ mainView todoListView todoFormView =
   ]
 
 
-editTodoAction : Signal.Mailbox TodoForm.Action.Action
-editTodoAction =
+todoFormMailbox : Signal.Mailbox TodoForm.Action.Action
+todoFormMailbox =
   Signal.mailbox ( TodoForm.Update.initialModel |> fst |> .todo |> Edit )
 
 
-saveTodoAction : Signal.Mailbox TodoList.Action.Action
-saveTodoAction =
+todoListMailbox : Signal.Mailbox TodoList.Action.Action
+todoListMailbox =
   Signal.mailbox ( TodoList.Update.initialModel |> fst |> ShowList )
 
 
 todoListFeature : Feature
 todoListFeature =
   createTodoListFeature
-    saveTodoAction.signal
-    ( Signal.forwardTo editTodoAction.address Edit )
+    todoListMailbox.signal
+    ( Signal.forwardTo todoFormMailbox.address Edit )
 
 
 todoFormFeature : Feature
 todoFormFeature =
   createTodoFormFeature
-    editTodoAction.signal
-    ( Signal.forwardTo saveTodoAction.address ShowList )
+    todoFormMailbox.signal
+    ( Signal.forwardTo todoListMailbox.address ShowList )
 
 
 main : Signal Html
