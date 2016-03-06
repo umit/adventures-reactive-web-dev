@@ -2,11 +2,11 @@ module TodoForm.Feature
   ( createTodoFormFeature
   ) where
 
-import Library.Feature exposing ( Feature, createFeature )
+import Library.Feature exposing ( Feature , createFeature )
 
 import TodoForm.Action exposing ( Action )
-import TodoForm.Service exposing ( saveTodo )
-import TodoForm.Update exposing ( actions, initialModel, update )
+import TodoForm.Service exposing ( saveTodo , showList )
+import TodoForm.Update exposing ( actions , initialModel , update )
 import TodoForm.View exposing ( view )
 import TodoList.Model exposing ( Model )
 
@@ -17,6 +17,10 @@ createTodoFormFeature inputSignal outputAddress =
   { signal = Signal.merge inputSignal actions.signal
   , address = actions.address
   , initialModel = initialModel
-  , update = update { saveTodo = saveTodo }
+  , update =
+      update
+      { saveTodo = saveTodo
+      , showList = showList outputAddress
+      }
   , view = view
   }
