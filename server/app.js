@@ -56,6 +56,13 @@ var onDeleteTodo = function*(todoId) {
 
 app.use(routes.del("/deleteTodo/:todoId", onDeleteTodo));
 
+var r_onDeleteTodo = function*(todoId) {
+  deleteTodo(parseInt(todoId, 10));
+  this.status = 204;
+};
+
+app.use(routes.del("/r/deleteTodo/:todoId", r_onDeleteTodo));
+
 var saveTodo = function(todo) {
   todo.priority = parseInt(todo.priority, 10);
 
@@ -73,6 +80,7 @@ var saveTodo = function(todo) {
       }
     }
   }
+  return todo;
 }
 
 var onSaveTodo = function*() {
@@ -82,4 +90,11 @@ var onSaveTodo = function*() {
 
 app.use(routes.post("/saveTodo", onSaveTodo));
 
+var r_onSaveTodo = function*() {
+  this.body = saveTodo(yield parse.json(this));
+};
+
+app.use(routes.post("/r/saveTodo", r_onSaveTodo));
+
 module.exports = app;
+
