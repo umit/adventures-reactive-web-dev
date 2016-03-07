@@ -37,15 +37,21 @@ todoListMailbox =
 todoListFeature : Feature
 todoListFeature =
   createTodoListFeature
-    todoListMailbox.signal
-    ( Signal.forwardTo todoFormMailbox.address Edit )
+    { inputs = [ todoListMailbox.signal ]
+    , outputs =
+      { editTodoAddress = Signal.forwardTo todoFormMailbox.address Edit
+      }
+    }
 
 
 todoFormFeature : Feature
 todoFormFeature =
   createTodoFormFeature
-    todoFormMailbox.signal
-    ( Signal.forwardTo todoListMailbox.address ShowList )
+    { inputs = [ todoFormMailbox.signal ]
+    , outputs =
+      { updateListAddress = Signal.forwardTo todoListMailbox.address ShowList
+      }
+    }
 
 
 main : Signal Html

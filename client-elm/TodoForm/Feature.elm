@@ -11,16 +11,24 @@ import TodoForm.View exposing ( view )
 import TodoList.Model exposing ( Model )
 
 
-createTodoFormFeature : Signal.Signal Action -> Signal.Address Model -> Feature
-createTodoFormFeature inputSignal outputAddress =
+type alias Config =
+  { inputs : List ( Signal.Signal Action )
+  , outputs :
+    { updateListAddress : Signal.Address Model
+    }
+  }
+
+
+createTodoFormFeature : Config -> Feature
+createTodoFormFeature config =
   createFeature
-  { signal = Signal.merge inputSignal actions.signal
+  { signal = Signal.mergeMany ( actions.signal :: config.inputs )
   , address = actions.address
   , initialModel = initialModel
   , update =
       update
       { saveTodo = saveTodo
-      , output = Signal.send outputAddress
+      , output = Signal.send config.outputs.updateListAddress
       }
   , view = view
   }

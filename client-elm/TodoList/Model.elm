@@ -23,3 +23,4 @@ type alias Tasks =
   { loadTodos : Task Never Model
   , deleteTodo : (Int -> Task Never Model)
   }
+

@@ -11,10 +11,18 @@ import TodoList.Update exposing ( actions, initialModel, update )
 import TodoList.View exposing ( view )
 
 
-createTodoListFeature : Signal.Signal Action -> Signal.Address Todo -> Feature
-createTodoListFeature inputSignal outputAddress =
+type alias Config =
+  { inputs : List ( Signal.Signal Action )
+  , outputs :
+    { editTodoAddress : Signal.Address Todo 
+    }
+  }
+
+
+createTodoListFeature : Config -> Feature
+createTodoListFeature config =
   createFeature
-  { signal = Signal.merge inputSignal actions.signal
+  { signal = Signal.mergeMany ( actions.signal :: config.inputs )
   , address = actions.address
   , initialModel = initialModel
   , update =
@@ -22,5 +30,5 @@ createTodoListFeature inputSignal outputAddress =
       { loadTodos = loadTodos
       , deleteTodo = deleteTodo
       }
-  , view = view outputAddress
+  , view = view config.outputs.editTodoAddress
   }
