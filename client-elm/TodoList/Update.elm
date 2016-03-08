@@ -1,6 +1,5 @@
 module TodoList.Update
-  ( actions
-  , initialModel
+  ( initialModel
   , update
   ) where
 
@@ -15,16 +14,11 @@ import TodoList.Model exposing ( Model, Tasks )
 
 initialModel : ( Model, MbTask Action )
 initialModel =
-  ( { todos = []
+  ( { todos = [ ]
     , message = "Initializing..."
     }
   , Nothing
   )
-
-
-actions : Signal.Mailbox Action
-actions =
-  Signal.mailbox NoOp
 
 
 update : Tasks -> Action -> Model -> ( Model, MbTask Action )

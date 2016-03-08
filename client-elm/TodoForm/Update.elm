@@ -1,6 +1,5 @@
 module TodoForm.Update
-  ( actions
-  , initialModel
+  ( initialModel
   , update
   ) where
 
@@ -25,11 +24,6 @@ initialModel =
     }
   , Nothing
   )
-
-
-actions : Signal.Mailbox Action
-actions =
-  Signal.mailbox NoOp
 
 
 update : Tasks -> Action -> Model -> ( Model , MbTask Action )

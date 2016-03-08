@@ -22,8 +22,7 @@ type alias Config =
 createTodoFormFeature : Config -> Feature
 createTodoFormFeature config =
   createFeature
-  { signal = Signal.mergeMany ( actions.signal :: config.inputs )
-  , address = actions.address
+  { inputs = config.inputs
   , initialModel = initialModel
   , update =
       update

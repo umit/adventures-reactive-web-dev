@@ -13,8 +13,7 @@ import Library.IO exposing ( MbTask )
 
 
 type alias Config a m =
-  { signal : Signal a
-  , address : Signal.Address a
+  { inputs : List Signal a
   , initialModel : ( m , MbTask a )
   , update : ( a -> m -> ( m , MbTask a ) )
   , view : ( Signal.Address a -> m -> Html )
@@ -28,13 +27,28 @@ type alias Feature =
 createFeature : Config a m -> Feature
 createFeature config =
   let
+    -- intoList : a -> List a
+    intoList a = [ a ]
+
+    -- actions : Signal.Mailbox (List Action)
+    actions =
+      Signal.mailbox []
+
+    -- address : Address Action
+    address =
+      Signal.forwardTo actions.address intoList
+
     -- update : Action -> ( Model , MbTask Action ) -> ( Model , MbTask Action )
     update action pair =
       config.update action (fst pair)
 
-    -- modelAndMbTask : Signal  (Model , MbTask Action )
+    -- signal : Signal ( List Action )
+    signal =
+      config.inputs
+
+    -- modelAndMbTask : Signal (Model , MbTask Action )
     modelAndMbTask =
-      Signal.foldp update config.initialModel config.signal
+      Signal.foldp update config.initialModel signal
 
     -- model : Signal Model
     model =
@@ -42,7 +56,7 @@ createFeature config =
 
     -- runTaskAndSendAction : Task Never Action -> Task Never ()
     runTaskAndSendAction task =
-      task `andThen` Signal.send config.address
+      task `andThen` Signal.send address
 
     -- runTask : ( Model, MbTask Action ) -> Task Never ()
     runTask (_, mbTask) =
@@ -53,6 +67,6 @@ createFeature config =
       Signal.map runTask modelAndMbTask
 
   in
-    { viewSignal = Signal.map ( config.view config.address ) model
+    { viewSignal = Signal.map ( config.view address ) model
     , taskRunner = taskRunner
     }
