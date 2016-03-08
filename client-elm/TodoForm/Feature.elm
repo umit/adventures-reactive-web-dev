@@ -6,7 +6,7 @@ import Library.Feature exposing ( Feature , createFeature )
 
 import TodoForm.Action exposing ( Action )
 import TodoForm.Service exposing ( saveTodo )
-import TodoForm.Update exposing ( actions , initialModel , update )
+import TodoForm.Update exposing ( initialModel , update )
 import TodoForm.View exposing ( view )
 import TodoList.Model exposing ( Model )
 

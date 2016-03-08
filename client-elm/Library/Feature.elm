@@ -7,48 +7,48 @@ module Library.Feature
 import Effects exposing ( Never )
 import Html exposing ( Html )
 import Maybe exposing ( withDefault )
+import Signal exposing ( Address , foldp , forwardTo , merge , mergeMany )
 import Task exposing ( Task , andThen )
 
 import Library.IO exposing ( MbTask )
 
 
 type alias Config a m =
-  { inputs : List Signal a
+  { inputs : List ( Signal a )
   , initialModel : ( m , MbTask a )
   , update : ( a -> m -> ( m , MbTask a ) )
-  , view : ( Signal.Address a -> m -> Html )
+  , view : ( Address a -> m -> Html )
   }
 
 type alias Feature =
-  { viewSignal: Signal Html
-  , taskRunner: Signal ( Task Never () )
+  { viewSignal : Signal Html
+  , taskRunner : Signal ( Task Never () )
   }
 
 createFeature : Config a m -> Feature
 createFeature config =
   let
-    -- intoList : a -> List a
-    intoList a = [ a ]
-
-    -- actions : Signal.Mailbox (List Action)
+    -- actions : Signal.Mailbox (Maybe Action)
     actions =
-      Signal.mailbox []
+      Signal.mailbox Nothing
 
     -- address : Address Action
     address =
-      Signal.forwardTo actions.address intoList
+      forwardTo actions.address Just
 
-    -- update : Action -> ( Model , MbTask Action ) -> ( Model , MbTask Action )
-    update action pair =
-      config.update action (fst pair)
+    -- update : Maybe Action -> ( Model , MbTask Action ) -> ( Model , MbTask Action )
+    update maybeAction pair =
+      case maybeAction of
+        Nothing -> pair
+        Just action -> config.update action ( fst pair )
 
-    -- signal : Signal ( List Action )
+    -- signal : Signal ( Maybe Action )
     signal =
-      config.inputs
+      merge actions.signal ( mergeMany config.inputs |> Signal.map Just )
 
     -- modelAndMbTask : Signal (Model , MbTask Action )
     modelAndMbTask =
-      Signal.foldp update config.initialModel signal
+      foldp update config.initialModel signal
 
     -- model : Signal Model
     model =

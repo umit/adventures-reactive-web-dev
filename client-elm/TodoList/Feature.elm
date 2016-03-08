@@ -7,7 +7,7 @@ import Library.Feature exposing ( Feature, createFeature )
 import TodoList.Action exposing ( Action )
 import TodoList.Model exposing ( Todo )
 import TodoList.Service exposing ( loadTodos, deleteTodo )
-import TodoList.Update exposing ( actions, initialModel, update )
+import TodoList.Update exposing ( initialModel, update )
 import TodoList.View exposing ( view )
 
 
