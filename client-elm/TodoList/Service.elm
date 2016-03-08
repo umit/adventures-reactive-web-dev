@@ -1,20 +1,18 @@
-module TodoList.Service
-  ( loadTodos
-  , deleteTodo
-  ) where
+module TodoList.Service (loadTodos, deleteTodo) where
 
 import Effects exposing (Never)
 import Http exposing (Request, defaultSettings, empty, fromJson)
 import Json.Decode as Json exposing ((:=))
 import Task exposing (Task, map, onError, succeed)
-
 import TodoList.Model exposing (Model, Todo)
 
 
 jsonTodoList : Json.Decoder (List Todo)
 jsonTodoList =
-  let todoItem =
-    Json.object3 Todo
+  let
+    todoItem =
+      Json.object3
+        Todo
         ("id" := Json.int)
         ("priority" := Json.int)
         ("description" := Json.string)
@@ -32,7 +30,10 @@ intoModel todos =
 loadTodosHttp : Task Http.Error Model
 loadTodosHttp =
   map intoModel (Http.get jsonTodoList "/todoList")
-    -- (Http.get jsonTodoList "/todoListERROR")
+
+
+
+-- (Http.get jsonTodoList "/todoListERROR")
 
 
 deleteTodoRequest : Int -> Request
@@ -46,15 +47,16 @@ deleteTodoRequest todoId =
 
 deleteTodoHttp : Int -> Task Http.Error Model
 deleteTodoHttp todoId =
-  map intoModel
-  ( Http.send defaultSettings (deleteTodoRequest todoId)
-    |> fromJson jsonTodoList
-  )
+  map
+    intoModel
+    (Http.send defaultSettings (deleteTodoRequest todoId)
+      |> fromJson jsonTodoList
+    )
 
 
 errorMessage : Http.Error -> Task Never Model
 errorMessage =
-  always (succeed {todos=[], message="An error occurred."})
+  always (succeed { todos = [], message = "An error occurred." })
 
 
 loadTodos : Task Never Model
@@ -65,4 +67,3 @@ loadTodos =
 deleteTodo : Int -> Task Never Model
 deleteTodo todoId =
   (deleteTodoHttp todoId) `onError` errorMessage
-

@@ -1,46 +1,40 @@
-module TodoForm.Update
-  ( initialModel
-  , update
-  ) where
+module TodoForm.Update (initialModel, update) where
 
-import Effects exposing ( Never )
-import Task exposing ( Task )
-
-import Library.IO exposing ( MbTask )
-
-import TodoForm.Action exposing ( Action( NoOp , Edit , Cancel , Save , UpdateList ) )
-import TodoForm.Model exposing ( Model , Tasks )
-import TodoList.Model exposing ( Todo )
+import Effects exposing (Never)
+import Task exposing (Task)
+import Library.IO exposing (MbTask)
+import TodoForm.Action exposing (Action(NoOp, Edit, Cancel, Save, UpdateList))
+import TodoForm.Model exposing (Model, Tasks)
+import TodoList.Model exposing (Todo)
 
 
-initialModel : ( Model , MbTask Action )
+initialModel : ( Model, MbTask Action )
 initialModel =
   ( { todo =
-      { id = 0
-      , priority = 0
-      , description = ""
-      }
-    , validationErrors = [ ]
+        { id = 0
+        , priority = 0
+        , description = ""
+        }
+    , validationErrors = []
     }
   , Nothing
   )
 
 
-update : Tasks -> Action -> Model -> ( Model , MbTask Action )
+update : Tasks -> Action -> Model -> ( Model, MbTask Action )
 update tasks action model =
   case action of
     NoOp ->
-      ( model , Nothing )
+      ( model, Nothing )
 
     Edit todo ->
-      ( { todo = todo , validationErrors = [ ] } , Nothing )
+      ( { todo = todo, validationErrors = [] }, Nothing )
 
     Cancel ->
       initialModel
 
     Save todo ->
-      ( model , Just ( tasks.saveTodo todo |> Task.map UpdateList ) )
+      ( model, Just (tasks.saveTodo todo |> Task.map UpdateList) )
 
     UpdateList model ->
-      ( fst initialModel , Just ( tasks.output model |> Task.map ( always Cancel ) ) )
-
+      ( fst initialModel, Just (tasks.output model |> Task.map (always Cancel)) )
