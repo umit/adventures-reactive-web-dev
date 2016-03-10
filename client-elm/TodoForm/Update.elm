@@ -1,14 +1,13 @@
 module TodoForm.Update (initialModel, update) where
 
-import Effects exposing (Never)
+import Effects exposing (Effects, Never)
 import Task exposing (Task)
-import Library.IO exposing (MbTask)
 import TodoForm.Action exposing (Action(NoOp, Edit, Cancel, Save, UpdateList))
 import TodoForm.Model exposing (Model, Tasks)
 import TodoList.Model exposing (Todo)
 
 
-initialModel : ( Model, MbTask Action )
+initialModel : ( Model, Effects Action )
 initialModel =
   ( { todo =
         { id = 0
@@ -21,20 +20,20 @@ initialModel =
   )
 
 
-update : Tasks -> Action -> Model -> ( Model, MbTask Action )
+update : Tasks -> Action -> Model -> ( Model, Effects Action )
 update tasks action model =
   case action of
     NoOp ->
-      ( model, Nothing )
+      ( model, Effects.none )
 
     Edit todo ->
-      ( { todo = todo, validationErrors = [] }, Nothing )
+      ( { todo = todo, validationErrors = [] }, Effects.none )
 
     Cancel ->
       initialModel
 
     Save todo ->
-      ( model, Just (tasks.saveTodo todo |> Task.map UpdateList) )
+      ( model, Effects.task (tasks.saveTodo todo |> Task.map UpdateList) )
 
     UpdateList model ->
-      ( fst initialModel, Just (tasks.output model |> Task.map (always Cancel)) )
+      ( fst initialModel, Effects.task (tasks.output model |> Task.map (always Cancel)) )

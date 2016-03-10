@@ -8,10 +8,10 @@ import Task exposing (Task)
 
 main : Signal Html
 main =
-  todoMainFeature.viewSignal
+  todoMainFeature.html
 
 
-port portTaskRunner : Signal (Task Never ())
-port portTaskRunner =
-  todoMainFeature.taskRunner
+port tasks : Signal (Task Never ())
+port tasks =
+  todoMainFeature.task
 

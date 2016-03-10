@@ -3,7 +3,7 @@ module TodoMain (todoMainFeature) where
 import Effects exposing (Never)
 import Html exposing (Html, div)
 import Task exposing (Task)
-import Library.Feature exposing (Feature)
+import StartApp exposing (App, start)
 import TodoForm.Action exposing (Action(Edit))
 import TodoForm.Feature exposing (createTodoFormFeature)
 import TodoForm.Update exposing (initialModel)
@@ -22,7 +22,7 @@ todoListMailbox =
   Signal.mailbox (TodoList.Update.initialModel |> fst |> ShowList)
 
 
-todoListFeature : Feature
+todoListFeature : App 
 todoListFeature =
   createTodoListFeature
     { inputs = [ todoListMailbox.signal ]
@@ -32,7 +32,7 @@ todoListFeature =
     }
 
 
-todoFormFeature : Feature
+todoFormFeature : App
 todoFormFeature =
   createTodoFormFeature
     { inputs = [ todoFormMailbox.signal ]
@@ -51,22 +51,22 @@ todoMainView todoListView todoFormView =
     ]
 
 
-viewSignal : Signal Html
-viewSignal =
-  Signal.map2 todoMainView todoListFeature.viewSignal todoFormFeature.viewSignal
+html : Signal Html
+html =
+  Signal.map2 todoMainView todoListFeature.html todoFormFeature.html
 
 
-taskRunner : Signal (Task Never ())
-taskRunner =
+tasks : Signal (Task Never ())
+tasks =
   Signal.mergeMany
-    [ todoListFeature.taskRunner
-    , todoFormFeature.taskRunner
+    [ todoListFeature.tasks
+    , todoFormFeature.tasks
     ]
 
 
-todoMainFeature : Feature
+todoMainFeature : App
 todoMainFeature =
-  { viewSignal = viewSignal
-  , taskRunner = taskRunner
+  { html = html
+  , tasks = tasks
   }
 
