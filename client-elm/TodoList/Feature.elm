@@ -19,12 +19,13 @@ type alias Config =
 createTodoListFeature : Config -> App Model
 createTodoListFeature config =
   start
-    { inputs = config.inputs
-    , init = initialModel
+    { init = initialModel
     , update =
         update
           { loadTodos = loadTodos
           , deleteTodo = deleteTodo
           }
-    , view = view config.outputs.editTodoAddress
+    , view = view config.context.editTodoAddress
+    , inputs = config.inputs
     }
+

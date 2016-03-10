@@ -6,9 +6,11 @@ import Task exposing (Task)
 import StartApp exposing (App, start)
 import TodoForm.Action exposing (Action(Edit))
 import TodoForm.Feature exposing (createTodoFormFeature)
+import TodoForm.Model
 import TodoForm.Update exposing (initialModel)
 import TodoList.Action exposing (Action(ShowList))
 import TodoList.Feature exposing (createTodoListFeature)
+import TodoList.Model
 import TodoList.Update exposing (initialModel)
 
 
@@ -22,21 +24,21 @@ todoListMailbox =
   Signal.mailbox (TodoList.Update.initialModel |> fst |> ShowList)
 
 
-todoListFeature : App 
+todoListFeature : App TodoList.Model.Model
 todoListFeature =
   createTodoListFeature
     { inputs = [ todoListMailbox.signal ]
-    , outputs =
+    , context =
         { editTodoAddress = Signal.forwardTo todoFormMailbox.address Edit
         }
     }
 
 
-todoFormFeature : App
+todoFormFeature : App TodoForm.Model.Model
 todoFormFeature =
   createTodoFormFeature
     { inputs = [ todoFormMailbox.signal ]
-    , outputs =
+    , context =
         { updateListAddress = Signal.forwardTo todoListMailbox.address ShowList
         }
     }
@@ -64,7 +66,6 @@ tasks =
     ]
 
 
-todoMainFeature : App
 todoMainFeature =
   { html = html
   , tasks = tasks

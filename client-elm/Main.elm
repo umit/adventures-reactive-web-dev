@@ -13,5 +13,5 @@ main =
 
 port tasks : Signal (Task Never ())
 port tasks =
-  todoMainFeature.task
+  todoMainFeature.tasks
 

@@ -16,7 +16,7 @@ initialModel =
         }
     , validationErrors = []
     }
-  , Nothing
+  , Effects.none
   )
 
 
