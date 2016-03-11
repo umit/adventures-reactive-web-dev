@@ -1,11 +1,11 @@
 module TodoForm.View (view) where
 
+import Common.Model exposing (Todo)
 import Html exposing (Html, button, div, form, input, label, span, text)
 import Html.Attributes exposing (class, for, name, type', value)
 import Html.Events exposing (on, onWithOptions, targetValue)
 import TodoForm.Action exposing (Action(Cancel, Edit, Save))
 import TodoForm.Model exposing (Model)
-import TodoList.Model exposing (Todo)
 
 
 intoDesc : Todo -> String -> Todo
@@ -68,3 +68,4 @@ view address model =
             ]
         ]
     ]
+

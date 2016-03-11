@@ -1,10 +1,11 @@
 module TodoList.Service (loadTodos, deleteTodo) where
 
+import Common.Model exposing (Todo)
 import Effects exposing (Never)
 import Http exposing (Request, defaultSettings, empty, fromJson)
 import Json.Decode as Json exposing ((:=))
 import Task exposing (Task, map, onError, succeed)
-import TodoList.Model exposing (Model, Todo)
+import TodoList.Model exposing (Model)
 
 
 jsonTodoList : Json.Decoder (List Todo)

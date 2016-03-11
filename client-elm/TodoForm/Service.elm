@@ -1,11 +1,12 @@
 module TodoForm.Service (saveTodo) where
 
+import Common.Model exposing (Todo)
 import Effects exposing (Never)
 import Http exposing (empty, fromJson)
 import Json.Decode as Json exposing ((:=))
 import Json.Encode exposing (Value, encode, object)
 import Task exposing (Task, map, onError, succeed)
-import TodoList.Model exposing (Model, Todo)
+import TodoList.Model exposing (Model)
 
 
 jsonTodoList : Json.Decoder (List Todo)

@@ -1,6 +1,7 @@
 module TodoForm.Action (Action(..)) where
 
-import TodoList.Model exposing (Model, Todo)
+import Common.Model exposing (Todo)
+import TodoList.Model exposing (Model)
 
 
 type Action

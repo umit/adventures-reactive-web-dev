@@ -1,9 +1,10 @@
 module TodoList.View (view) where
 
+import Common.Model exposing (Todo)
 import Html exposing (Html, button, div, span, table, tbody, text, th, thead, td, tr)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
-import TodoList.Model exposing (Model, Todo)
+import TodoList.Model exposing (Model)
 import TodoList.Action exposing (Action(DeleteTodo, LoadList))
 
 
