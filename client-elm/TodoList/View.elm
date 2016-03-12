@@ -5,11 +5,11 @@ import Html exposing (Html, button, div, span, table, tbody, text, th, thead, td
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import TodoList.Model exposing (Model)
-import TodoList.Action exposing (Action(DeleteTodo, LoadList))
+import TodoList.Action exposing (Action(EditTodo, DeleteTodo, LoadList))
 
 
-renderTodo : Signal.Address Todo -> Signal.Address Action -> Todo -> Html
-renderTodo editTodoAddress address todo =
+renderTodo : Signal.Address Action -> Todo -> Html
+renderTodo address todo =
   tr
     []
     [ td [] [ todo.priority |> toString |> text ]
@@ -18,7 +18,7 @@ renderTodo editTodoAddress address todo =
         []
         [ button
             [ class "btn btn-primary btn-xs"
-            , onClick editTodoAddress todo
+            , onClick address (EditTodo todo)
             ]
             [ text "Edit" ]
         , span [] [ text " " ]
@@ -31,8 +31,8 @@ renderTodo editTodoAddress address todo =
     ]
 
 
-view : Signal.Address Todo -> Signal.Address Action -> Model -> Html
-view editTodoAddress address model =
+view : Signal.Address Action -> Model -> Html
+view address model =
   div
     [ class "row" ]
     [ div
@@ -57,7 +57,7 @@ view editTodoAddress address model =
                     , th [] [ text "Action" ]
                     ]
                 ]
-            , tbody [] (List.map (renderTodo editTodoAddress address) model.todos)
+            , tbody [] (List.map (renderTodo address) model.todos)
             ]
         ]
     ]

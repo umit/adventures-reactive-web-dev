@@ -28,7 +28,7 @@ todoListFeature =
   createTodoListFeature
     { inputs = [ todoListMailbox.signal ]
     , outputs =
-        { onEditTodo = Signal.forwardTo todoFormMailbox.address Edit 
+        { onEditTodo = [ Signal.forwardTo todoFormMailbox.address Edit ]
         }
     }
 

@@ -1,14 +1,16 @@
 module TodoList.Update (initialModelAndEffects, update) where
 
+import Common.Model exposing (Todo)
 import Effects exposing (Effects, Never)
 import Task exposing (Task)
-import TodoList.Action exposing (Action(NoOp, LoadList, ShowList, DeleteTodo))
+import TodoList.Action exposing (Action(NoOp, LoadList, ShowList, EditTodo, DeleteTodo))
 import TodoList.Model exposing (Model, initialModel)
 
 
 type alias Tasks =
   { loadTodos : Task Never Model
   , deleteTodo : Int -> Task Never Model
+  , signalEditTodo : Todo -> Effects ()
   }
 
 
@@ -32,6 +34,9 @@ update tasks action model =
 
     ShowList list ->
       ( list, Effects.none )
+
+    EditTodo todo ->
+      ( model, tasks.signalEditTodo todo |> Effects.map (always NoOp) )
 
     DeleteTodo todoId ->
       ( { todos = []
