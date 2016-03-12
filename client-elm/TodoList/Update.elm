@@ -3,7 +3,13 @@ module TodoList.Update (initialModelAndEffects, update) where
 import Effects exposing (Effects, Never)
 import Task exposing (Task)
 import TodoList.Action exposing (Action(NoOp, LoadList, ShowList, DeleteTodo))
-import TodoList.Model exposing (Model, Tasks, initialModel)
+import TodoList.Model exposing (Model, initialModel)
+
+
+type alias Tasks =
+  { loadTodos : Task Never Model
+  , deleteTodo : Int -> Task Never Model
+  }
 
 
 initialModelAndEffects : ( Model, Effects Action )

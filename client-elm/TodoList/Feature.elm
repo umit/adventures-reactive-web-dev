@@ -11,8 +11,8 @@ import TodoList.View exposing (view)
 
 type alias Config =
   { inputs : List (Signal Action)
-  , context :
-      { editTodoAddress : Signal.Address Todo
+  , outputs :
+      { onEditTodo : Signal.Address Todo
       }
   }
 
@@ -26,7 +26,7 @@ createTodoListFeature config =
           { loadTodos = loadTodos
           , deleteTodo = deleteTodo
           }
-    , view = view config.context.editTodoAddress
+    , view = view config.outputs.onEditTodo
     , inputs = config.inputs
     }
 

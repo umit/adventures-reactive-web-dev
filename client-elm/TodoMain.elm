@@ -27,8 +27,8 @@ todoListFeature : App TodoList.Model.Model
 todoListFeature =
   createTodoListFeature
     { inputs = [ todoListMailbox.signal ]
-    , context =
-        { editTodoAddress = Signal.forwardTo todoFormMailbox.address Edit
+    , outputs =
+        { onEditTodo = Signal.forwardTo todoFormMailbox.address Edit 
         }
     }
 
@@ -37,8 +37,8 @@ todoFormFeature : App TodoForm.Model.Model
 todoFormFeature =
   createTodoFormFeature
     { inputs = [ todoFormMailbox.signal ]
-    , context =
-        { updateListAddress = Signal.forwardTo todoListMailbox.address ShowList
+    , outputs =
+        { onSaveTodo = [ Signal.forwardTo todoListMailbox.address ShowList ]
         }
     }
 

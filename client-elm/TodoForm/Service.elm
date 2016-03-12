@@ -39,7 +39,13 @@ toJson todo =
 
 saveTodoHttp : Todo -> Task Http.Error Model
 saveTodoHttp todo =
-  map intoModel (Http.post jsonTodoList "/saveTodo" (toJson todo |> object |> encode 0 |> Http.string))
+  map
+    intoModel
+    (Http.post
+      jsonTodoList
+      "/saveTodo"
+      (toJson todo |> object |> encode 0 |> Http.string)
+    )
 
 
 errorMessage : Http.Error -> Task Never Model
@@ -50,3 +56,4 @@ errorMessage =
 saveTodo : Todo -> Task Never Model
 saveTodo todo =
   (saveTodoHttp todo) `onError` errorMessage
+

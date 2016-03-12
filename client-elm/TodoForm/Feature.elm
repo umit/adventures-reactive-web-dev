@@ -1,5 +1,6 @@
 module TodoForm.Feature (createTodoFormFeature) where
 
+import Effects
 import StartApp exposing (App, start)
 import TodoForm.Action exposing (Action)
 import TodoForm.Model
@@ -11,8 +12,8 @@ import TodoList.Model exposing (Model)
 
 type alias Config =
   { inputs : List (Signal.Signal Action)
-  , context :
-      { updateListAddress : Signal.Address Model
+  , outputs :
+      { onSaveTodo : List (Signal.Address Model)
       }
   }
 
@@ -24,8 +25,13 @@ createTodoFormFeature config =
     , update =
         update
           { saveTodo = saveTodo
-          , output = Signal.send config.context.updateListAddress
+          , signalSaveTodo =
+              \data ->
+                (List.map ((flip Signal.send) data) config.outputs.onSaveTodo)
+                  |> (List.map Effects.task)
+                  |> Effects.batch
           }
     , view = view
     , inputs = config.inputs
     }
+
