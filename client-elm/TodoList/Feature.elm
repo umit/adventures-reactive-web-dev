@@ -1,7 +1,7 @@
 module TodoList.Feature (createTodoListFeature) where
 
 import Common.Model exposing (Todo)
-import Library.Util exposing (broadcast)
+import Library.Util exposing (broadcastAsEffect)
 import StartApp exposing (App, start)
 import TodoList.Action exposing (Action)
 import TodoList.Model exposing (Model)
@@ -26,7 +26,7 @@ createTodoListFeature config =
         update
           { loadTodos = loadTodos
           , deleteTodo = deleteTodo
-          , signalEditTodo = broadcast config.outputs.onEditTodo
+          , signalEditTodo = broadcastAsEffect config.outputs.onEditTodo
           }
     , view = view
     , inputs = config.inputs

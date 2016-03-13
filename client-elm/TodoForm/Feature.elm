@@ -1,7 +1,7 @@
 module TodoForm.Feature (createTodoFormFeature) where
 
 import Common.Model exposing (Todo)
-import Library.Util exposing (broadcast)
+import Library.Util exposing (broadcastAsTask)
 import StartApp exposing (App, start)
 import TodoForm.Action exposing (Action)
 import TodoForm.Model exposing (Model)
@@ -25,7 +25,7 @@ createTodoFormFeature config =
     , update =
         update
           { saveTodo = saveTodo
-          , signalSaveTodo = broadcast config.outputs.onSaveTodo
+          , signalSaveTodo = broadcastAsTask config.outputs.onSaveTodo
           }
     , view = view
     , inputs = config.inputs

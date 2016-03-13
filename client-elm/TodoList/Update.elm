@@ -37,7 +37,7 @@ update tasks action model =
 
     UpdateList maybeTodo ->
       let
-        model =
+        updatedModel =
           case maybeTodo of
             Just todo ->
               { todos = []
@@ -47,7 +47,7 @@ update tasks action model =
             Nothing ->
               { model | message = "Sorry, an error occurred." }
       in
-        ( model, Effects.none )
+        ( updatedModel, Effects.none )
 
     EditTodo todo ->
       ( model, tasks.signalEditTodo todo |> Effects.map (always NoOp) )
