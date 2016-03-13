@@ -11,3 +11,4 @@ type Action
   | UpdateList (Maybe Todo)
   | EditTodo Todo
   | DeleteTodo Int
+  | DeletedTodo (Maybe Int)

@@ -3,13 +3,13 @@ module TodoList.Update (initialModelAndEffects, update) where
 import Common.Model exposing (Todo)
 import Effects exposing (Effects, Never)
 import Task exposing (Task)
-import TodoList.Action exposing (Action(NoOp, LoadList, ShowList, UpdateList, EditTodo, DeleteTodo))
+import TodoList.Action exposing (Action(NoOp, LoadList, ShowList, UpdateList, EditTodo, DeleteTodo, DeletedTodo))
 import TodoList.Model exposing (Model, initialModel)
 
 
 type alias Tasks =
   { loadTodos : Task Never Model
-  , deleteTodo : Int -> Task Never Model
+  , deleteTodo : Int -> Task Never (Maybe Int)
   , signalEditTodo : Todo -> Effects ()
   }
 
@@ -78,9 +78,19 @@ update tasks action model =
       ( model, tasks.signalEditTodo todo |> Effects.map (always NoOp) )
 
     DeleteTodo todoId ->
-      ( { todos = []
-        , message = "Deleting, please wait..."
-        }
-      , Effects.task (tasks.deleteTodo todoId |> Task.map ShowList)
+      ( { model | message = "Deleting, please wait..." }
+      , Effects.task (tasks.deleteTodo todoId |> Task.map DeletedTodo)
       )
+
+    DeletedTodo maybeTodoId ->
+      case maybeTodoId of
+        Just todoId ->
+          let
+            updatedTodos =
+              List.filter (\td -> td.id /= todoId) model.todos
+          in
+            ( { model | todos = updatedTodos, message = "" }, Effects.none )
+
+        Nothing ->
+          ( { model | message = "An error occured when deleting a Todo." }, Effects.none )
 

@@ -41,18 +41,15 @@ deleteTodoRequest : Int -> Request
 deleteTodoRequest todoId =
   { verb = "DELETE"
   , headers = [ ( "Content-Type", "application/json" ) ]
-  , url = "/deleteTodo/" ++ (toString todoId)
+  , url = "/api/deleteTodo/" ++ (toString todoId)
   , body = empty
   }
 
 
-deleteTodoHttp : Int -> Task Http.Error Model
+deleteTodoHttp : Int -> Task Http.RawError Int
 deleteTodoHttp todoId =
-  map
-    intoModel
-    (Http.send defaultSettings (deleteTodoRequest todoId)
-      |> fromJson jsonTodoList
-    )
+  Http.send defaultSettings (deleteTodoRequest todoId)
+    |> Task.map (always todoId)
 
 
 errorMessage : Http.Error -> Task Never Model
@@ -65,6 +62,12 @@ loadTodos =
   loadTodosHttp `onError` errorMessage
 
 
-deleteTodo : Int -> Task Never Model
+handleError : Http.RawError -> Task Never (Maybe Int)
+handleError =
+  always (succeed Nothing)
+
+
+deleteTodo : Int -> Task Never (Maybe Int)
 deleteTodo todoId =
-  (deleteTodoHttp todoId) `onError` errorMessage
+  (deleteTodoHttp todoId |> Task.map Just) `onError` handleError
+

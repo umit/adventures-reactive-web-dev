@@ -33,12 +33,12 @@ saveTodoHttp todo =
     (toJson todo |> object |> encode 0 |> Http.string)
 
 
-errorMessage : Http.Error -> Task Never (Maybe Todo)
-errorMessage =
+handleError : Http.Error -> Task Never (Maybe Todo)
+handleError =
   always (succeed Nothing)
 
 
 saveTodo : Todo -> Task Never (Maybe Todo)
 saveTodo todo =
-  (saveTodoHttp todo |> Task.map Just) `onError` errorMessage
+  (saveTodoHttp todo |> Task.map Just) `onError` handleError
 
