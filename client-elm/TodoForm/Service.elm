@@ -5,28 +5,16 @@ import Effects exposing (Never)
 import Http exposing (empty, fromJson)
 import Json.Decode as Json exposing ((:=))
 import Json.Encode exposing (Value, encode, object)
-import Task exposing (Task, map, onError, succeed)
-import TodoList.Model exposing (Model)
+import Task exposing (Task, onError, succeed)
 
 
-jsonTodoList : Json.Decoder (List Todo)
-jsonTodoList =
-  let
-    todoItem =
-      Json.object3
-        Todo
-        ("id" := Json.int)
-        ("priority" := Json.int)
-        ("description" := Json.string)
-  in
-    Json.list todoItem
-
-
-intoModel : List Todo -> Model
-intoModel todos =
-  { todos = todos
-  , message = ""
-  }
+jsonTodo : Json.Decoder Todo
+jsonTodo =
+  Json.object3
+    Todo
+    ("id" := Json.int)
+    ("priority" := Json.int)
+    ("description" := Json.string)
 
 
 toJson : Todo -> List ( String, Value )
@@ -37,23 +25,20 @@ toJson todo =
   ]
 
 
-saveTodoHttp : Todo -> Task Http.Error Model
+saveTodoHttp : Todo -> Task Http.Error Todo
 saveTodoHttp todo =
-  map
-    intoModel
-    (Http.post
-      jsonTodoList
-      "/saveTodo"
-      (toJson todo |> object |> encode 0 |> Http.string)
-    )
+  Http.post
+    jsonTodo
+    "/api/saveTodo"
+    (toJson todo |> object |> encode 0 |> Http.string)
 
 
-errorMessage : Http.Error -> Task Never Model
+errorMessage : Http.Error -> Task Never (Maybe Todo)
 errorMessage =
-  always (succeed { todos = [], message = "An error occurred." })
+  always (succeed Nothing)
 
 
-saveTodo : Todo -> Task Never Model
+saveTodo : Todo -> Task Never (Maybe Todo)
 saveTodo todo =
-  (saveTodoHttp todo) `onError` errorMessage
+  (saveTodoHttp todo |> Task.map Just) `onError` errorMessage
 

@@ -1,24 +1,24 @@
 module TodoForm.Feature (createTodoFormFeature) where
 
+import Common.Model exposing (Todo)
 import Library.Util exposing (broadcast)
 import StartApp exposing (App, start)
 import TodoForm.Action exposing (Action)
-import TodoForm.Model
+import TodoForm.Model exposing (Model)
 import TodoForm.Service exposing (saveTodo)
 import TodoForm.Update exposing (initialModelAndEffects, update)
 import TodoForm.View exposing (view)
-import TodoList.Model exposing (Model)
 
 
 type alias Config =
   { inputs : List (Signal.Signal Action)
   , outputs :
-      { onSaveTodo : List (Signal.Address Model)
+      { onSaveTodo : List (Signal.Address (Maybe Todo))
       }
   }
 
 
-createTodoFormFeature : Config -> App TodoForm.Model.Model
+createTodoFormFeature : Config -> App Model
 createTodoFormFeature config =
   start
     { init = initialModelAndEffects

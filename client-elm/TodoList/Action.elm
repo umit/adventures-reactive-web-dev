@@ -8,5 +8,6 @@ type Action
   = NoOp
   | LoadList
   | ShowList Model
+  | UpdateList (Maybe Todo)
   | EditTodo Todo
   | DeleteTodo Int

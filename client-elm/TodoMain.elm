@@ -8,7 +8,7 @@ import StartApp exposing (App, start)
 import TodoForm.Action exposing (Action(Edit))
 import TodoForm.Feature exposing (createTodoFormFeature)
 import TodoForm.Model
-import TodoList.Action exposing (Action(ShowList))
+import TodoList.Action exposing (Action(ShowList, UpdateList))
 import TodoList.Feature exposing (createTodoListFeature)
 import TodoList.Model
 
@@ -38,7 +38,7 @@ todoFormFeature =
   createTodoFormFeature
     { inputs = [ todoFormMailbox.signal ]
     , outputs =
-        { onSaveTodo = [ Signal.forwardTo todoListMailbox.address ShowList ]
+        { onSaveTodo = [ Signal.forwardTo todoListMailbox.address UpdateList ]
         }
     }
 

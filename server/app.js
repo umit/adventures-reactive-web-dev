@@ -39,6 +39,7 @@ var onTodoList = function*() {
 };
 
 app.use(routes.get("/todoList", onTodoList));
+app.use(routes.get("/api/todoList", onTodoList));
 
 var deleteTodo = function(todoId) {
   for (var i = 0, t = todoList.length; i < t; i++) {
@@ -56,12 +57,12 @@ var onDeleteTodo = function*(todoId) {
 
 app.use(routes.del("/deleteTodo/:todoId", onDeleteTodo));
 
-var r_onDeleteTodo = function*(todoId) {
+var api_onDeleteTodo = function*(todoId) {
   deleteTodo(parseInt(todoId, 10));
   this.status = 204;
 };
 
-app.use(routes.del("/r/deleteTodo/:todoId", r_onDeleteTodo));
+app.use(routes.del("/api/deleteTodo/:todoId", api_onDeleteTodo));
 
 var saveTodo = function(todo) {
   todo.priority = parseInt(todo.priority, 10);
@@ -90,11 +91,11 @@ var onSaveTodo = function*() {
 
 app.use(routes.post("/saveTodo", onSaveTodo));
 
-var r_onSaveTodo = function*() {
+var api_onSaveTodo = function*() {
   this.body = saveTodo(yield parse.json(this));
 };
 
-app.use(routes.post("/r/saveTodo", r_onSaveTodo));
+app.use(routes.post("/api/saveTodo", api_onSaveTodo));
 
 module.exports = app;
 

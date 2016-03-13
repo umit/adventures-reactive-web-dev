@@ -1,7 +1,6 @@
 module TodoForm.Action (Action(..)) where
 
 import Common.Model exposing (Todo)
-import TodoList.Model exposing (Model)
 
 
 type Action
@@ -9,4 +8,3 @@ type Action
   | Edit Todo
   | Cancel
   | Save Todo
-  | UpdateList Model
