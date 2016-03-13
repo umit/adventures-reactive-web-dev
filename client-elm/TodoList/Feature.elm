@@ -1,7 +1,7 @@
 module TodoList.Feature (createTodoListFeature) where
 
 import Common.Model exposing (Todo)
-import Effects
+import Library.Util exposing (broadcast)
 import StartApp exposing (App, start)
 import TodoList.Action exposing (Action)
 import TodoList.Model exposing (Model)
@@ -26,11 +26,7 @@ createTodoListFeature config =
         update
           { loadTodos = loadTodos
           , deleteTodo = deleteTodo
-          , signalEditTodo =
-              \data ->
-                (List.map ((flip Signal.send) data) config.outputs.onEditTodo)
-                  |> (List.map Effects.task)
-                  |> Effects.batch
+          , signalEditTodo = broadcast config.outputs.onEditTodo
           }
     , view = view
     , inputs = config.inputs

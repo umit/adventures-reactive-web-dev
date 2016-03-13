@@ -1,6 +1,6 @@
 module TodoForm.Feature (createTodoFormFeature) where
 
-import Effects
+import Library.Util exposing (broadcast)
 import StartApp exposing (App, start)
 import TodoForm.Action exposing (Action)
 import TodoForm.Model
@@ -25,11 +25,7 @@ createTodoFormFeature config =
     , update =
         update
           { saveTodo = saveTodo
-          , signalSaveTodo =
-              \data ->
-                (List.map ((flip Signal.send) data) config.outputs.onSaveTodo)
-                  |> (List.map Effects.task)
-                  |> Effects.batch
+          , signalSaveTodo = broadcast config.outputs.onSaveTodo
           }
     , view = view
     , inputs = config.inputs
