@@ -19,6 +19,29 @@ initialModelAndEffects =
   ( initialModel, Effects.none )
 
 
+updateTodos : List Todo -> Todo -> List Todo
+updateTodos todos todo =
+  let
+    existingTodo =
+      List.filter (\td -> td.id == todo.id) todos
+
+    updateTodo td =
+      if td.id == todo.id then
+        todo
+      else
+        td
+
+    updatedTodos =
+      case List.length existingTodo == 0 of
+        True ->
+          List.append todos [ todo ]
+
+        False ->
+          List.map updateTodo todos
+  in
+    updatedTodos
+
+
 update : Tasks -> Action -> Model -> ( Model, Effects Action )
 update tasks action model =
   case action of
@@ -40,9 +63,11 @@ update tasks action model =
         updatedModel =
           case maybeTodo of
             Just todo ->
-              { todos = []
-              , message = "FIXME: implement update list"
-              }
+              let
+                updatedTodos =
+                  updateTodos model.todos todo
+              in
+                { model | todos = updatedTodos }
 
             Nothing ->
               { model | message = "Sorry, an error occurred." }
