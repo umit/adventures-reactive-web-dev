@@ -14,6 +14,7 @@ type alias Config =
   { inputs : List (Signal Action)
   , outputs :
       { onEditTodo : List (Signal.Address Todo)
+      , onUpdatedList : List (Signal.Address List Todo)
       }
   }
 

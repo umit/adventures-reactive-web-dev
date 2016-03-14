@@ -29,6 +29,7 @@ todoListFeature =
     { inputs = [ todoListMailbox.signal ]
     , outputs =
         { onEditTodo = [ Signal.forwardTo todoFormMailbox.address Edit ]
+        , onUpdatedList = []
         }
     }
 
