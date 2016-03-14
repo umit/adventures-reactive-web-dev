@@ -90,7 +90,7 @@ update tasks action model =
             updatedTodos =
               List.filter (\td -> td.id /= todoId) model.todos
           in
-            ( { model | todos = updatedTodos, message = "" }, Effects.none )
+            ( { model | todos = updatedTodos, message = "" }, tasks.signalUpdatedList updatedTodos |> Effects.map (always NoOp) )
 
         Nothing ->
           ( { model | message = "An error occured when deleting a Todo." }, Effects.none )

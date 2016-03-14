@@ -4,8 +4,15 @@ import Common.Model exposing (Todo)
 import Html exposing (Html, button, div, form, input, label, span, text)
 import Html.Attributes exposing (class, for, name, type', value)
 import Html.Events exposing (on, onWithOptions, targetValue)
+import Result exposing (withDefault)
+import String exposing (toInt)
 import TodoForm.Action exposing (Action(Cancel, Edit, Save))
 import TodoForm.Model exposing (Model)
+
+
+intoPriority : Todo -> String -> Todo
+intoPriority todo priorityStr =
+  { todo | priority = toInt priorityStr |> withDefault 0 }
 
 
 intoDesc : Todo -> String -> Todo
@@ -28,6 +35,7 @@ view address model =
                 , input
                     [ class "form-control"
                     , value (toString model.todo.priority)
+                    , on "change" targetValue (\str -> Signal.message address (Edit (intoPriority model.todo str)))
                     ]
                     []
                 , span [ class "help-block" ] [ text "" ]
