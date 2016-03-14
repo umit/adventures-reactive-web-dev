@@ -11,6 +11,7 @@ type alias Tasks =
   { loadTodos : Task Never Model
   , deleteTodo : Int -> Task Never (Maybe Int)
   , signalEditTodo : Todo -> Effects ()
+  , signalUpdatedList : List Todo -> Effects ()
   }
 
 
@@ -56,7 +57,7 @@ update tasks action model =
       )
 
     ShowList list ->
-      ( list, Effects.none )
+      ( list, tasks.signalUpdatedList list.todos |> Effects.map (always NoOp) )
 
     UpdateList maybeTodo ->
       let
@@ -72,7 +73,7 @@ update tasks action model =
             Nothing ->
               { model | message = "Sorry, an error occurred." }
       in
-        ( updatedModel, Effects.none )
+        ( updatedModel, tasks.signalUpdatedList updatedModel.todos |> Effects.map (always NoOp) )
 
     EditTodo todo ->
       ( model, tasks.signalEditTodo todo |> Effects.map (always NoOp) )

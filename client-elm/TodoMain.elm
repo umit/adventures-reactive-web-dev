@@ -1,6 +1,6 @@
 module TodoMain (todoMainFeature) where
 
-import Common.Model exposing (blankTodo)
+import Common.Model exposing (Todo, blankTodo)
 import Effects exposing (Never)
 import Html exposing (Html, div)
 import Task exposing (Task)
@@ -11,6 +11,8 @@ import TodoForm.Model
 import TodoList.Action exposing (Action(ShowList, UpdateList))
 import TodoList.Feature exposing (createTodoListFeature)
 import TodoList.Model
+import TodoSummary.Action exposing (Action(Update))
+import TodoSummary.Feature exposing (createTodoSummaryFeature)
 
 
 todoFormMailbox : Signal.Mailbox TodoForm.Action.Action
@@ -23,13 +25,18 @@ todoListMailbox =
   Signal.mailbox (ShowList TodoList.Model.initialModel)
 
 
+todoSummaryMailbox : Signal.Mailbox TodoSummary.Action.Action
+todoSummaryMailbox =
+  Signal.mailbox (Update [])
+
+
 todoListFeature : App TodoList.Model.Model
 todoListFeature =
   createTodoListFeature
     { inputs = [ todoListMailbox.signal ]
     , outputs =
         { onEditTodo = [ Signal.forwardTo todoFormMailbox.address Edit ]
-        , onUpdatedList = []
+        , onUpdatedList = [ Signal.forwardTo todoSummaryMailbox.address Update ]
         }
     }
 
@@ -44,18 +51,24 @@ todoFormFeature =
     }
 
 
-todoMainView : Html -> Html -> Html
-todoMainView todoListView todoFormView =
+todoSummaryFeature : App (List Todo)
+todoSummaryFeature =
+  createTodoSummaryFeature { inputs = [ todoSummaryMailbox.signal ] }
+
+
+todoMainView : Html -> Html -> Html -> Html
+todoMainView todoListView todoFormView todoSummaryView =
   div
     []
     [ todoFormView
     , todoListView
+    , todoSummaryView
     ]
 
 
 html : Signal Html
 html =
-  Signal.map2 todoMainView todoListFeature.html todoFormFeature.html
+  Signal.map3 todoMainView todoListFeature.html todoFormFeature.html todoSummaryFeature.html
 
 
 tasks : Signal (Task Never ())

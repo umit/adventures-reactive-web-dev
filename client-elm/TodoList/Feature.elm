@@ -14,7 +14,7 @@ type alias Config =
   { inputs : List (Signal Action)
   , outputs :
       { onEditTodo : List (Signal.Address Todo)
-      , onUpdatedList : List (Signal.Address List Todo)
+      , onUpdatedList : List (Signal.Address (List Todo))
       }
   }
 
@@ -28,6 +28,7 @@ createTodoListFeature config =
           { loadTodos = loadTodos
           , deleteTodo = deleteTodo
           , signalEditTodo = broadcastAsEffect config.outputs.onEditTodo
+          , signalUpdatedList = broadcastAsEffect config.outputs.onUpdatedList
           }
     , view = view
     , inputs = config.inputs
