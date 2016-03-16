@@ -2,14 +2,14 @@ module TodoForm.Update (initialModelAndEffects, update) where
 
 import Common.Model exposing (Todo)
 import Effects exposing (Effects, Never)
-import Task exposing (Task, andThen)
-import TodoForm.Action exposing (Action(NoOp, Edit, Cancel, Save))
+import Task exposing (Task)
+import TodoForm.Action exposing (Action(NoOp, Edit, Cancel, Save, Saved))
 import TodoForm.Model exposing (Model, initialModel)
 
 
-type alias Tasks =
+type alias Services =
   { saveTodo : Todo -> Task Never (Maybe Todo)
-  , signalSaveTodo : Action -> Maybe Todo -> Task Never Action
+  , signalSaveTodo : Maybe Todo -> Action -> Effects Action
   }
 
 
@@ -20,8 +20,8 @@ initialModelAndEffects =
   )
 
 
-update : Tasks -> Action -> Model -> ( Model, Effects Action )
-update tasks action model =
+update : Services -> Action -> Model -> ( Model, Effects Action )
+update services action model =
   case action of
     NoOp ->
       ( model, Effects.none )
@@ -33,7 +33,8 @@ update tasks action model =
       initialModelAndEffects
 
     Save todo ->
-      ( model
-      , Effects.task (tasks.saveTodo todo `andThen` tasks.signalSaveTodo Cancel)
-      )
+      ( model, Effects.task (services.saveTodo todo) |> Effects.map Saved )
+
+    Saved todo ->
+      ( model, services.signalSaveTodo todo Cancel )
 

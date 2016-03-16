@@ -8,11 +8,11 @@ import TodoList.Action exposing (Action(NoOp, LoadList, ShowList, UpdateList, Ed
 import TodoList.Model exposing (Model, initialModel)
 
 
-type alias Tasks =
+type alias Services =
   { loadTodos : Task Never Model
   , deleteTodo : Int -> Task Never (Maybe Int)
-  , signalEditTodo : Action -> Todo -> Effects Action
-  , signalUpdatedList : Action -> List Todo -> Effects Action
+  , signalEditTodo : Todo -> Action -> Effects Action
+  , signalUpdatedList : List Todo -> Action -> Effects Action
   }
 
 
@@ -44,8 +44,8 @@ updateTodos todos todo =
     updatedTodos
 
 
-update : Tasks -> Action -> Model -> ( Model, Effects Action )
-update tasks action model =
+update : Services -> Action -> Model -> ( Model, Effects Action )
+update services action model =
   case action of
     NoOp ->
       ( model, Effects.none )
@@ -54,11 +54,11 @@ update tasks action model =
       ( { todos = []
         , message = "Loading, please wait..."
         }
-      , Effects.task (tasks.loadTodos |> Task.map ShowList)
+      , Effects.task (services.loadTodos |> Task.map ShowList)
       )
 
     ShowList list ->
-      ( list, tasks.signalUpdatedList NoOp list.todos )
+      ( list, services.signalUpdatedList list.todos NoOp )
 
     UpdateList maybeTodo ->
       let
@@ -77,11 +77,11 @@ update tasks action model =
         ( updatedModel, actionEffect (ShowList updatedModel) )
 
     EditTodo todo ->
-      ( model, tasks.signalEditTodo NoOp todo )
+      ( model, services.signalEditTodo todo NoOp )
 
     DeleteTodo todoId ->
       ( { model | message = "Deleting, please wait..." }
-      , Effects.task (tasks.deleteTodo todoId |> Task.map DeletedTodo)
+      , Effects.task (services.deleteTodo todoId) |> Effects.map DeletedTodo
       )
 
     DeletedTodo maybeTodoId ->

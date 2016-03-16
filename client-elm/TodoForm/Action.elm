@@ -8,3 +8,4 @@ type Action
   | Edit Todo
   | Cancel
   | Save Todo
+  | Saved (Maybe Todo)

@@ -1,7 +1,7 @@
-module Library.Util (actionEffect, broadcastAsEffect, broadcastAsTask) where
+module Library.Util (actionEffect, broadcast) where
 
 import Effects exposing (Effects)
-import Task exposing (Task, succeed)
+import Task exposing (succeed)
 
 
 actionEffect : a -> Effects a
@@ -9,17 +9,10 @@ actionEffect action =
   Effects.task (succeed action)
 
 
-broadcastAsEffect : List (Signal.Address d) -> a -> d -> Effects a
-broadcastAsEffect outputs action data =
+broadcast : List (Signal.Address d) -> d -> a -> Effects a
+broadcast outputs data action =
   (List.map ((flip Signal.send) data) outputs)
     |> (List.map Effects.task)
     |> Effects.batch
     |> Effects.map (always action)
-
-
-broadcastAsTask : List (Signal.Address d) -> a -> d -> Task x a
-broadcastAsTask outputs action data =
-  (List.map ((flip Signal.send) data) outputs)
-    |> Task.sequence
-    |> Task.map (always action)
 
