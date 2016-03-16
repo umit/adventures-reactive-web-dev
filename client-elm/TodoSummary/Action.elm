@@ -5,4 +5,5 @@ import Common.Model exposing (Todo)
 
 type Action
   = Update (List Todo)
+  | LastSaved (Maybe Todo)
 

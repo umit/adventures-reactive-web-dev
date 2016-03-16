@@ -11,8 +11,9 @@ import TodoForm.Model
 import TodoList.Action exposing (Action(ShowList, UpdateList))
 import TodoList.Feature exposing (createTodoListFeature)
 import TodoList.Model
-import TodoSummary.Action exposing (Action(Update))
+import TodoSummary.Action exposing (Action(Update, LastSaved))
 import TodoSummary.Feature exposing (createTodoSummaryFeature)
+import TodoSummary.Model
 
 
 todoFormMailbox : Signal.Mailbox TodoForm.Action.Action
@@ -46,12 +47,15 @@ todoFormFeature =
   createTodoFormFeature
     { inputs = [ todoFormMailbox.signal ]
     , outputs =
-        { onSaveTodo = [ Signal.forwardTo todoListMailbox.address UpdateList ]
+        { onSaveTodo =
+            [ Signal.forwardTo todoListMailbox.address UpdateList
+            , Signal.forwardTo todoSummaryMailbox.address LastSaved
+            ]
         }
     }
 
 
-todoSummaryFeature : App (List Todo)
+todoSummaryFeature : App TodoSummary.Model.Model
 todoSummaryFeature =
   createTodoSummaryFeature { inputs = [ todoSummaryMailbox.signal ] }
 
