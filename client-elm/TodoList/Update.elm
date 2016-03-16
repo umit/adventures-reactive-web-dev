@@ -2,6 +2,7 @@ module TodoList.Update (initialModelAndEffects, update) where
 
 import Common.Model exposing (Todo)
 import Effects exposing (Effects, Never)
+import Library.Util exposing (actionEffect)
 import Task exposing (Task)
 import TodoList.Action exposing (Action(NoOp, LoadList, ShowList, UpdateList, EditTodo, DeleteTodo, DeletedTodo))
 import TodoList.Model exposing (Model, initialModel)
@@ -10,8 +11,8 @@ import TodoList.Model exposing (Model, initialModel)
 type alias Tasks =
   { loadTodos : Task Never Model
   , deleteTodo : Int -> Task Never (Maybe Int)
-  , signalEditTodo : Todo -> Effects ()
-  , signalUpdatedList : List Todo -> Effects ()
+  , signalEditTodo : Action -> Todo -> Effects Action
+  , signalUpdatedList : Action -> List Todo -> Effects Action
   }
 
 
@@ -57,7 +58,7 @@ update tasks action model =
       )
 
     ShowList list ->
-      ( list, tasks.signalUpdatedList list.todos |> Effects.map (always NoOp) )
+      ( list, tasks.signalUpdatedList NoOp list.todos )
 
     UpdateList maybeTodo ->
       let
@@ -73,10 +74,10 @@ update tasks action model =
             Nothing ->
               { model | message = "Sorry, an error occurred." }
       in
-        ( updatedModel, tasks.signalUpdatedList updatedModel.todos |> Effects.map (always NoOp) )
+        ( updatedModel, actionEffect (ShowList updatedModel) )
 
     EditTodo todo ->
-      ( model, tasks.signalEditTodo todo |> Effects.map (always NoOp) )
+      ( model, tasks.signalEditTodo NoOp todo )
 
     DeleteTodo todoId ->
       ( { model | message = "Deleting, please wait..." }
@@ -89,8 +90,11 @@ update tasks action model =
           let
             updatedTodos =
               List.filter (\td -> td.id /= todoId) model.todos
+
+            updatedModel =
+              { model | todos = updatedTodos, message = "" }
           in
-            ( { model | todos = updatedTodos, message = "" }, tasks.signalUpdatedList updatedTodos |> Effects.map (always NoOp) )
+            ( updatedModel, actionEffect (ShowList updatedModel) )
 
         Nothing ->
           ( { model | message = "An error occured when deleting a Todo." }, Effects.none )

@@ -9,7 +9,7 @@ import TodoForm.Model exposing (Model, initialModel)
 
 type alias Tasks =
   { saveTodo : Todo -> Task Never (Maybe Todo)
-  , signalSaveTodo : Maybe Todo -> Task Never ()
+  , signalSaveTodo : Action -> Maybe Todo -> Task Never Action
   }
 
 
@@ -34,7 +34,6 @@ update tasks action model =
 
     Save todo ->
       ( model
-      , Effects.task (tasks.saveTodo todo `andThen` tasks.signalSaveTodo)
-          |> Effects.map (always Cancel)
+      , Effects.task (tasks.saveTodo todo `andThen` tasks.signalSaveTodo Cancel)
       )
 
