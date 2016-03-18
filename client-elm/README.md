@@ -32,7 +32,9 @@ and [The Elm Tutorial](http://www.elm-tutorial.org/).
 ## Example Overview
 
 I will use a simple Todo list application as an example. The application is on a single page, with a
-list of todos and a form, allowing for creating, editing, and deleting todos.
+list of todos and a form, allowing for creating, editing, and deleting todos. We'll add a summary at
+the bottom which shows the total number of todos and the average priority. Finally, we'll add a
+section at the top that shows the highest and lowest priority of the todo list.
 
 <img src="images/todo-example.png" width="400"/>
 
@@ -40,37 +42,14 @@ The application is backed by a server that accepts requests, using JSON as the d
 The server is implemented with [Koa](http://koajs.com/). I won't go into the details of the server
 implementation since it is not the focus of this article.
 
-## Creating Features
+The article is divided into four parts, each in a separate branch:
 
-The Todo example application has two features: `TodoList` and `TodoForm`. I call them _Features_ in
-this article, but feel free to substitute another term if you prefer. I went with _feature_ because
-I find that some terms such _component_ and _module_ are already used everywhere, and mean different
-things to different people.
+- [Part 1: Creating a Feature](https://github.com/foxdonut/adventures-reactive-web-dev/tree/elm-010-todolist-feature/client-elm)
+- [Part 2: Connecting Features Together](https://github.com/foxdonut/adventures-reactive-web-dev/tree/elm-020-todoform-feature/client-elm#adding-the-todoform-feature)
+- [Part 3: Multiple Listeners](https://github.com/foxdonut/adventures-reactive-web-dev/tree/elm-030-todosummary-feature/client-elm)
+- [Part 4: Composing Features](https://github.com/foxdonut/adventures-reactive-web-dev/tree/elm-040-todominmax-feature/client-elm)
 
-When I say _creating a feature_, in practical terms I mean to:
+The code in master is the same as in Part 4.
 
-- create a directory for the feature, e.g. `TodoList`
-- put the files relevant to the feature inside that directory:
-  - `Action.elm` - defines the `Action` type used by the feature
-  - `Feature.elm` - creates the feature by wiring everything together
-  - `Model.elm` - defines the types used for the feature's model
-  - `Service.elm` - creates the services (e.g. HTTP tasks) that the feature needs
-  - `Update.elm` - defines the `update` function
-  - `View.elm` - contains the code that renders the feature's view.
-- create the feature as a mini "App" using `StartApp.start`.
-
-With each feature being an independent mini "App", we can compose and combine them to create
-higher-level mini "Apps", ultimately creating the root App inside the top-level `Main` function.
-
-Each feature is independent of other features. We can still provide communication between features.
-We will explore that in the later sections of this article. First, let's look at the `TodoList`
-feature.
-
-### The `TodoList` Feature
-
-## Chaining Events
-
-## Connecting Features with Signals
-
-
+Questions as Github issues, and corrections or suggestions for improvement as Github pull requests, are welcome.
 
