@@ -5,43 +5,43 @@ import Html exposing (Html, div)
 import StartApp exposing (App)
 import Task exposing (Task)
 import TodoManager.Feature exposing (Feature, createTodoManagerFeature)
-import TodoSummary.Action exposing (Action(Update, LastSaved))
-import TodoSummary.Feature exposing (createTodoSummaryFeature)
-import TodoSummary.Model
+import TodoMinMax.Action exposing (Action(Update))
+import TodoMinMax.Feature exposing (createTodoMinMaxFeature)
+import TodoMinMax.Model
 
 
-todoSummaryMailbox : Signal.Mailbox TodoSummary.Action.Action
-todoSummaryMailbox =
+todoMinMaxMailbox : Signal.Mailbox TodoMinMax.Action.Action
+todoMinMaxMailbox =
   Signal.mailbox (Update [])
 
 
-todoSummaryFeature : App TodoSummary.Model.Model
-todoSummaryFeature =
-  createTodoSummaryFeature { inputs = [ todoSummaryMailbox.signal ] }
+todoMinMaxFeature : App TodoMinMax.Model.Model
+todoMinMaxFeature =
+  createTodoMinMaxFeature { inputs = [ todoMinMaxMailbox.signal ] }
 
 
 todoManagerFeature : Feature
 todoManagerFeature =
   createTodoManagerFeature
     { outputs =
-        { onUpdatedList = [ Signal.forwardTo todoSummaryMailbox.address Update ]
-        , onSaveTodo = [ Signal.forwardTo todoSummaryMailbox.address LastSaved ]
+        { onUpdatedList = [ Signal.forwardTo todoMinMaxMailbox.address Update ]
+        , onSaveTodo = []
         }
     }
 
 
 todoMainView : Html -> Html -> Html
-todoMainView todoManagerView todoSummaryView =
+todoMainView todoManagerView todoMinMaxView =
   div
     []
-    [ todoManagerView
-    , todoSummaryView
+    [ todoMinMaxView
+    , todoManagerView
     ]
 
 
 html : Signal Html
 html =
-  Signal.map2 todoMainView todoManagerFeature.html todoSummaryFeature.html
+  Signal.map2 todoMainView todoManagerFeature.html todoMinMaxFeature.html
 
 
 tasks : Signal (Task Never ())
