@@ -1,5 +1,9 @@
 # Connecting Features Together
 
+_Note: this is Part 2 of "Composing Features and Behaviours in the Elm Architecture". See the
+[Introduction](https://github.com/foxdonut/adventures-reactive-web-dev/tree/master/client-elm#composing-features-and-behaviours-in-the-elm-architecture)
+for an overview and the table of contents._
+
 We now have the `TodoList` feature which signals when the user wants to edit a `Todo`, via
 `outputs.onEditTodo`. Let's add the `TodoForm` feature and connect it to `onEditTodo` so that when
 the user clicks on an _Edit_ button in the `TodoList`, the `TodoForm` gets populated.
