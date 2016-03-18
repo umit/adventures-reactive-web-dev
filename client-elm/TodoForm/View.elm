@@ -38,7 +38,6 @@ view address model =
                     , on "change" targetValue (\str -> Signal.message address (Edit (intoPriority model.todo str)))
                     ]
                     []
-                , span [ class "help-block" ] [ text "" ]
                 ]
             , div
                 [ class "form-group" ]
@@ -49,7 +48,6 @@ view address model =
                     , on "change" targetValue (\str -> Signal.message address (Edit (intoDesc model.todo str)))
                     ]
                     []
-                , span [ class "help-block" ] [ text "" ]
                 ]
             , div
                 []
