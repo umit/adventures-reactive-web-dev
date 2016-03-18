@@ -85,20 +85,8 @@ Notice the line with `value model.todo.description`.
 
 Another key part of the form view is the _Save_ button:
 
-```elm
-[ button
-    [ class "btn btn-primary btn-xs"
-    , onWithOptions
-        "click"
-        { preventDefault = True, stopPropagation = False }
-        targetValue
-        (always (Signal.message address (Save model.todo)))
-    ]
-    [ text "Save" ]
-```
-{% gist b71c0f488c953252bedf %}
-
-[Full source of TodoForm/View.elm](TodoForm/View.elm)
+[TodoForm/View.elm](TodoForm/View.elm)
+<script src="https://gist.github.com/foxdonut/b71c0f488c953252bedf.js"></script>
 
 Clicking on the _Save_ button triggers the `Save` action.
 
