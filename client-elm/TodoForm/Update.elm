@@ -35,6 +35,6 @@ update services action model =
     Save todo ->
       ( model, Effects.task (services.saveTodo todo) |> Effects.map Saved )
 
-    Saved todo ->
-      ( model, services.signalSaveTodo todo ClearForm )
+    Saved maybeTodo ->
+      ( model, services.signalSaveTodo maybeTodo ClearForm )
 
