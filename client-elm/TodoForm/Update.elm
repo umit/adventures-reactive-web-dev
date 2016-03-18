@@ -3,7 +3,7 @@ module TodoForm.Update (initialModelAndEffects, update) where
 import Common.Model exposing (Todo)
 import Effects exposing (Effects, Never)
 import Task exposing (Task)
-import TodoForm.Action exposing (Action(NoOp, Edit, Cancel, Save, Saved))
+import TodoForm.Action exposing (Action(NoOp, Edit, ClearForm, Save, Saved))
 import TodoForm.Model exposing (Model, initialModel)
 
 
@@ -29,12 +29,12 @@ update services action model =
     Edit todo ->
       ( { todo = todo }, Effects.none )
 
-    Cancel ->
+    ClearForm ->
       initialModelAndEffects
 
     Save todo ->
       ( model, Effects.task (services.saveTodo todo) |> Effects.map Saved )
 
     Saved todo ->
-      ( model, services.signalSaveTodo todo Cancel )
+      ( model, services.signalSaveTodo todo ClearForm )
 
