@@ -1,4 +1,4 @@
-# Adding the TodoForm Feature
+# Connecting Features Together
 
 We now have the `TodoList` feature which signals when the user wants to edit a `Todo`, via
 `outputs.onEditTodo`. Let's add the `TodoForm` feature and connect it to `onEditTodo` so that when
