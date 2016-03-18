@@ -36,7 +36,7 @@ initialModel =
 type Action
   = NoOp
   | Edit Todo
-  | Cancel
+  | ClearForm
   | Save Todo
   | Saved (Maybe Todo)
 ```
@@ -112,14 +112,14 @@ update services action model =
     Edit todo ->
       ( { todo = todo }, Effects.none )
 
-    Cancel ->
+    ClearForm ->
       initialModelAndEffects
 
     Save todo ->
       ( model, Effects.task (services.saveTodo todo) |> Effects.map Saved )
 
     Saved todo ->
-      ( model, services.signalSaveTodo todo Cancel )
+      ( model, services.signalSaveTodo todo ClearForm )
 
 ```
 [Full source of TodoForm/Update.elm](TodoForm/Update.elm)
