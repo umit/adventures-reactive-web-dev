@@ -27,7 +27,7 @@ update services action model =
       ( model, Effects.none )
 
     Edit todo ->
-      ( { todo = todo, validationErrors = [] }, Effects.none )
+      ( { todo = todo }, Effects.none )
 
     ClearForm ->
       initialModelAndEffects
