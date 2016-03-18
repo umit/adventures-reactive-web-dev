@@ -69,7 +69,7 @@ view address model =
                         targetValue
                         (\_ -> Signal.message address ClearForm)
                     ]
-                    [ text "ClearForm" ]
+                    [ text "Cancel" ]
                 ]
             ]
         ]
