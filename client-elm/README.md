@@ -60,6 +60,7 @@ updated `Todo`. If the todo was a new one, the updated todo contains the server-
 that clicking on `Edit` in the `TodoList` populates the form. For example, the description field is
 rendered as follows:
 
+[TodoForm/View.elm](TodoForm/View.elm)
 ```elm
 view : Signal.Address Action -> Model -> Html
 view address model =
@@ -79,14 +80,23 @@ view address model =
             []
         ]
 ```
-[Full source of TodoForm/View.elm](TodoForm/View.elm)
 
 Notice the line with `value model.todo.description`.
 
 Another key part of the form view is the _Save_ button:
 
 [TodoForm/View.elm](TodoForm/View.elm)
-<script src="https://gist.github.com/foxdonut/b71c0f488c953252bedf.js"></script>
+```elm
+[ button
+    [ class "btn btn-primary btn-xs"
+    , onWithOptions
+        "click"
+        { preventDefault = True, stopPropagation = False }
+        targetValue
+        (always (Signal.message address (Save model.todo)))
+    ]
+    [ text "Save" ]
+```
 
 Clicking on the _Save_ button triggers the `Save` action.
 
