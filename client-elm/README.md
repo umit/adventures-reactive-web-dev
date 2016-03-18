@@ -1,76 +1,132 @@
-# Composing Features and Behaviours in the Elm Architecture
+# Adding the TodoForm Feature
 
-by Fred Daoud - foxdonut, [@foxdonut00](https://twitter.com/foxdonut00)
+We now have the `TodoList` feature which signals when the user wants to edit a `Todo`, via
+`outputs.onEditTodo`. Let's add the `TodoForm` feature and connect it to `onEditTodo` so that when
+the user clicks on an _Edit_ button in the `TodoList`, the `TodoForm` gets populated.
 
-## What is this article about?
+We create the `TodoForm` feature with the same file structure as the `TodoList` feature:
 
-First, some disclaimers: I only recently started learning Elm, and do not claim to be an expert.
-Furthermore, I do not claim to have invented any of the ideas presented in this article. The purpose
-is simply to put together what I feel are the best parts of what I have learned from
-[The Elm Architecture](https://github.com/evancz/elm-architecture-tutorial/),
-[Cycle.js](http://cycle.js.org/model-view-intent.html),
-[RxJS](https://github.com/Reactive-Extensions/RxJS),
-[Redux](http://redux.js.org/docs/introduction/ThreePrinciples.html), and others.
+```
+TodoForm/
+  Action.elm
+  Feature.elm
+  Model.elm
+  Service.elm
+  Update.elm
+  View.elm
+```
 
-That being said, my goal is to explain an approach to organize Elm code into _features_, where each
-feature is part of a page and is decoupled from other features, and to connect these features with
-_behaviours_. Behaviours are "what happens next" during an Event -> Signal -> Update -> View
-reaction. Specifically, we want to be able to
+## TodoForm.Model
 
-- Create features: each feature should be self-contained and independent of other features.
-- Chain events: _after this happens, that should happen next_.
-- Connect features with signals: _after this happens, notify all other features that want to be notified_,
-without needing to "know" what those other features are. Features react to events: _do something
-when **this** happens_, without needing to "know" which feature made **this** happen.
+```elm
+type alias Model =
+  { todo : Todo
+  }
 
-This will hopefully become clear when we dig into it and look at the code. What's important to know
-before reading on is that I assume knowledge of The Elm Architecture, because I build on top of that
-and will not go over the Elm Architecture itself. Please refer to
-[The Elm Architecture](https://github.com/evancz/elm-architecture-tutorial/)
-and [The Elm Tutorial](http://www.elm-tutorial.org/).
 
-## Example Overview
+initialModel : Model
+initialModel =
+  { todo = blankTodo
+  }
+```
 
-I will use a simple Todo list application as an example. The application is on a single page, with a
-list of todos and a form, allowing for creating, editing, and deleting todos.
+## TodoForm.Action
 
-<img src="images/todo-example.png" width="400"/>
+```elm
+type Action
+  = NoOp
+  | Edit Todo
+  | Cancel
+  | Save Todo
+  | Saved (Maybe Todo)
+```
 
-The application is backed by a server that accepts requests, using JSON as the data exchange format.
-The server is implemented with [Koa](http://koajs.com/). I won't go into the details of the server
-implementation since it is not the focus of this article.
+## TodoForm.Service
 
-## Creating Features
+`TodoForm.Service` exposes the `saveTodo` function:
 
-The Todo example application has two features: `TodoList` and `TodoForm`. I call them _Features_ in
-this article, but feel free to substitute another term if you prefer. I went with _feature_ because
-I find that some terms such _component_ and _module_ are already used everywhere, and mean different
-things to different people.
+```elm
+saveTodo : Todo -> Task Never (Maybe Todo)
+```
+[Full source of TodoForm/Service.elm](TodoForm/Service.elm)
 
-When I say _creating a feature_, in practical terms I mean to:
+The function takes a `Todo` and returns a `Task` that sends a request to the server to save the
+todo. If the request fails, the result is `Nothing`. If the request succeeds, the result is the
+updated `Todo`. If the todo was a new one, the updated todo contains the server-generated id.
 
-- create a directory for the feature, e.g. `TodoList`
-- put the files relevant to the feature inside that directory:
-  - `Action.elm` - defines the `Action` type used by the feature
-  - `Feature.elm` - creates the feature by wiring everything together
-  - `Model.elm` - defines the types used for the feature's model
-  - `Service.elm` - creates the services (e.g. HTTP tasks) that the feature needs
-  - `Update.elm` - defines the `update` function
-  - `View.elm` - contains the code that renders the feature's view.
-- create the feature as a mini "App" using `StartApp.start`.
+## TodoForm.View
 
-With each feature being an independent mini "App", we can compose and combine them to create
-higher-level mini "Apps", ultimately creating the root App inside the top-level `Main` function.
+`TodoForm.View` renders the form. The fields are populated with the information from the model, so
+that clicking on `Edit` in the `TodoList` populates the form. For example, the description field is
+rendered as follows:
 
-Each feature is independent of other features. We can still provide communication between features.
-We will explore that in the later sections of this article. First, let's look at the `TodoList`
-feature.
+```elm
+view : Signal.Address Action -> Model -> Html
+view address model =
+  div
+  -- ...
+  [ form
+    []
+    -- ...
+    , div
+        [ class "form-group" ]
+        [ label [ for "description" ] [ text "Description:" ]
+        , input
+            [ class "form-control"
+            , value model.todo.description
+            -- ...
+            ]
+            []
+        ]
+```
+[Full source of TodoForm/View.elm](TodoForm/View.elm)
 
-### The `TodoList` Feature
+Notice the line with `value model.todo.description`.
 
-## Chaining Events
+Another key part of the form view is the _Save_ button:
 
-## Connecting Features with Signals
+```elm
+[ button
+    [ class "btn btn-primary btn-xs"
+    , onWithOptions
+        "click"
+        { preventDefault = True, stopPropagation = False }
+        targetValue
+        (always (Signal.message address (Save model.todo)))
+    ]
+    [ text "Save" ]
+```
+{% gist b71c0f488c953252bedf %}
 
+[Full source of TodoForm/View.elm](TodoForm/View.elm)
+
+Clicking on the _Save_ button triggers the `Save` action.
+
+## TodoForm.Update
+
+```elm
+update : Services -> Action -> Model -> ( Model, Effects Action )
+update services action model =
+  case action of
+    NoOp ->
+      ( model, Effects.none )
+
+    Edit todo ->
+      ( { todo = todo }, Effects.none )
+
+    Cancel ->
+      initialModelAndEffects
+
+    Save todo ->
+      ( model, Effects.task (services.saveTodo todo) |> Effects.map Saved )
+
+    Saved todo ->
+      ( model, services.signalSaveTodo todo Cancel )
+
+```
+[Full source of TodoForm/Update.elm](TodoForm/Update.elm)
+
+
+## TodoForm.Feature
 
 
