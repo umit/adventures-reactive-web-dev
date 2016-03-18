@@ -6,7 +6,7 @@ import Html.Attributes exposing (class, for, name, type', value)
 import Html.Events exposing (on, onWithOptions, targetValue)
 import Result exposing (withDefault)
 import String exposing (toInt)
-import TodoForm.Action exposing (Action(Cancel, Edit, Save))
+import TodoForm.Action exposing (Action(ClearForm, Edit, Save))
 import TodoForm.Model exposing (Model)
 
 
@@ -69,9 +69,9 @@ view address model =
                         "click"
                         { preventDefault = True, stopPropagation = False }
                         targetValue
-                        (\_ -> Signal.message address Cancel)
+                        (\_ -> Signal.message address ClearForm)
                     ]
-                    [ text "Cancel" ]
+                    [ text "ClearForm" ]
                 ]
             ]
         ]
