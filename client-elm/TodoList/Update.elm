@@ -44,6 +44,29 @@ updateTodos todos todo =
     updatedTodos
 
 
+updateModelFromTodo : Model -> Maybe Todo -> Model
+updateModelFromTodo model maybeTodo =
+  case maybeTodo of
+    Just todo ->
+      let
+        updatedTodos =
+          updateTodos model.todos todo
+      in
+        { model | todos = updatedTodos }
+
+    Nothing ->
+      { model | message = "Sorry, an error occurred." }
+
+
+updateModelFromId : Model -> Int -> Model
+updateModelFromId model todoId =
+  let
+    updatedTodos =
+      List.filter (\td -> td.id /= todoId) model.todos
+  in
+    { model | todos = updatedTodos, message = "" }
+
+
 update : Services -> Action -> Model -> ( Model, Effects Action )
 update services action model =
   case action of
@@ -63,16 +86,7 @@ update services action model =
     UpdateList maybeTodo ->
       let
         updatedModel =
-          case maybeTodo of
-            Just todo ->
-              let
-                updatedTodos =
-                  updateTodos model.todos todo
-              in
-                { model | todos = updatedTodos }
-
-            Nothing ->
-              { model | message = "Sorry, an error occurred." }
+          updateModelFromTodo model maybeTodo
       in
         ( updatedModel, actionEffect (ShowList updatedModel) )
 
@@ -88,11 +102,8 @@ update services action model =
       case maybeTodoId of
         Just todoId ->
           let
-            updatedTodos =
-              List.filter (\td -> td.id /= todoId) model.todos
-
             updatedModel =
-              { model | todos = updatedTodos, message = "" }
+              updateModelFromId model todoId
           in
             ( updatedModel, actionEffect (ShowList updatedModel) )
 
