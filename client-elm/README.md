@@ -4,6 +4,8 @@ _Note: this is Part 1 of "Composing Features and Behaviours in the Elm Architect
 [Introduction](https://github.com/foxdonut/adventures-reactive-web-dev/tree/master/client-elm#composing-features-and-behaviours-in-the-elm-architecture)
 for an overview and the table of contents._
 
+Questions as Github issues, and corrections or suggestions for improvement as Github pull requests, are welcome.
+
 ## Common.Model
 
 We'll start with a model for our todos. Since this will be used throughout the application, `Todo`
@@ -144,5 +146,128 @@ I mentioned that I assume you are familiar with the Elm architecture, and the co
 familiar. The view is rendered with `Html` functions. The `view` function receives an address to
 which to send signals for triggering actions. The _Load Todos_, _Edit_, and _Delete_ buttons
 respectively trigger the `LoadList`, `EditTodo`, and `DeleteTodo` actions.
+
+## TodoList.Update
+
+In `TodoList.Update` is where we handle actions and trigger any other actions that should occur.
+These other actions are of two varieties:
+
+1. Actions within the `TodoList` feature itself, handled by the `update` function, and
+2. Signaling events to other features.
+
+Two important principles to notice in `Update` are:
+
+1. Actions can be triggered both within the `TodoList` feature and from outside. In the latter case,
+the `TodoList` feature doesn't need to "know" about these other features.
+2. Similarly, the `TodoList` feature signals events to outside features, but has no knowledge of
+what those features are.
+
+Put another way, the code within `TodoList/` has no `import` statements of any other feature
+modules.
+
+Still in the interest of keeping the code neatly decoupled, the `TodoList.Update` module defines the
+_services_ that it needs, but _does not_ include the implementation. The services are defined in a
+separate module, `TodoList.Services`, and passed in to `TodoList.Update` as a parameter. This makes
+it easy to substitute one implementation of the services for another, and also facilitates testing.
+
+Let's look at these services:
+
+[TodoList/Update.elm](TodoList/Update.elm)
+```elm
+type alias Services =
+  { loadTodos : Task Never Model
+  , deleteTodo : Int -> Task Never (Maybe Int)
+  , signalEditTodo : Todo -> Action -> Effects Action
+  , signalUpdatedList : List Todo -> Action -> Effects Action
+  }
+```
+
+`TodoList.Update` needs to know how to load the list of todos from the server, and how to send a
+request to the server to delete a todo. As outgoing signals, the `TodoList` feature notifies
+listeners when a todo needs to be edited (when the user clicks on an `Edit` button), and when the
+list has been updated.
+
+The `update` function takes an implementation of these services as a parameter:
+
+[TodoList/Update.elm](TodoList/Update.elm)
+```elm
+update : Services -> Action -> Model -> ( Model, Effects Action )
+```
+
+With partial function application, passing in the `Services` implementation will return a function
+that follows the signature of the standard `update` function in the Elm architecture, suitable for
+passing to `StartApp.start`.
+
+Let's look at some of the implementation of the `update` function:
+
+[TodoList/Update.elm](TodoList/Update.elm)
+```elm
+update services action model =
+  case action of
+    NoOp ->
+      ( model, Effects.none )
+
+    LoadList ->
+      ( { todos = []
+        , message = "Loading, please wait..."
+        }
+      , Effects.task (services.loadTodos |> Task.map ShowList)
+      )
+
+    ShowList list ->
+      ( list, services.signalUpdatedList list.todos NoOp )
+```
+
+When the user presses on the _Load Todos_ button, that triggers the `LoadList` action. The model
+shows a "please wait" message to the user and launches the task of loading the todos from the
+server. When that resolves, the result is passed on to the `ShowList` action. That, in turn, returns
+the list in the model, and triggers the task of signaling the updated list to listeners. Finally the
+chain of action ends with `NoOp`.
+
+Here is the rest of the `update` function:
+
+[TodoList/Update.elm](TodoList/Update.elm)
+```elm
+UpdateList maybeTodo ->
+  let
+    updatedModel =
+      updateModelFromTodo model maybeTodo
+  in
+    ( updatedModel, actionEffect (ShowList updatedModel) )
+
+EditTodo todo ->
+  ( model, services.signalEditTodo todo NoOp )
+
+DeleteTodo todoId ->
+  ( { model | message = "Deleting, please wait..." }
+  , Effects.task (services.deleteTodo todoId) |> Effects.map DeletedTodo
+  )
+
+DeletedTodo maybeTodoId ->
+  case maybeTodoId of
+    Just todoId ->
+      let
+        updatedModel =
+          updateModelFromId model todoId
+      in
+        ( updatedModel, actionEffect (ShowList updatedModel) )
+
+    Nothing ->
+      ( { model | message = "An error occured when deleting a Todo." }, Effects.none )
+
+```
+
+Notice the `UpdateList` case. This action is triggered from _outside_ of the `TodoList` feature, to
+notify that the list needs to updated with the passed-in todo. Later, this will be triggered from
+the `TodoForm` feature when the user saves a todo. Now, to handle this action, we update the model
+and trigger the `ShowList` action. Since the model that we return contains the updated list, why the
+need to trigger `ShowList`? Because that action handle notifies outside listeners! We keep that
+logic in one place and reuse it from other actions by triggering the `ShowList` action. Finally,
+notice the `actionEffect` function: that is a convenience function that we'll look at shortly, along
+with other convenience utilities.
+
+## TodoList.Service
+
+## TodoList.Feature
 
 
