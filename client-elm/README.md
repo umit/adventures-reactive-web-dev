@@ -2,6 +2,8 @@
 
 by Fred Daoud - foxdonut, [@foxdonut00](https://twitter.com/foxdonut00)
 
+Questions as Github issues, and corrections or suggestions for improvement as Github pull requests, are welcome.
+
 ## What is this article about?
 
 First, some disclaimers: I only recently started learning Elm, and do not claim to be an expert.
