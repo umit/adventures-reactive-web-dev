@@ -268,6 +268,86 @@ with other convenience utilities.
 
 ## TodoList.Service
 
+The tasks for interacting with the server are defined in a separate module, `TodoList.Service`. Not
+being the focus of this article, I won't go into the implementation details, but of course you can
+go ahead and look at the source code. The takeaway here is the separation of the implementation from
+the `TodoList.Update` module.
+
+`TodoList.Service` defines functions that return tasks for loading the todos and deleting a todo:
+
+[TodoList/Service.elm](TodoList/Service.elm)
+```elm
+loadTodos : Task Never Model
+loadTodos = -- ...
+
+
+deleteTodo : Int -> Task Never (Maybe Int)
+deleteTodo = -- ...
+```
+
+Now, let's look at the aforementioned `actionEffect` function and another useful function,
+`broadcast`.
+
+## Library.Util
+
+Because the functions we will look at now are general-purpose functions, not specific to the
+application, we'll define them in the `Library.Util` module:
+
+[Library/Util.elm](Library/Util.elm)
+```elm
+actionEffect : a -> Effects a
+actionEffect action =
+  Effects.task (succeed action)
+
+
+broadcast : List (Signal.Address d) -> d -> a -> Effects a
+broadcast outputs data action =
+  (List.map ((flip Signal.send) data) outputs)
+    |> (List.map Effects.task)
+    |> Effects.batch
+    |> Effects.map (always action)
+```
+
+The first function, `actionEffect`, takes an action and returns an effect that triggers the action.
+This is useful to trigger an action from another action within the `update` function. For example,
+earlier we handled `UpdateList` by updating the model and then triggering the `ShowList` action.
+
+We use the second function, `broadcast`, to notify listeners of an event. The function takes a list
+of addresses so that we can notify multiple listeners. The next parameters are the data and the
+action to trigger. The data is sent to the listeners, and the action is triggered as a result of the
+effect returned from the `update` function.
+
 ## TodoList.Feature
+
+We're now ready to put everything together. We use the `TodoList.Feature` for assembling the
+feature, and expose a `createXYZFeature` function to outer modules so that they can create the
+feature.
+
+[TodoList/Feature.elm](TodoList/Feature.elm)
+```elm
+type alias Config =
+  { inputs : List (Signal Action)
+  , outputs :
+      { onEditTodo : List (Signal.Address Todo)
+      , onUpdatedList : List (Signal.Address (List Todo))
+      }
+  }
+
+
+createTodoListFeature : Config -> App Model
+createTodoListFeature config =
+  start
+    { init = initialModelAndEffects
+    , update =
+        update
+          { loadTodos = loadTodos
+          , deleteTodo = deleteTodo
+          , signalEditTodo = broadcast config.outputs.onEditTodo
+          , signalUpdatedList = broadcast config.outputs.onUpdatedList
+          }
+    , view = view
+    , inputs = config.inputs
+    }
+```
 
 
