@@ -370,3 +370,77 @@ the `config` parameter.
 
 The result is a standard `App`. Next, we'll wire the feature together in `TodoMain`, which we'll
 use in the top-level `Main` module.
+
+## TodoMain
+
+We'll put together the app in `TodoMain`:
+
+[TodoMain.elm](TodoMain.elm)
+```elm
+todoListMailbox : Signal.Mailbox TodoList.Action.Action
+todoListMailbox =
+  Signal.mailbox (ShowList TodoList.Model.initialModel)
+
+
+todoListFeature : App TodoList.Model.Model
+todoListFeature =
+  createTodoListFeature
+    { inputs = [ todoListMailbox.signal ]
+    , outputs =
+        { onEditTodo = []
+        , onUpdatedList = []
+        }
+    }
+
+
+todoMainView : Html -> Html
+todoMainView todoListView =
+  div
+    []
+    [ todoListView
+    ]
+
+
+html : Signal Html
+html =
+  Signal.map todoMainView todoListFeature.html
+
+
+tasks : Signal (Task Never ())
+tasks =
+  Signal.mergeMany
+    [ todoListFeature.tasks
+    ]
+
+
+todoMainFeature =
+  { html = html
+  , tasks = tasks
+  }
+```
+
+This is where we wire everything together. Because we only have the `TodoList` feature so far,
+these wirings are mostly empty! We'll be filling them out in the next section.
+
+The important thing to notice at this point is how `todoMainFeature` returns the `html` and
+`tasks` for the top-level `Main` to use. For now, these are just those from the `TodoList` feature,
+but again, this will become a combination when we add more features.
+
+## Main
+
+Our top-level `Main` is dead simple:
+
+[Main.elm](Main.elm)
+```elm
+main : Signal Html
+main =
+  todoMainFeature.html
+
+
+port tasks : Signal (Task Never ())
+port tasks =
+  todoMainFeature.tasks
+```
+
+We're just using the `html` as `main` and defining a `port` for the `tasks`. Our application is now
+ready to run!
