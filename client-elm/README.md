@@ -320,7 +320,7 @@ effect returned from the `update` function.
 ## TodoList.Feature
 
 We're now ready to put everything together. We use the `TodoList.Feature` for assembling the
-feature, and expose a `createXYZFeature` function to outer modules so that they can create the
+feature, and expose a `createTodoListFeature` function to outer modules so that they can create the
 feature.
 
 [TodoList/Feature.elm](TodoList/Feature.elm)
@@ -350,4 +350,23 @@ createTodoListFeature config =
     }
 ```
 
+In the feature's `Config`, we define the inputs and outputs. The inputs are always a list of
+signals of the feature's actions, and they are passed through directly to the `inputs` of the
+`StartApp.start` function. The outputs are the events that this feature emits to notify other
+features. For `TodoList.Feature`, these outputs notify when the user wants to edit a todo, and
+when the list of todos has been updated. Each output is a list of addresses to which to emit a
+signal. Because it is a _list_ of addresses, _multiple_ listeners can register and be notified of
+these events.
 
+The `createTodoListFeature` function takes the config as a parameter and creates the feature in the
+form of a `StartApp.App`. The parameters `init`, `view`, and `inputs` passed to `StartApp.start`
+are the same as what you have already seen with `StartApp`.
+
+The `update` parameter is more sophisticated. It has the particularity of passing in the
+implementation of the services. For `loadTodos` and `deleteTodo`, these are the implementations
+that we defined in `TodoList.Service`. For `signalEditTodo` and `signalUpdatedList`, we use the
+`broadcast` function from `Library.Util` to send signals to the outputs that were passed in via
+the `config` parameter.
+
+The result is a standard `App`. Next, we'll wire the feature together in `TodoMain`, which we'll
+use in the top-level `Main` module.
