@@ -204,4 +204,113 @@ we saw in
 Since `onSaveTodo` is a list of addresses, multiple listeners can register with `TodoForm` and be
 notified.
 
+## TodoMain
+
+The `TodoForm` feature is ready. We now connect it and `TodoList` together in `TodoMain`. The nice
+part about this is that neither feature has any imports that refer to the other. Further, we can
+wire them together such that each receives signals from the other, without any circular dependency
+issues. Namely, `TodoForm` gets notified when `TodoList` emits an event for editing a todo, and
+`TodoList` gets notified when a todo is saved within `TodoForm`.
+
+We start with a mailbox for each feature:
+
+[TodoMain.elm](TodoMain.elm)
+```elm
+todoListMailbox : Signal.Mailbox TodoList.Action.Action
+todoListMailbox =
+  Signal.mailbox (ShowList TodoList.Model.initialModel)
+
+
+todoFormMailbox : Signal.Mailbox TodoForm.Action.Action
+todoFormMailbox =
+  Signal.mailbox (Edit blankTodo)
+```
+
+The `signal` from a mailbox is used as the `input` for that feature, and the `address` is used for
+the `output` of the feature(s) for which to be notified of events. Notice that I wrote _feature(s)_,
+since a feature can listen to events from multiple features (and also multiple events of one
+feature.)
+
+Let's create the features and wire them together:
+
+[TodoMain.elm](TodoMain.elm)
+```elm
+todoListFeature : App TodoList.Model.Model
+todoListFeature =
+  createTodoListFeature
+    { inputs = [ todoListMailbox.signal ]
+    , outputs =
+        { onEditTodo = [ Signal.forwardTo todoFormMailbox.address Edit ]
+        , onUpdatedList = [ ]
+        }
+    }
+
+
+todoFormFeature : App TodoForm.Model.Model
+todoFormFeature =
+  createTodoFormFeature
+    { inputs = [ todoFormMailbox.signal ]
+    , outputs =
+        { onSaveTodo =
+            [ Signal.forwardTo todoListMailbox.address UpdateList
+            ]
+        }
+    }
+```
+
+We've passed in each mailbox's `signal` to the corresponding feature's `inputs`. For a feature to be
+notified by another feature, we pass in the mailbox's `address` to that feature's `outputs`. Notice
+that each feature emits events with signals of _data_ only, so that it is not tied to any particular
+feature's actions. It is when we pass in the address that we use `Signal.forwardTo` to convert the
+data to a feature's specific action.
+
+Finally, we'll combine the views from `TodoList` and `TodoForm` to create the final view:
+
+[TodoMain.elm](TodoMain.elm)
+```elm
+todoMainView : Html -> Html -> Html
+todoMainView todoListView todoFormView =
+  div
+    []
+    [ todoFormView
+    , todoListView
+    ]
+
+
+html : Signal Html
+html =
+  Signal.map2 todoMainView todoListFeature.html todoFormFeature.html
+
+
+tasks : Signal (Task Never ())
+tasks =
+  Signal.mergeMany
+    [ todoListFeature.tasks
+    , todoFormFeature.tasks
+    ]
+
+
+todoMainFeature =
+  { html = html
+  , tasks = tasks
+  }
+```
+
+We're displaying the form above the list. We've also combined both feature's tasks, and we return
+the `html` and `tasks` from `todoMainFeature`. These are used by the top-level `Main` module:
+
+[Main.elm](Main.elm)
+```elm
+main : Signal Html
+main =
+  todoMainFeature.html
+
+
+port tasks : Signal (Task Never ())
+port tasks =
+  todoMainFeature.tasks
+```
+
+We did not need to make any changes. This is the same code as we had in Part 1, and we will not need
+to change this code as we add more features.
 

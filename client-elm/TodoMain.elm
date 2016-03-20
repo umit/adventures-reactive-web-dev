@@ -13,14 +13,14 @@ import TodoList.Feature exposing (createTodoListFeature)
 import TodoList.Model
 
 
-todoFormMailbox : Signal.Mailbox TodoForm.Action.Action
-todoFormMailbox =
-  Signal.mailbox (Edit blankTodo)
-
-
 todoListMailbox : Signal.Mailbox TodoList.Action.Action
 todoListMailbox =
   Signal.mailbox (ShowList TodoList.Model.initialModel)
+
+
+todoFormMailbox : Signal.Mailbox TodoForm.Action.Action
+todoFormMailbox =
+  Signal.mailbox (Edit blankTodo)
 
 
 todoListFeature : App TodoList.Model.Model
