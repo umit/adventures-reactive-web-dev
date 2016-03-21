@@ -1,4 +1,4 @@
-module TodoForm.Feature (createTodoFormFeature, TodoFormFeature) where
+module TodoForm.Feature (TodoFormFeature, createTodoFormFeature) where
 
 import Common.Model exposing (Todo)
 import Library.Util exposing (broadcast)

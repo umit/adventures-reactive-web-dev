@@ -1,4 +1,4 @@
-module TodoSummary.Feature (createTodoSummaryFeature, TodoSummaryFeature) where
+module TodoSummary.Feature (TodoSummaryFeature, createTodoSummaryFeature) where
 
 import Effects exposing (Effects)
 import StartApp exposing (App, start)

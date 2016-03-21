@@ -1,4 +1,4 @@
-module TodoList.Feature (createTodoListFeature, TodoListFeature) where
+module TodoList.Feature (TodoListFeature, createTodoListFeature) where
 
 import Common.Model exposing (Todo)
 import Library.Util exposing (broadcast)

@@ -1,20 +1,17 @@
-module TodoManager.Feature (Feature, createTodoManagerFeature) where
+module TodoManager.Feature (TodoManagerFeature, createTodoManagerFeature) where
 
 import Common.Model exposing (Todo, blankTodo)
 import Effects exposing (Never)
 import Html exposing (Html)
 import Task exposing (Task)
-import StartApp exposing (App)
 import TodoForm.Action exposing (Action(Edit))
-import TodoForm.Feature exposing (createTodoFormFeature, TodoFormFeature)
-import TodoForm.Model
+import TodoForm.Feature exposing (TodoFormFeature, createTodoFormFeature)
 import TodoList.Action exposing (Action(ShowList, UpdateList))
-import TodoList.Feature exposing (createTodoListFeature, TodoListFeature)
-import TodoList.Model
+import TodoList.Feature exposing (TodoListFeature, createTodoListFeature)
+import TodoList.Model exposing (initialModel)
 import TodoManager.View exposing (view)
 import TodoSummary.Action exposing (Action(Update, LastSaved))
-import TodoSummary.Feature exposing (createTodoSummaryFeature, TodoSummaryFeature)
-import TodoSummary.Model
+import TodoSummary.Feature exposing (TodoSummaryFeature, createTodoSummaryFeature)
 
 
 type alias Config =
@@ -25,7 +22,7 @@ type alias Config =
   }
 
 
-type alias Feature =
+type alias TodoManagerFeature =
   { html : Signal Html
   , tasks : Signal (Task Never ())
   }
@@ -33,7 +30,7 @@ type alias Feature =
 
 todoListMailbox : Signal.Mailbox TodoList.Action.Action
 todoListMailbox =
-  Signal.mailbox (ShowList TodoList.Model.initialModel)
+  Signal.mailbox (ShowList initialModel)
 
 
 todoFormMailbox : Signal.Mailbox TodoForm.Action.Action
@@ -91,7 +88,7 @@ makeTasks todoListFeature todoFormFeature todoSummaryFeature =
     ]
 
 
-createTodoManagerFeature : Config -> Feature
+createTodoManagerFeature : Config -> TodoManagerFeature
 createTodoManagerFeature config =
   let
     todoListFeature =
