@@ -6,14 +6,14 @@ import Html exposing (Html)
 import Task exposing (Task)
 import StartApp exposing (App)
 import TodoForm.Action exposing (Action(Edit))
-import TodoForm.Feature exposing (createTodoFormFeature)
+import TodoForm.Feature exposing (createTodoFormFeature, TodoFormFeature)
 import TodoForm.Model
 import TodoList.Action exposing (Action(ShowList, UpdateList))
-import TodoList.Feature exposing (createTodoListFeature)
+import TodoList.Feature exposing (createTodoListFeature, TodoListFeature)
 import TodoList.Model
 import TodoManager.View exposing (view)
 import TodoSummary.Action exposing (Action(Update, LastSaved))
-import TodoSummary.Feature exposing (createTodoSummaryFeature)
+import TodoSummary.Feature exposing (createTodoSummaryFeature, TodoSummaryFeature)
 import TodoSummary.Model
 
 
@@ -46,7 +46,7 @@ todoSummaryMailbox =
   Signal.mailbox (Update [])
 
 
-makeTodoListFeature : Config -> App TodoList.Model.Model
+makeTodoListFeature : Config -> TodoListFeature
 makeTodoListFeature config =
   createTodoListFeature
     { inputs = [ todoListMailbox.signal ]
@@ -57,7 +57,7 @@ makeTodoListFeature config =
     }
 
 
-makeTodoFormFeature : Config -> App TodoForm.Model.Model
+makeTodoFormFeature : Config -> TodoFormFeature
 makeTodoFormFeature config =
   createTodoFormFeature
     { inputs = [ todoFormMailbox.signal ]
@@ -72,17 +72,17 @@ makeTodoFormFeature config =
     }
 
 
-makeTodoSummaryFeature : Config -> App TodoSummary.Model.Model
+makeTodoSummaryFeature : Config -> TodoSummaryFeature
 makeTodoSummaryFeature config =
   createTodoSummaryFeature { inputs = [ todoSummaryMailbox.signal ] }
 
 
-makeHtml : App TodoList.Model.Model -> App TodoForm.Model.Model -> App TodoSummary.Model.Model -> Signal Html
+makeHtml : TodoListFeature -> TodoFormFeature -> TodoSummaryFeature -> Signal Html
 makeHtml todoListFeature todoFormFeature todoSummaryFeature =
   Signal.map3 view todoListFeature.html todoFormFeature.html todoSummaryFeature.html
 
 
-makeTasks : App TodoList.Model.Model -> App TodoForm.Model.Model -> App TodoSummary.Model.Model -> Signal (Task Never ())
+makeTasks : TodoListFeature -> TodoFormFeature -> TodoSummaryFeature -> Signal (Task Never ())
 makeTasks todoListFeature todoFormFeature todoSummaryFeature =
   Signal.mergeMany
     [ todoListFeature.tasks
