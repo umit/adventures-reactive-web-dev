@@ -6,7 +6,7 @@ import Html exposing (Html, div)
 import Task exposing (Task)
 import StartApp exposing (App, start)
 import TodoList.Action exposing (Action(ShowList, UpdateList))
-import TodoList.Feature exposing (createTodoListFeature)
+import TodoList.Feature exposing (TodoListFeature, createTodoListFeature)
 import TodoList.Model
 
 
@@ -15,7 +15,7 @@ todoListMailbox =
   Signal.mailbox (ShowList TodoList.Model.initialModel)
 
 
-todoListFeature : App TodoList.Model.Model
+todoListFeature : TodoListFeature
 todoListFeature =
   createTodoListFeature
     { inputs = [ todoListMailbox.signal ]
