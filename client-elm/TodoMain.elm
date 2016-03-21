@@ -4,16 +4,13 @@ import Common.Model exposing (Todo, blankTodo)
 import Effects exposing (Never)
 import Html exposing (Html, div)
 import Task exposing (Task)
-import StartApp exposing (App, start)
 import TodoForm.Action exposing (Action(Edit))
-import TodoForm.Feature exposing (createTodoFormFeature)
-import TodoForm.Model
+import TodoForm.Feature exposing (TodoFormFeature, createTodoFormFeature)
 import TodoList.Action exposing (Action(ShowList, UpdateList))
-import TodoList.Feature exposing (createTodoListFeature)
-import TodoList.Model
+import TodoList.Feature exposing (TodoListFeature, createTodoListFeature)
+import TodoList.Model exposing (initialModel)
 import TodoSummary.Action exposing (Action(Update, LastSaved))
-import TodoSummary.Feature exposing (createTodoSummaryFeature)
-import TodoSummary.Model
+import TodoSummary.Feature exposing (TodoSummaryFeature, createTodoSummaryFeature)
 
 
 todoFormMailbox : Signal.Mailbox TodoForm.Action.Action
@@ -23,7 +20,7 @@ todoFormMailbox =
 
 todoListMailbox : Signal.Mailbox TodoList.Action.Action
 todoListMailbox =
-  Signal.mailbox (ShowList TodoList.Model.initialModel)
+  Signal.mailbox (ShowList initialModel)
 
 
 todoSummaryMailbox : Signal.Mailbox TodoSummary.Action.Action
@@ -31,7 +28,7 @@ todoSummaryMailbox =
   Signal.mailbox (Update [])
 
 
-todoListFeature : App TodoList.Model.Model
+todoListFeature : TodoListFeature
 todoListFeature =
   createTodoListFeature
     { inputs = [ todoListMailbox.signal ]
@@ -42,7 +39,7 @@ todoListFeature =
     }
 
 
-todoFormFeature : App TodoForm.Model.Model
+todoFormFeature : TodoFormFeature
 todoFormFeature =
   createTodoFormFeature
     { inputs = [ todoFormMailbox.signal ]
@@ -55,7 +52,7 @@ todoFormFeature =
     }
 
 
-todoSummaryFeature : App TodoSummary.Model.Model
+todoSummaryFeature : TodoSummaryFeature
 todoSummaryFeature =
   createTodoSummaryFeature { inputs = [ todoSummaryMailbox.signal ] }
 
