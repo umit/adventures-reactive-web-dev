@@ -239,7 +239,7 @@ Let's create the features and wire them together:
 
 [TodoMain.elm](TodoMain.elm)
 ```elm
-todoListFeature : App TodoList.Model.Model
+todoListFeature : TodoListFeature
 todoListFeature =
   createTodoListFeature
     { inputs = [ todoListMailbox.signal ]
@@ -250,7 +250,7 @@ todoListFeature =
     }
 
 
-todoFormFeature : App TodoForm.Model.Model
+todoFormFeature : TodoFormFeature
 todoFormFeature =
   createTodoFormFeature
     { inputs = [ todoFormMailbox.signal ]
@@ -267,6 +267,10 @@ notified by another feature, we pass in the mailbox's `address` to that feature'
 that each feature emits events with signals of _data_ only, so that it is not tied to any particular
 feature's actions. It is when we pass in the address that we use `Signal.forwardTo` to convert the
 data to a feature's specific action.
+
+The diagram below illustrates the connections that we have made.
+
+<img src="images/connections.png"/>
 
 Finally, we'll combine the views from `TodoList` and `TodoForm` to create the final view:
 
