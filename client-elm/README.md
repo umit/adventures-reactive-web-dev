@@ -6,6 +6,33 @@ for an overview and the table of contents._
 
 Questions as Github issues, and corrections or suggestions for improvement as Github pull requests, are welcome.
 
+## Feature Structure
+
+Let's begin by looking at the directory and file structure for creating a feature. When I say
+_feature_, I mean a section of a page, a part of an application, and so on. Feel free to use a
+different name. I chose _feature_ simply because terms such as _component_ and _module_ are already
+overloaded and used to mean different things to different people, languages, frameworks, and
+libraries.
+
+That being said, here are the files for the `TodoList` feature:
+
+```
+TodoList/
+  Action.elm
+  Feature.elm
+  Model.elm
+  Service.elm
+  Update.elm
+  View.elm
+```
+
+Putting all the files relating to a feature in a separate directory makes it easy to find the code
+for a feature. To keep things neatly decoupled, our goal is to have no `import` statements for
+another feature.
+
+Of course, some of the code will need to be shared by several features. For that, let's use
+`Common`.
+
 ## Common.Model
 
 We'll start with a model for our todos. Since this will be used throughout the application, `Todo`
@@ -334,7 +361,11 @@ type alias Config =
   }
 
 
-createTodoListFeature : Config -> App Model
+type alias TodoListFeature =
+  App Model
+
+
+createTodoListFeature : Config -> TodoListFeature
 createTodoListFeature config =
   start
     { init = initialModelAndEffects
@@ -443,4 +474,15 @@ port tasks =
 ```
 
 We're just using the `html` as `main` and defining a `port` for the `tasks`. Our application is now
-ready to run!
+ready to run! When we click on the _Load Todos_ button, the list is retrieved from the server and
+displayed in the table:
+
+<img src="images/todo-example-01.gif" width="400"/>
+
+We have created a feature with neatly separate files within a directory, and have written some
+utility functions so that we can broadcast events to other features as well as listen to events from
+them. In  
+[Part 2](https://github.com/foxdonut/adventures-reactive-web-dev/tree/elm-020-todoform-feature/client-elm#connecting-features-together)
+we will add a new feature and see how we connect the two features together without either one
+importing anything from the other.
+
