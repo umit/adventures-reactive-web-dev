@@ -181,7 +181,11 @@ type alias Config =
   }
 
 
-createTodoFormFeature : Config -> App Model
+type alias TodoFormFeature =
+  App Model
+
+
+createTodoFormFeature : Config -> TodoFormFeature
 createTodoFormFeature config =
   start
     { init = initialModelAndEffects
@@ -200,7 +204,7 @@ createTodoFormFeature config =
 been saved. You can see that the implementation of `signalSaveTodo` is
 `broadcast config.outputs.onSaveTodo`, using the same `broadcast` function from `Library.Util` that
 we saw in
-[part 1](https://github.com/foxdonut/adventures-reactive-web-dev/tree/elm-010-todolist-feature/client-elm).
+[part 1](https://github.com/foxdonut/adventures-reactive-web-dev/tree/elm-010-todolist-feature/client-elm#libraryutil).
 Since `onSaveTodo` is a list of addresses, multiple listeners can register with `TodoForm` and be
 notified.
 
@@ -313,4 +317,14 @@ port tasks =
 
 We did not need to make any changes. This is the same code as we had in Part 1, and we will not need
 to change this code as we add more features.
+
+We have added another feature and connected them together with mailboxes, their signals, and their
+addresses. In doing so, `TodoList` and `TodoForm` communicate with each other without either one
+importing code from the other.
+
+<img src="images/todo-example-02.gif" width="400"/>
+
+In
+[part 3](https://github.com/foxdonut/adventures-reactive-web-dev/tree/elm-030-todosummary-feature/client-elm#multiple-listeners)
+we'll add a third feature, so that we can see how we can attach multiple listeners between features.
 
