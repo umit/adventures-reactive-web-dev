@@ -33,4 +33,135 @@ We'll move the three features to `TodoManager`, create `TodoMinMax`, and change 
 
 [TodoManager/Feature.elm](TodoManager/Feature.elm)
 ```elm
+type alias Config =
+  { outputs :
+      { onUpdatedList : List (Signal.Address (List Todo))
+      , onSaveTodo : List (Signal.Address (Maybe Todo))
+      }
+  }
+
+
+type alias TodoManagerFeature =
+  { html : Signal Html
+  , tasks : Signal (Task Never ())
+  }
 ```
+
+[TodoManager/Feature.elm](TodoManager/Feature.elm)
+```elm
+makeTodoListFeature : Config -> TodoListFeature
+makeTodoListFeature config =
+  createTodoListFeature
+    { inputs = [ todoListMailbox.signal ]
+    , outputs =
+        { onEditTodo = [ Signal.forwardTo todoFormMailbox.address Edit ]
+        , onUpdatedList = Signal.forwardTo todoSummaryMailbox.address Update :: config.outputs.onUpdatedList
+        }
+    }
+
+
+makeTodoFormFeature : Config -> TodoFormFeature
+makeTodoFormFeature config =
+  createTodoFormFeature
+    { inputs = [ todoFormMailbox.signal ]
+    , outputs =
+        { onSaveTodo =
+            List.append
+              [ Signal.forwardTo todoListMailbox.address UpdateList
+              , Signal.forwardTo todoSummaryMailbox.address LastSaved
+              ]
+              config.outputs.onSaveTodo
+        }
+    }
+```
+
+[TodoManager/Feature.elm](TodoManager/Feature.elm)
+```elm
+makeHtml : TodoListFeature -> TodoFormFeature -> TodoSummaryFeature -> Signal Html
+makeHtml todoListFeature todoFormFeature todoSummaryFeature =
+  Signal.map3 view todoListFeature.html todoFormFeature.html todoSummaryFeature.html
+
+
+makeTasks : TodoListFeature -> TodoFormFeature -> TodoSummaryFeature -> Signal (Task Never ())
+makeTasks todoListFeature todoFormFeature todoSummaryFeature =
+  Signal.mergeMany
+    [ todoListFeature.tasks
+    , todoFormFeature.tasks
+    , todoSummaryFeature.tasks
+    ]
+```
+
+[TodoManager/Feature.elm](TodoManager/Feature.elm)
+```elm
+createTodoManagerFeature : Config -> TodoManagerFeature
+createTodoManagerFeature config =
+  let
+    todoListFeature =
+      makeTodoListFeature config
+
+    todoFormFeature =
+      makeTodoFormFeature config
+
+    todoSummaryFeature =
+      makeTodoSummaryFeature config
+
+    html =
+      makeHtml todoListFeature todoFormFeature todoSummaryFeature
+
+    tasks =
+      makeTasks todoListFeature todoFormFeature todoSummaryFeature
+  in
+    { html = html
+    , tasks = tasks
+    }
+```
+
+[TodoMain.elm](TodoMain.elm)
+```elm
+todoMinMaxMailbox : Signal.Mailbox TodoMinMax.Action.Action
+todoMinMaxMailbox =
+  Signal.mailbox (Update [])
+
+
+todoMinMaxFeature : TodoMinMaxFeature
+todoMinMaxFeature =
+  createTodoMinMaxFeature { inputs = [ todoMinMaxMailbox.signal ] }
+
+
+todoManagerFeature : TodoManagerFeature
+todoManagerFeature =
+  createTodoManagerFeature
+    { outputs =
+        { onUpdatedList = [ Signal.forwardTo todoMinMaxMailbox.address Update ]
+        , onSaveTodo = []
+        }
+    }
+```
+
+[TodoMain.elm](TodoMain.elm)
+```elm
+todoMainView : Html -> Html -> Html
+todoMainView todoManagerView todoMinMaxView =
+  div
+    []
+    [ todoMinMaxView
+    , todoManagerView
+    ]
+
+
+html : Signal Html
+html =
+  Signal.map2 todoMainView todoManagerFeature.html todoMinMaxFeature.html
+
+
+tasks : Signal (Task Never ())
+tasks =
+  todoManagerFeature.tasks
+
+
+todoMainFeature =
+  { html = html
+  , tasks = tasks
+  }
+```
+
