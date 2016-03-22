@@ -44,6 +44,14 @@ The application is backed by a server that accepts requests, using JSON as the d
 The server is implemented with [Koa](http://koajs.com/). I won't go into the details of the server
 implementation since it is not the focus of this article.
 
+## Running the Application
+
+The instructions to run the example application are the same as for all of the other examples, so
+please follow the
+[top level instructions](https://github.com/foxdonut/adventures-reactive-web-dev/tree/master#requirements).
+
+## Article
+
 The article is divided into four parts, each in a separate branch:
 
 - [Part 1: Creating a Feature](https://github.com/foxdonut/adventures-reactive-web-dev/tree/elm-010-todolist-feature/client-elm#creating-a-feature)
