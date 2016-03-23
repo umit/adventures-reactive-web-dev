@@ -4,7 +4,9 @@ _Note: this is Part 4 of "Composing Features and Behaviours in the Elm Architect
 [Introduction](https://github.com/foxdonut/adventures-reactive-web-dev/tree/master/client-elm#composing-features-and-behaviours-in-the-elm-architecture)
 for an overview and the table of contents._
 
-In Part 3, we combined three features together. We connected them to each other with signals and
+In
+[Part 3](https://github.com/foxdonut/adventures-reactive-web-dev/tree/elm-030-todosummary-feature/client-elm#multiple-listeners),
+we combined three features together. We connected them to each other with signals and
 addresses, and we used `map3` to combine their views into the main view.
 
 As we add more features, our `TodoMain` module can grow larger than we'd like, and it might become
@@ -15,19 +17,20 @@ that we'd like to compose into a feature. Let's call this feature `TodoManager`.
 smaller features can still be used individually, but we can also use the composition of the three
 features simply by using `TodoManager` without needing to know about the internal wiring details.
 
-What we'd like to do next is to compose `TodoManager` with an additional feature, `TodoMinMax`,
-which displays the highest and lowest priority of the todo list.
+Once we have created `TodoManager`, we'll see how we could use it on a page with an additional
+feature, `TodoMinMax`, which displays the highest and lowest priority of the todo list.
 
 > _The `TodoMinMax` feature is trivial. The feature itself is not what's important here. What we are
 > exploring is how to compose smaller features into one, and then use that feature with another
 > feature._
 
-To illustrate, what we have up to now is `TodoMain` with the three features:
+To illustrate, what we have at the end of
+[Part 3](https://github.com/foxdonut/adventures-reactive-web-dev/tree/elm-030-todosummary-feature/client-elm#multiple-listeners) is `TodoMain` with the three features:
 
 <img src="images/todomain_1.png"/>
 
 We'll move the three features to `TodoManager`, create `TodoMinMax`, and change `TodoMain` so that
-`TodoMinMax` is on top of `TodoManager`:
+on the page, `TodoMinMax` is on top of `TodoManager`:
 
 <img src="images/todomain_2.png"/>
 
