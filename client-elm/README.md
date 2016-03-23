@@ -166,6 +166,8 @@ html =
 The code for returning the `html` and the `tasks`, as well as the code in `Main.elm`, does not need
 to change.
 
+<img src="images/todo-example-03.gif" width="400"/>
+
 We have seen how we can have multiple listeners on a feature, and have a feature listen to multiple
 features. In
 [Part 4](https://github.com/foxdonut/adventures-reactive-web-dev/tree/elm-040-todominmax-feature/client-elm#composing-features)
