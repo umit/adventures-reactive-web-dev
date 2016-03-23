@@ -77,7 +77,11 @@ type alias Config =
   }
 
 
-createTodoSummaryFeature : Config -> App Model
+type alias TodoSummaryFeature =
+  App Model
+
+
+createTodoSummaryFeature : Config -> TodoSummaryFeature
 createTodoSummaryFeature config =
   start
     { init = ( { todos = [], lastSaved = Nothing }, Effects.none )
@@ -161,4 +165,9 @@ html =
 
 The code for returning the `html` and the `tasks`, as well as the code in `Main.elm`, does not need
 to change.
+
+We have seen how we can have multiple listeners on a feature, and have a feature listen to multiple
+features. In
+[Part 4](https://github.com/foxdonut/adventures-reactive-web-dev/tree/elm-040-todominmax-feature/client-elm#composing-features)
+we look at combining small features into one large feature.
 
