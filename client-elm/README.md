@@ -16,14 +16,16 @@ is simply to put together what I feel are the best parts of what I have learned 
 
 That being said, my goal is to explain an approach to organize Elm code into _features_, where each
 feature is part of a page and is decoupled from other features, and to connect these features with
-_behaviours_. Behaviours are "what happens next" during an Event -> Signal -> Update -> View
-reaction. Specifically, we want to be able to
+_behaviours_. Behaviours are "what happens next" during an Action -> Signal -> Update -> View
+sequence. Specifically, we want to be able to
 
 - Create features: each feature should be self-contained and independent of other features.
 - Chain events: _after this happens, that should happen next_.
 - Connect features with signals: _after this happens, notify all other features that want to be notified_,
 without needing to "know" what those other features are. Features react to events: _do something
 when **this** happens_, without needing to "know" which feature made **this** happen.
+- Build a large feature out of smaller features: useful to make a group of features reusable as a
+whole, without having to re-create the group each time.
 
 This will hopefully become clear when we dig into it and look at the code. What's important to know
 before reading on is that I assume knowledge of The Elm Architecture, because I build on top of that
