@@ -4,6 +4,11 @@ _Note: this is Part 3 of "Composing Features and Behaviours in the Elm Architect
 [Introduction](https://github.com/foxdonut/adventures-reactive-web-dev/tree/master/client-elm#composing-features-and-behaviours-in-the-elm-architecture)
 for an overview and the table of contents._
 
+Questions as Github issues, and corrections or suggestions for improvement as Github pull requests,
+are welcome.
+
+If you enjoy this article, consider [tweeting](https://twitter.com/intent/tweet?original_referer=http%3A%2F%2Fgithub.com%2Ffoxdonut%2Fadventures-reactive-web-dev%2Ftree%2Fmaster%2Fclient-elm&text=Composing%20Features%20and%20Behaviours%20in%20the%20Elm%20Architecture&tw_p=tweetbutton&url=http%3A%2F%2Fgithub.com%2Ffoxdonut%2Fadventures-reactive-web-dev%2Ftree%2Fmaster%2Fclient-elm&via=foxdonut00) it to your followers.
+
 Having created two features and connected them together, let's now add a third feature and see what
 we can have multiple listeners for the same event.
 
