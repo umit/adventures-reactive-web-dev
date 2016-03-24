@@ -2,11 +2,23 @@
 
 by Fred Daoud - foxdonut, [@foxdonut00](https://twitter.com/foxdonut00)
 
-Questions as Github issues, and corrections or suggestions for improvement as Github pull requests, are welcome.
+Questions as Github issues, and corrections or suggestions for improvement as Github pull requests,
+are welcome.
 
 ## What is this article about?
 
-First, some disclaimers: I only recently started learning Elm, and do not claim to be an expert.
+I wrote this article out of wondering how to organize code that follows the Elm architecture. I
+wanted to divide the code for parts of a page (call them components, sections, blocks, etc., I'll
+call them features from here on out) into their own directories. I wanted each feature to be
+independent of the others, but find a way for them to communicate information with each other.
+Finally, I wanted to see if I could group some of these features together to assemble larger
+features, while still keeping the same pattern of inter-feature communication.
+
+I also did not want to reinvent the wheel, so I am not replacing `StartApp`. In fact, each feature
+is built with `StartApp` and is itself an `App`. They are assembled together to form the final `App`
+that is used in the top-level `Main`.
+
+Some disclaimers: I only recently started learning Elm, and do not claim to be an expert.
 Furthermore, I do not claim to have invented any of the ideas presented in this article. The purpose
 is simply to put together what I feel are the best parts of what I have learned from
 [The Elm Architecture](https://github.com/evancz/elm-architecture-tutorial/),
@@ -16,8 +28,8 @@ is simply to put together what I feel are the best parts of what I have learned 
 
 That being said, my goal is to explain an approach to organize Elm code into _features_, where each
 feature is part of a page and is decoupled from other features, and to connect these features with
-_behaviours_. Behaviours are "what happens next" during an Action -> Signal -> Update -> View
-sequence. Specifically, we want to be able to
+_behaviours_. Behaviours are "what happens next" during a View -> Action -> Signal -> Update -> View
+cycle. Specifically, we want to be able to
 
 - Create features: each feature should be self-contained and independent of other features.
 - Chain events: _after this happens, that should happen next_.
@@ -65,3 +77,4 @@ The code in master is the same as in Part 4.
 
 Questions as Github issues, and corrections or suggestions for improvement as Github pull requests, are welcome.
 
+If you enjoy this article, consider [tweeting](https://twitter.com/intent/tweet?original_referer=http%3A%2F%2Fgithub.com%2Ffoxdonut%2Fadventures-reactive-web-dev%2Ftree%2Fmaster%2Fclient-elm&text=Composing%20Features%20and%20Behaviours%20in%20the%20Elm%20Architecture&tw_p=tweetbutton&url=http%3A%2F%2Fgithub.com%2Ffoxdonut%2Fadventures-reactive-web-dev%2Ftree%2Fmaster%2Fclient-elm&via=foxdonut00) it to your followers.
