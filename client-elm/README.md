@@ -15,10 +15,13 @@ somewhat unwieldy to wire everything and combine all the views together.
 Let's say we decide that the combination of `TodoList`, `TodoForm`, and `TodoSummary` forms a group
 that we'd like to compose into a feature. Let's call this feature `TodoManager`. By doing this, the
 smaller features can still be used individually, but we can also use the composition of the three
-features simply by using `TodoManager` without needing to know about the internal wiring details.
+features as a whole, simply by using `TodoManager` without needing to know about the internal wiring
+details.
 
 Once we have created `TodoManager`, we'll see how we could use it on a page with an additional
-feature, `TodoMinMax`, which displays the highest and lowest priority of the todo list.
+feature, `TodoMinMax`, which displays the highest and lowest priority of the todo list. We'll
+connect `TodoMinMax` to `TodoManager` so that `TodoMinMax` gets notified when the todo list is
+updated, without `TodoMinMax` needing to know about the internal features within `TodoManager`.
 
 > _The `TodoMinMax` feature is trivial. The feature itself is not what's important here. What we are
 > exploring is how to compose smaller features into one, and then use that feature with another
@@ -34,21 +37,35 @@ on the page, `TodoMinMax` is on top of `TodoManager`:
 
 <img src="images/todomain_2.png"/>
 
+Let's start with `TodoManager`.
+
+## TodoManager.Feature
+
+What we want to do when grouping features into one is decide which outputs we want to make available
+outside of the feature. In our case, we want to give access to `onUpdatedList`:
+
 [TodoManager/Feature.elm](TodoManager/Feature.elm)
 ```elm
 type alias Config =
   { outputs :
       { onUpdatedList : List (Signal.Address (List Todo))
-      , onSaveTodo : List (Signal.Address (Maybe Todo))
       }
   }
+```
 
+Next, while our other features were `StartApp.App`s, this feature just passes on the `html` and
+`tasks` from its inner features:
 
+[TodoManager/Feature.elm](TodoManager/Feature.elm)
+```elm
 type alias TodoManagerFeature =
   { html : Signal Html
   , tasks : Signal (Task Never ())
   }
 ```
+
+The rest of `TodoManager.Feature` looks a lot like `TodoMain` from our previous example. The main
+difference is that we need to pass in the `config` that we receive from the outside:
 
 [TodoManager/Feature.elm](TodoManager/Feature.elm)
 ```elm
@@ -78,6 +95,12 @@ makeTodoFormFeature config =
     }
 ```
 
+Notice how we combined `config.outputs.onUpdatedList` with the `onUpdatedList` that we had for the
+inner features. In the `TodoList`, this was a single address, so we use `::` to append it to the
+incoming list. For `TodoForm`, we already had a list of addresses, so we `append` them.
+
+Next, we have our functions that prepare the `html` and `tasks`:
+
 [TodoManager/Feature.elm](TodoManager/Feature.elm)
 ```elm
 makeHtml : TodoListFeature -> TodoFormFeature -> TodoSummaryFeature -> Signal Html
@@ -93,6 +116,23 @@ makeTasks todoListFeature todoFormFeature todoSummaryFeature =
     , todoSummaryFeature.tasks
     ]
 ```
+
+Our `view` function is the same as we had before, just separated out into its own module:
+
+[TodoManager/View.elm](TodoManager/View.elm)
+```elm
+view : Html -> Html -> Html -> Html
+view todoListView todoFormView todoSummaryView =
+  div
+    []
+    [ todoFormView
+    , todoListView
+    , todoSummaryView
+    ]
+
+```
+
+We're ready to write our top leve `createTodoManagerFeature` function:
 
 [TodoManager/Feature.elm](TodoManager/Feature.elm)
 ```elm
@@ -119,6 +159,13 @@ createTodoManagerFeature config =
     }
 ```
 
+We can call this function from `TodoMain` to create the `TodoManager` feature, pass in the
+listeners, and get the `html` and `tasks` that we can use to pass down to `Main`.
+
+## TodoMain
+
+In `TodoMain`, we'll assemble `TodoManager` together with `TodoMinMax`:
+
 [TodoMain.elm](TodoMain.elm)
 ```elm
 todoMinMaxMailbox : Signal.Mailbox TodoMinMax.Action.Action
@@ -139,10 +186,7 @@ todoManagerFeature =
         , onSaveTodo = []
         }
     }
-```
 
-[TodoMain.elm](TodoMain.elm)
-```elm
 todoMainView : Html -> Html -> Html
 todoMainView todoManagerView todoMinMaxView =
   div
@@ -167,4 +211,21 @@ todoMainFeature =
   , tasks = tasks
   }
 ```
+
+This should look familiar. We're using the same pattern as before, just that we "factored out" three
+features into their own feature.
+
+<img src="images/todo-example.png" width="400"/>
+
+Fantastic! We now have a way of creating independent features, connecting them with signals and
+addresses, and assembling small features into larger ones.
+
+I hope you enjoyed this adventure. As mentioned in the introduction, feel free to post questions as
+Github issues, and corrections or suggestions for improvement as Github pull requests.
+
+Thanks for reading!
+
+If you enjoyed this article, consider [tweeting](https://twitter.com/intent/tweet?original_referer=http%3A%2F%2Fgithub.com%2Ffoxdonut%2Fadventures-reactive-web-dev%2Ftree%2Fmaster%2Fclient-elm&text=Composing%20Features%20and%20Behaviours%20in%20the%20Elm%20Architecture&tw_p=tweetbutton&url=http%3A%2F%2Fgithub.com%2Ffoxdonut%2Fadventures-reactive-web-dev%2Ftree%2Fmaster%2Fclient-elm&via=foxdonut00) it to your followers.
+
+Fred Daoud - foxdonut, @foxdonut00
 
