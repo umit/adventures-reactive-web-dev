@@ -31,7 +31,7 @@ const view = actions => model => {
     <div className="row">
       <div className="col-md-8">
         <div><button className="btn btn-primary btn-sm" onClick={onLoad}>Load Todos</button></div>
-        <div>Todo List: {model.list.message}</div>
+        <div>Todo List: {model.message}</div>
         <table className="table ng-table">
           <thead>
             <tr>
@@ -41,7 +41,7 @@ const view = actions => model => {
             </tr>
           </thead>
           <tbody>
-            {model.list.todos.map(renderTodo)}
+            {model.todos.map(renderTodo)}
           </tbody>
         </table>
       </div>

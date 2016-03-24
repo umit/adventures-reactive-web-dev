@@ -5,7 +5,7 @@ import "rxjs/add/operator/filter";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/scan";
 
-import {always, identity as id} from "ramda";
+import {always, identity as id, merge} from "ramda";
 import {initialModel as listModel} from "./todoList/model";
 import {initialModel as formModel} from "./todoForm/model";
 import todoList from "./todoList/component.jsx";
@@ -23,10 +23,7 @@ export default function(element) {
     </div>
   );
 
-  const model = {
-    list: listModel,
-    form: formModel
-  };
+  const model = merge(listModel, formModel);
 
   // view stream
   const view$ = actions.scan(update, model).map(appView);
