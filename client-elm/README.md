@@ -4,6 +4,11 @@ _Note: this is Part 2 of "Composing Features and Behaviours in the Elm Architect
 [Introduction](https://github.com/foxdonut/adventures-reactive-web-dev/tree/master/client-elm#composing-features-and-behaviours-in-the-elm-architecture)
 for an overview and the table of contents._
 
+Questions as Github issues, and corrections or suggestions for improvement as Github pull requests,
+are welcome.
+
+If you enjoy this article, consider [tweeting](https://twitter.com/intent/tweet?original_referer=http%3A%2F%2Fgithub.com%2Ffoxdonut%2Fadventures-reactive-web-dev%2Ftree%2Fmaster%2Fclient-elm&text=Composing%20Features%20and%20Behaviours%20in%20the%20Elm%20Architecture&tw_p=tweetbutton&url=http%3A%2F%2Fgithub.com%2Ffoxdonut%2Fadventures-reactive-web-dev%2Ftree%2Fmaster%2Fclient-elm&via=foxdonut00) it to your followers.
+
 We now have the `TodoList` feature which signals when the user wants to edit a `Todo`, via
 `outputs.onEditTodo`. Let's add the `TodoForm` feature and connect it to `onEditTodo` so that when
 the user clicks on an _Edit_ button in the `TodoList`, the `TodoForm` gets populated.
