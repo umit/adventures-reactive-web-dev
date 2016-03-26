@@ -46,4 +46,32 @@ describe("library/feature", function() {
 
     feature.view$.subscribe(identity);
   });
+
+  it("should call update with an action and a model", function(done) {
+    const initial = { duck: "quack" };
+    const testAction = "TEST";
+    let flag = true;
+
+    const feature = createFeature(merge(baseConfig, {
+      initialModel: {
+        model: initial,
+        task: Maybe.Nothing()
+      },
+      view: address => model => {
+        if (flag) {
+          flag = false;
+          //FIXME
+          address.next(Maybe.Just(testAction));
+        }
+      },
+      update: action => model => {
+        expect(action).to.equal(testAction);
+        expect(model).to.equal(initial);
+        done();
+      }
+    }));
+
+    //feature.task$.subscribe(identity);
+    feature.view$.subscribe(identity);
+  });
 });

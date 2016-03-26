@@ -15,6 +15,7 @@ import {BehaviorSubject} from "rxjs/subject/BehaviorSubject";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/scan";
 import Maybe from "data.maybe";
+import Task from "data.task";
 import {always, identity, prop} from "ramda";
 
 const createFeature = config => {
@@ -31,7 +32,7 @@ const createFeature = config => {
   // update : { model : Model, task : Maybe ( Task Action ) } -> Maybe Action ->
   //   { model : Model, task : Maybe ( Task Action ) }
   const update = (modelAndTask, maybeAction) => maybeAction
-    .map(action => config.update(action, modelAndTask.model))
+    .map(action => config.update(action)(modelAndTask.model))
     .orElse(always(modelAndTask));
 
   // modelAndTask$ : Observable<[Model, Maybe (Task Action)]>
@@ -50,7 +51,7 @@ const createFeature = config => {
   const task$ = modelAndTask$.map(modelAndTask =>
     modelAndTask.task
       .map(t => t.chain(sendAction))
-      .orElse(Task.of(null))
+      .orElse(always(Task.of(null)))
   );
 
   return {
