@@ -85,6 +85,9 @@ Simply run `git checkout <branchname>` to check out a branch, replacing `<branch
 - `ng2-webpack` : Angular 2 example using RxJS instead of Redux
 - `ng2-systemjs` : Angular 2 example using SystemJS instead of Webpack
 - `react-router` : React example using React-Router
+- client-elm branches : there are 4 branches for the
+[4-part article](https://github.com/foxdonut/adventures-reactive-web-dev/tree/master/client-elm#composing-features-and-behaviours-in-the-elm-architecture)
+about the Elm example.
 
 Finally, please note that the examples use Webpack. I left the `ng2-systemjs` branch there for reference, but I had a lot of trouble using SystemJS and I did not like having to add a bunch of `<script>` tags. I prefer the Webpack setup, which includes automatic recompilation and page refresh, so once I had that set up and working, I went with it for the rest of the examples.
 
