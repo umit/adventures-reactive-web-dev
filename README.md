@@ -33,15 +33,15 @@ npm i -g bower
 
 This installs [Bower](http://bower.io/). It is used to install the client-side CSS used in the examples - namely, [Bootstrap](http://getbootstrap.com/). Technically, it's not required to run the examples, but it does make them look nicer.
 
-## One-time setup per example
-
 The same server is used for every example. You only need to run this once:
 
 ```
 # from the top-level directory
-cd server
 npm i
+bower i
 ```
+
+## One-time setup per example
 
 For each example that you wish to run, you also need to run these commands once:
 
@@ -49,7 +49,6 @@ For each example that you wish to run, you also need to run these commands once:
 # from the top-level directory
 cd client-<example> # replace with directory of the example you want to run
 npm i
-bower i
 ```
 
 ## Running the example
