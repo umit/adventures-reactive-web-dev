@@ -12,7 +12,9 @@ Feature =
   }
 */
 import {BehaviorSubject} from "rxjs/subject/BehaviorSubject";
+import {Subject} from "rxjs/Subject";
 import "rxjs/add/operator/map";
+import "rxjs/add/operator/merge";
 import "rxjs/add/operator/scan";
 import Maybe from "data.maybe";
 import Task from "data.task";
@@ -20,10 +22,10 @@ import {always, identity, prop} from "ramda";
 
 const createFeature = config => {
   // action$ : Observable<Maybe Action>
-  const action$ = new BehaviorSubject(Maybe.Nothing());
+  const action$ = new BehaviorSubject(null);
 
   // maybeAction : Observable<Maybe Action>
-  let maybeAction$ = action$.map(identity);
+  let maybeAction$ = action$.map(Maybe.fromNullable);
 
   config.inputs.forEach(input$ => {
     maybeAction$ = maybeAction$.merge(input$.map(Maybe.Just));
@@ -33,7 +35,7 @@ const createFeature = config => {
   //   { model : Model, task : Maybe ( Task Action ) }
   const update = (modelAndTask, maybeAction) => maybeAction
     .map(action => config.update(action)(modelAndTask.model))
-    .orElse(always(modelAndTask));
+    .getOrElse(modelAndTask);
 
   // modelAndTask$ : Observable<[Model, Maybe (Task Action)]>
   const modelAndTask$ = maybeAction$.scan(update, config.initialModel);
@@ -42,10 +44,10 @@ const createFeature = config => {
   const model$ = modelAndTask$.map(prop("model"));
 
   // view$ : Observable<Html>
-  const view$ = model$.map(config.view(maybeAction$));
+  const view$ = model$.map(config.view(action$));
 
   // sendAction : Action -> Task Never ()
-  const sendAction = action => new Task((rej, res) => action$.next(Maybe.Just(action)));
+  const sendAction = action => new Task((rej, res) => action$.next(action));
 
   // taskRunner$ : Observable<Task Never ()>
   const task$ = modelAndTask$.map(modelAndTask =>

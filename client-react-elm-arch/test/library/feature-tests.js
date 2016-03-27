@@ -11,7 +11,7 @@ describe("library/feature", function() {
       model: {},
       task: Maybe.Nothing()
     },
-    update: (action, model) => ({
+    update: action => model => ({
       model: model,
       task: Maybe.Nothing()
     }),
@@ -60,14 +60,14 @@ describe("library/feature", function() {
       view: address => model => {
         if (flag) {
           flag = false;
-          //FIXME
-          address.next(Maybe.Just(testAction));
+          address.next(testAction);
         }
       },
       update: action => model => {
         expect(action).to.equal(testAction);
         expect(model).to.equal(initial);
         done();
+        return {model, task: Maybe.Nothing()};
       }
     }));
 
