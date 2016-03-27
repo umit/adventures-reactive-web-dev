@@ -15,13 +15,14 @@ import {BehaviorSubject} from "rxjs/subject/BehaviorSubject";
 import {Subject} from "rxjs/Subject";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/merge";
+import "rxjs/add/operator/publishReplay";
 import "rxjs/add/operator/scan";
 import Maybe from "data.maybe";
 import Task from "data.task";
-import {always, identity, prop} from "ramda";
+import {prop} from "ramda";
 
 const createFeature = config => {
-  // action$ : Observable<Maybe Action>
+  // action$ : Observable<Action>
   const action$ = new BehaviorSubject(null);
 
   // maybeAction : Observable<Maybe Action>
@@ -38,7 +39,7 @@ const createFeature = config => {
     .getOrElse(modelAndTask);
 
   // modelAndTask$ : Observable<[Model, Maybe (Task Action)]>
-  const modelAndTask$ = maybeAction$.scan(update, config.initialModel);
+  const modelAndTask$ = maybeAction$.scan(update, config.initialModel).publishReplay(1).refCount();
 
   // model$ : Observable<Model>
   const model$ = modelAndTask$.map(prop("model"));
@@ -47,13 +48,13 @@ const createFeature = config => {
   const view$ = model$.map(config.view(action$));
 
   // sendAction : Action -> Task Never ()
-  const sendAction = action => new Task((rej, res) => action$.next(action));
+  const sendAction = action => new Task((rej, res) => res(action$.next(action)));
 
   // taskRunner$ : Observable<Task Never ()>
   const task$ = modelAndTask$.map(modelAndTask =>
     modelAndTask.task
       .map(t => t.chain(sendAction))
-      .orElse(always(Task.of(null)))
+      .getOrElse(Task.of(null))
   );
 
   return {
