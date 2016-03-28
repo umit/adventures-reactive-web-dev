@@ -1,20 +1,21 @@
 import {expect} from "chai";
-import Maybe from "data.maybe";
+import {Just, Nothing} from "data.maybe";
 import Task from "data.task";
-import {identity, merge} from "ramda";
+import {identity, inc, lensProp, merge, over} from "ramda";
+import {Subject} from "rxjs/Subject";
 
-import {createFeature} from "../../library/feature";
+import {createFeature, taskRunner} from "../../library/feature";
 
 describe("library/feature", function() {
   const baseConfig = {
     inputs: [],
     initialModel: {
       model: {},
-      task: Maybe.Nothing()
+      task: Nothing()
     },
     update: action => model => ({
       model: model,
-      task: Maybe.Nothing()
+      task: Nothing()
     }),
     view: address => model => null
   };
@@ -32,7 +33,7 @@ describe("library/feature", function() {
     const feature = createFeature(merge(baseConfig, {
       initialModel: {
         model: initial,
-        task: Maybe.Nothing()
+        task: Nothing()
       },
       view: address => model => {
         expect(address).to.exist;
@@ -56,7 +57,7 @@ describe("library/feature", function() {
     const feature = createFeature(merge(baseConfig, {
       initialModel: {
         model: initial,
-        task: Maybe.Nothing()
+        task: Nothing()
       },
       view: address => model => {
         if (flag) {
@@ -68,11 +69,10 @@ describe("library/feature", function() {
         expect(action).to.equal(testAction);
         expect(model).to.equal(initial);
         done();
-        return {model, task: Maybe.Nothing()};
+        return {model, task: Nothing()};
       }
     }));
 
-    //feature.task$.subscribe(identity);
     feature.view$.subscribe(identity);
   });
 
@@ -94,16 +94,116 @@ describe("library/feature", function() {
       },
       update: action => model => {
         if (action === firstAction) {
-          return {model, task: Maybe.Just(task)};
+          return {model, task: Just(task)};
         }
         else if (action === secondAction) {
           done();
-          return {model, task: Maybe.Nothing()};
+          return {model, task: Nothing()};
         }
       }
     }));
 
     feature.view$.subscribe(identity);
-    feature.task$.subscribe(t => t.fork(identity, identity));
+    feature.task$.subscribe(taskRunner);
+  });
+
+  it("updates the model", function(done) {
+    const INCREMENT = "increment";
+
+    let flag = true;
+
+    const feature = createFeature(merge(baseConfig, {
+      initialModel: {
+        model: {counter: 1},
+        task: Nothing()
+      },
+      update: action => model => {
+        if (action === INCREMENT) {
+          return {model: over(lensProp("counter"), inc, model), task: Nothing()};
+        }
+        return {model, task: Nothing()};
+      },
+      view: address => model => {
+        if (flag) {
+          flag = false;
+          address.next(INCREMENT);
+        }
+        else {
+          expect(model.counter).to.equal(2);
+          done();
+        }
+      }
+    }));
+
+    feature.view$.subscribe(identity);
+  });
+
+  it("merges input signals", function(done) {
+    const INCREMENT = "increment";
+
+    let flag = true;
+
+    const input = new Subject();
+
+    const feature = createFeature(merge(baseConfig, {
+      initialModel: {
+        model: {counter: 1},
+        task: Nothing()
+      },
+      update: action => model => {
+        if (action === INCREMENT) {
+          return {model: over(lensProp("counter"), inc, model), task: Nothing()};
+        }
+        return {model, task: Nothing()};
+      },
+      view: address => model => {
+        if (model.counter === 2) {
+          done();
+        }
+      },
+      inputs: [ input ]
+    }));
+
+    feature.view$.subscribe(identity);
+
+    input.next(INCREMENT);
+  });
+
+  it("executes tasks", function(done) {
+    const INCREMENT = "increment";
+    const NO_OP = "noOp";
+
+    let flag = true;
+
+    const input = new Subject();
+
+    const task = new Task((rej, res) => {
+      flag = false;
+      res(NO_OP);
+    });
+
+    const feature = createFeature(merge(baseConfig, {
+      initialModel: {
+        model: {counter: 1},
+        task: Nothing()
+      },
+      update: action => model => {
+        if (action === INCREMENT) {
+          return {model: over(lensProp("counter"), inc, model), task: Just(task)};
+        }
+        return {model, task: Nothing()};
+      },
+      view: address => model => {
+        if (!flag) {
+          done();
+        }
+      },
+      inputs: [ input ]
+    }));
+
+    feature.view$.subscribe(identity);
+    feature.task$.subscribe(taskRunner);
+
+    input.next(INCREMENT);
   });
 });

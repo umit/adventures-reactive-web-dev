@@ -12,24 +12,23 @@ Feature =
   }
 */
 import {BehaviorSubject} from "rxjs/subject/BehaviorSubject";
-import {Subject} from "rxjs/Subject";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/merge";
 import "rxjs/add/operator/publishReplay";
 import "rxjs/add/operator/scan";
-import Maybe from "data.maybe";
+import {Just, fromNullable} from "data.maybe";
 import Task from "data.task";
-import {prop} from "ramda";
+import {identity, prop} from "ramda";
 
 const createFeature = config => {
   // action$ : Observable<Action>
   const action$ = new BehaviorSubject(null);
 
   // maybeAction : Observable<Maybe Action>
-  let maybeAction$ = action$.map(Maybe.fromNullable);
+  let maybeAction$ = action$.map(fromNullable);
 
   config.inputs.forEach(input$ => {
-    maybeAction$ = maybeAction$.merge(input$.map(Maybe.Just));
+    maybeAction$ = maybeAction$.merge(input$.map(Just));
   });
 
   // update : { model : Model, task : Maybe ( Task Action ) } -> Maybe Action ->
@@ -63,4 +62,6 @@ const createFeature = config => {
   };
 };
 
-export {createFeature};
+const taskRunner = task => task.fork(identity, identity);
+
+export {createFeature, taskRunner};
