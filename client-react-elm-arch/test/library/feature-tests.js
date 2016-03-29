@@ -3,6 +3,7 @@ import {Just, Nothing} from "data.maybe";
 import Task from "data.task";
 import {identity, inc, lensProp, merge, over} from "ramda";
 import {Subject} from "rxjs/Subject";
+import Type from "union-type";
 
 import {createFeature, taskRunner} from "../../library/feature";
 
@@ -205,5 +206,21 @@ describe("library/feature", function() {
     feature.task$.subscribe(taskRunner);
 
     input.next(INCREMENT);
+  });
+
+  xit("dispatches the next action", function(done) {
+    const Action = Type({
+      NoOp: [],
+      LoadList: [],
+      ShowList: [Array]
+    });
+
+    const feature = createFeature(merge(baseConfig, {
+      update: action => model => Action.case({
+        NoOp: () => ({model, task: Nothing()}),
+        LoadList: () => {},
+        ShowList: todos => {}
+      }, action)
+    }));
   });
 });
