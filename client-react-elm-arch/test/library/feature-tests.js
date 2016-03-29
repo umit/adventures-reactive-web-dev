@@ -14,12 +14,12 @@ describe("library/feature", function() {
       model: {},
       task: Nothing()
     },
-    update: action => model =>
+    update: _action => model =>
       ({
         model: model,
         task: Nothing()
       }),
-    view: address => model => null
+    view: _address => _model => null
   };
 
   it("creates a feature", function() {
@@ -61,7 +61,7 @@ describe("library/feature", function() {
         model: initial,
         task: Nothing()
       },
-      view: address => model => {
+      view: address => _model => {
         if (flag) {
           flag = false;
           address.next(testAction);
@@ -86,7 +86,7 @@ describe("library/feature", function() {
     let flag = true;
 
     const feature = createFeature(merge(baseConfig, {
-      view: address => model => {
+      view: address => _model => {
         if (flag) {
           flag = false;
           address.next(firstAction);
@@ -141,8 +141,6 @@ describe("library/feature", function() {
   it("merges input signals", function(done) {
     const INCREMENT = "increment";
 
-    let flag = true;
-
     const input = new Subject();
 
     const feature = createFeature(merge(baseConfig, {
@@ -156,7 +154,7 @@ describe("library/feature", function() {
         }
         return { model, task: Nothing() };
       },
-      view: address => model => {
+      view: _address => model => {
         if (model.counter === 2) {
           done();
         }
@@ -193,7 +191,7 @@ describe("library/feature", function() {
         }
         return { model, task: Nothing() };
       },
-      view: address => model => {
+      view: _address => _model => {
         if (!flag) {
           done();
         }
