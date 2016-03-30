@@ -1,13 +1,13 @@
 import React from "react";
 
-import {Action} from "./update";
+import { Action } from "./action";
 
 const view = actions => model => {
-  const onLoad = evt => actions.next(Action.LoadList());
+  const onLoad = _evt => actions.next(Action.LoadList());
 
   const onEdit = todo => evt => {
     evt.preventDefault();
-    events$.editTodo$.onNext(todo);
+    actions.next(Action.EditTodo(todo));
   };
 
   const onDelete = todo => evt => {
@@ -49,4 +49,6 @@ const view = actions => model => {
   );
 };
 
-export default view;
+export {
+  view
+};

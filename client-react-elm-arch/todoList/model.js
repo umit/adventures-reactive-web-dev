@@ -1,7 +1,6 @@
 const initialModel = {
   todos: [],
-  message: "Ready."
+  message: "Initializing..."
 };
 
-export {initialModel};
-
+export { initialModel };

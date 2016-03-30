@@ -2,7 +2,7 @@
 Config action model =
   { inputs : List (action$)
   , initialModel : ( model, Maybe ( Task action ) )
-  , update : action -> model -> ( model, Maybe ( Task action )
+  , update : action -> model -> { model, task : Maybe ( Task action ) }
   , view : Address action -> model -> Html
   }
 

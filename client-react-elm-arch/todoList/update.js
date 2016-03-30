@@ -1,57 +1,30 @@
-import {BehaviorSubject} from "rxjs/subject/BehaviorSubject";
-import Type from "union-type";
-import {always, identity} from "ramda";
-import Task from "data.task";
-import {futurizeP} from "futurize";
-import {pipe} from "ramda";
+import { Just, Nothing } from "data.maybe";
+import { Action } from "./action";
 
-import ajax from "../util/ajax-axios";
-import todoUrl from "../util/todoUrl";
+// handler : Model -> { model, task: Maybe (Task Action) }
+const handler = services => model => ({
+  NoOp: () => ({model, task: Nothing()}),
 
-const toTask = futurizeP(Task);
+  LoadList: () => ({
+    model: {todos: [], message: "Loading, please wait..."},
+    task: Just(services.loadTodos.map(Action.ShowList))
+  }),
 
-const Action = Type({
-  NoOp: [],
-  LoadList: [],
-  ShowList: [Object],
-  DeleteTodo: [Number]
+  ShowList: list => ({model: list, task: Nothing()}),
+
+  UpdateList: _todo => ({model, task: Nothing()}),
+
+  EditTodo: _todo => ({model, task: Nothing()}),
+
+  DeleteTodo: todoId => ({
+    model: {todos: [], message: "Deleting, please wait..."},
+    task: services.deleteTodo(todoId).map(Action.DeletedTodo)
+  }),
+
+  DeletedTodo: _maybeTodoId => ({model, task: Nothing()})
 });
 
-// update : Model -> Action -> Model
-const update = (model, action) => Action.case({
-  ShowList: identity,
-  LoadList: always({todos:[], message:"Loading, please wait..."}),
-  _: always(model)
-}, action);
+// update : Services -> Action -> Model -> { model, task: Maybe (Task Action) }
+const update = services => action => model => Action.case(handler(services)(model), action);
 
-const actions = new BehaviorSubject(Action.NoOp());
-
-const intoModel = todos => ({todos:todos, message:""});
-
-// loadTodos : Bool -> Task Http.Error Model
-const loadTodos = () =>
-  toTask(() => ajax.getJSON(todoUrl.get))().map(intoModel);
-
-// deleteTodo : Number -> Task Http.Error Model
-const deleteTodo = (todoId) =>
-  toTask(() => ajax.deleteJSON(todoUrl.delete(todoId)))().map(intoModel);
-
-// sendList : Model -> Task x ()
-const sendList = pipe(
-  Action.ShowList,
-  actions.next.bind(actions)
-);
-
-// errorMessage : Http.Error -> Task never Model
-const errorMessage = err => Task.of({todos:[], message:"An error occurred."});
-
-// runLoadTodos : Task Http.Error ()
-const runLoadTodos = () =>
-  loadTodos().orElse(errorMessage).map(sendList);
-
-// runDeleteTodo : Task Http.Error ()
-const runDeleteTodo = (todoId) =>
-  deleteTodo(todoId).orElse(errorMessage).map(sendList);
-
-export {Action, runLoadTodos, runDeleteTodo, actions, update};
-
+export { update };
