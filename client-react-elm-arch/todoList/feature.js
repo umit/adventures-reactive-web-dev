@@ -9,7 +9,7 @@ import { view } from "./view.jsx";
 const createTodoListFeature = config => {
   const featureConfig = {
     inputs: config.inputs,
-    initialModel: { model: initialModel, task: Nothing() },
+    initialModel: [initialModel, Nothing()],
     update: update(services),
     view: view
   };

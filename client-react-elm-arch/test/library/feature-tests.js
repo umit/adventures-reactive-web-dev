@@ -10,15 +10,8 @@ import { createFeature, taskRunner } from "../../library/feature";
 describe("library/feature", function() {
   const baseConfig = {
     inputs: [],
-    initialModel: {
-      model: {},
-      task: Nothing()
-    },
-    update: _action => model =>
-      ({
-        model: model,
-        task: Nothing()
-      }),
+    initialModel: [{}, Nothing()],
+    update: _action => model => [model, Nothing()],
     view: _address => _model => null
   };
 
@@ -33,10 +26,7 @@ describe("library/feature", function() {
     const initial = { duck: "quack" };
 
     const feature = createFeature(merge(baseConfig, {
-      initialModel: {
-        model: initial,
-        task: Nothing()
-      },
+      initialModel: [initial, Nothing()],
       view: address => model => {
         expect(address).to.exist;
         expect(address.next).to.exist;
@@ -57,10 +47,7 @@ describe("library/feature", function() {
     let flag = true;
 
     const feature = createFeature(merge(baseConfig, {
-      initialModel: {
-        model: initial,
-        task: Nothing()
-      },
+      initialModel: [initial, Nothing()],
       view: address => _model => {
         if (flag) {
           flag = false;
@@ -71,7 +58,7 @@ describe("library/feature", function() {
         expect(action).to.equal(testAction);
         expect(model).to.equal(initial);
         done();
-        return { model, task: Nothing() };
+        return [model, Nothing()];
       }
     }));
 
@@ -96,10 +83,10 @@ describe("library/feature", function() {
       },
       update: action => model => {
         if (action === firstAction) {
-          return { model, task: Just(task) };
+          return [model, Just(task)];
         } else if (action === secondAction) {
           done();
-          return { model, task: Nothing() };
+          return [model, Nothing()];
         }
       }
     }));
@@ -114,15 +101,12 @@ describe("library/feature", function() {
     let flag = true;
 
     const feature = createFeature(merge(baseConfig, {
-      initialModel: {
-        model: { counter: 1 },
-        task: Nothing()
-      },
+      initialModel: [{ counter: 1 }, Nothing()],
       update: action => model => {
         if (action === INCREMENT) {
-          return { model: over(lensProp("counter"), inc, model), task: Nothing() };
+          return [over(lensProp("counter"), inc, model), Nothing()];
         }
-        return { model, task: Nothing() };
+        return [model, Nothing()];
       },
       view: address => model => {
         if (flag) {
@@ -144,15 +128,12 @@ describe("library/feature", function() {
     const input = new Subject();
 
     const feature = createFeature(merge(baseConfig, {
-      initialModel: {
-        model: { counter: 1 },
-        task: Nothing()
-      },
+      initialModel: [{ counter: 1 }, Nothing()],
       update: action => model => {
         if (action === INCREMENT) {
-          return { model: over(lensProp("counter"), inc, model), task: Nothing() };
+          return [over(lensProp("counter"), inc, model), Nothing()];
         }
-        return { model, task: Nothing() };
+        return [model, Nothing()];
       },
       view: _address => model => {
         if (model.counter === 2) {
@@ -181,15 +162,12 @@ describe("library/feature", function() {
     });
 
     const feature = createFeature(merge(baseConfig, {
-      initialModel: {
-        model: { counter: 1 },
-        task: Nothing()
-      },
+      initialModel: [{ counter: 1 }, Nothing()],
       update: action => model => {
         if (action === INCREMENT) {
-          return { model: over(lensProp("counter"), inc, model), task: Just(task) };
+          return [over(lensProp("counter"), inc, model), Just(task)];
         }
-        return { model, task: Nothing() };
+        return [model, Nothing()];
       },
       view: _address => _model => {
         if (!flag) {
@@ -235,10 +213,12 @@ describe("library/feature", function() {
         NoOp: () => {
           expect(model).to.deep.equal(todos);
           done();
-          return { model, task: Nothing() };
+          return [model, Nothing()];
         },
-        LoadList: () => ({ model: [], task: Just(loadListTask) }),
-        ShowList: todos => ({ model: todos, task: Just(showListTask) })
+        LoadList: () => [
+          [], Just(loadListTask)
+        ],
+        ShowList: todos => [todos, Just(showListTask)]
       });
 
     const feature = createFeature(merge(baseConfig, {
