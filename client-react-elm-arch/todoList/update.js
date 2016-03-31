@@ -15,7 +15,7 @@ const handler = services => model => ({
 
   UpdateList: _todo => [model, null],
 
-  EditTodo: _todo => [model, null],
+  EditTodo: todo => [model, services.signalEditTodo(todo)(Action.NoOp())],
 
   DeleteTodo: todoId => [
     { todos: model.todos, message: "Deleting, please wait..." },
@@ -24,8 +24,8 @@ const handler = services => model => ({
 
   DeletedTodo: maybeTodoId => [
     maybeTodoId
-      .map(todoId => ( { todos: filter(complement(propEq("id", todoId)), model.todos),  message: ""} ))
-      .getOrElse({todos: model.todos, message: "An error occured when deleting a Todo."}),
+    .map(todoId => ({ todos: filter(complement(propEq("id", todoId)), model.todos), message: "" }))
+    .getOrElse({ todos: model.todos, message: "An error occured when deleting a Todo." }),
     null
   ]
 });

@@ -1,50 +1,38 @@
 import React from "react";
-import {keys, reduce} from "ramda";
 import serialize from "form-serialize";
 
+import { Action } from "./action";
+
 const view = actions => model => {
-  const getTodo = function(evt) {
-    return serialize(evt.target.form, {hash: true});
-  };
+  const getTodo = evt => serialize(evt.target.form, {hash: true});
 
-  const onChangeText = function(validationErrors) {
-    return function(evt) {
-      events$.inFormEdit$.onNext({todo: getTodo(evt), validationErrors: validationErrors});
-    };
-  };
+  const onChangeText = evt => 
+    actions.next(Action.Edit(getTodo(evt)));
 
-  const onSave = function(evt) {
+  const onSave = evt => {
     evt.preventDefault();
-    events$.saveTodo$.onNext(getTodo(evt));
+    actions.next(Action.Save(getTodo(evt)));
   };
 
   const onCancel = function(evt) {
     evt.preventDefault();
-    events$.cancelTodo$.onNext();
+    actions.next(Action.ClearForm());
   };
 
-// FIXME
-  const todo = model.todo || {};
-  const validationErrors = model.validationErrors || {};
-  const classNames = reduce(function(acc, key) {
-      acc[key] = "form-group has-error";
-      return acc;
-    }, {}, keys(validationErrors));
+  const todo = model.todo;
 
   return (
     <div className="row">
       <div className="col-md-4">
         <form>
           <input type="hidden" name="id" value={todo.id}/>
-          <div className={(classNames.priority || "form-group")}>
+          <div className="form-group">
             <label htmlFor="priority">Priority:</label>
-            <input type="text" id="priority" name="priority" className="form-control" value={todo.priority} onChange={onChangeText(validationErrors)}/>
-            <span className="help-block">{validationErrors.priority}</span>
+            <input type="text" id="priority" name="priority" className="form-control" value={todo.priority} onChange={onChangeText}/>
           </div>
-          <div className={(classNames.description || "form-group")}>
+          <div className="form-group">
             <label htmlFor="description">Description:</label>
-            <input type="text" id="description" name="description" className="form-control" value={todo.description} onChange={onChangeText(validationErrors)}/>
-            <span className="help-block">{validationErrors.description}</span>
+            <input type="text" id="description" name="description" className="form-control" value={todo.description} onChange={onChangeText}/>
           </div>
           <div>
             <button className="btn btn-primary btn-xs" onClick={onSave} data-action="save">Save</button>
@@ -57,5 +45,7 @@ const view = actions => model => {
   );
 };
 
-export default view;
+export {
+  view
+};
 

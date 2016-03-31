@@ -2,4 +2,4 @@ const initialModel = {
   todo: {}
 };
 
-export {initialModel};
+export { initialModel };
