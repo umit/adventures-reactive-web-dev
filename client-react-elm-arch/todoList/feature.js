@@ -1,5 +1,3 @@
-import { Nothing } from "data.maybe";
-
 import { createFeature } from "../library/feature";
 import { initialModel } from "./model";
 import services from "./service";
@@ -9,7 +7,7 @@ import { view } from "./view.jsx";
 const createTodoListFeature = config => {
   const featureConfig = {
     inputs: config.inputs,
-    initialModel: [initialModel, Nothing()],
+    initialModel: [initialModel, null],
     update: update(services),
     view: view
   };

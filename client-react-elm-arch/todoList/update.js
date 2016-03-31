@@ -1,34 +1,32 @@
-import { Just, Nothing } from "data.maybe";
 import { complement, filter, propEq } from "ramda";
 
 import { Action } from "./action";
 
 // handler : Model -> [ model, Maybe (Task Action) ]
 const handler = services => model => ({
-  NoOp: () => [model, Nothing()],
+  NoOp: () => [model, null],
 
   LoadList: () => [
     { todos: model.todos, message: "Loading, please wait..." },
-    Just(services.loadTodos.map(Action.ShowList))
+    services.loadTodos.map(Action.ShowList)
   ],
 
-  ShowList: list => [list, Nothing()],
+  ShowList: list => [list, null],
 
-  UpdateList: _todo => [model, Nothing()],
+  UpdateList: _todo => [model, null],
 
-  EditTodo: _todo => [model, Nothing()],
+  EditTodo: _todo => [model, null],
 
   DeleteTodo: todoId => [
     { todos: model.todos, message: "Deleting, please wait..." },
-    Just(services.deleteTodo(todoId).map(Action.DeletedTodo))
+    services.deleteTodo(todoId).map(Action.DeletedTodo)
   ],
 
   DeletedTodo: maybeTodoId => [
     maybeTodoId
       .map(todoId => ( { todos: filter(complement(propEq("id", todoId)), model.todos),  message: ""} ))
       .getOrElse({todos: model.todos, message: "An error occured when deleting a Todo."}),
-
-    Nothing()
+    null
   ]
 });
 

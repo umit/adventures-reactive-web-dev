@@ -51,7 +51,7 @@ const createFeature = config => {
 
   // taskRunner$ : Observable<Task Never ()>
   const task$ = modelAndTask$.map(modelAndTask =>
-    modelAndTask[1]
+    fromNullable(modelAndTask[1])
     .map(t => t.chain(sendAction))
     .getOrElse(Task.of(null))
   );
